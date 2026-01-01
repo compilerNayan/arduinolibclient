@@ -1,7 +1,29 @@
-.pio
-.vscode
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+platformio.ini.bak
+*.pioenvs
+*.piolibdeps
+
+# CMake
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# IDE
+.vscode/
 *.swp
 *.swo
 *~
-
+.DS_Store
 
