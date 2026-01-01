@@ -50,13 +50,13 @@ void loop() {
 }
 #else 
 
-//@Entity
-//@Id
+#define _Entity
+#define _Id_
 #include <iostream>
 #include <IFileManager.h>
 #include "controller/UserRepository.h"
 
-//@Autowired
+// AUTOWIRED
 UserRepositoryPtr userRepository = Implementation<UserRepository>::type::GetInstance();
 
 // println macro for non-Arduino (uses cout)
