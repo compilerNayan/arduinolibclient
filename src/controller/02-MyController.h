@@ -3,18 +3,18 @@
 
 #include "01-IMyController.h"
 
-/// @RestController
-/// @RequestMapping("/myUrlTee")
-// COMPONENT
+RestController
+RequestMapping("/myUrlTee")
+COMPONENT
 class MyController final : public IMyController {
   public:
 
-/// @GetMapping("/mysomeget2ee")
+  GetMapping("/mysomeget2ee")
   RetDto myFunee(TestDto x) override{
     return RetDto();
   }
 
-/// @PostMapping("/somePost2ee")
+  PostMapping("/somePost2ee")
   RetDto MyPostFunnee(TestDto x) override{
     println("MyPostFunnee called");
     println(x.a.value());
