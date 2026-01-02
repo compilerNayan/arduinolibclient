@@ -2,7 +2,7 @@
 #include "UserRepositoryTests.h"
 #include "IHttpRequestManager.h"
 
-AUTOWIRED
+/// @Autowired
 IHttpRequestManagerPtr requestManager;
 
 

@@ -11,7 +11,7 @@
 const char* ssid = "Garfield";
 const char* password = "123Madhu$$";
 
-// AUTOWIRED
+// /// @Autowired
 IHttpRequestManagerPtr requestManager;
 //auto s2 = ServerFactory::GetDefaultServer();
 
@@ -56,14 +56,14 @@ void loop() {
 #include <IFileManager.h>
 #include "controller/UserRepository.h"
 
-// AUTOWIRED
+// /// @Autowired
 UserRepositoryPtr userRepository = Implementation<UserRepository>::type::GetInstance();
 
 // println macro for non-Arduino (uses cout)
 #define println(x) std::cout << x << std::endl
 //#include <IHttpRequestManager.h>
 
-// AUTOWIRED
+// /// @Autowired
 //IHttpRequestManagerPtr requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
 
 int main() {

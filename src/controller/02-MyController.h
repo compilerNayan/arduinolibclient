@@ -5,7 +5,7 @@
 
 RestController
 RequestMapping("/myUrlTee")
-COMPONENT
+/// @Component
 class MyController final : public IMyController {
   public:
 
