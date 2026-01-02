@@ -7,6 +7,7 @@
 class User {
 
     /// @Id
+    /// @NotNull
     Public optional<int> id;
 
     Public optional<StdString> name;
