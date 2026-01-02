@@ -36,7 +36,7 @@ FetchContent_MakeAvailable(arduinolib3)
 
 # Add test executable only (ignore other cpp files)
 add_executable(user_repository_tests
-    src/controller/UserRepositoryTests.cpp
+    src/desktop_main.cpp
 )
 
 # Include directories (if needed for headers)

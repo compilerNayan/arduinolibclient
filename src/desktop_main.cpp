@@ -1,5 +1,5 @@
 #ifndef ARDUINO
-#include "UserRepositoryTests.h"
+#include "controller/UserRepositoryTests.h"
 #include "IHttpRequestManager.h"
 
 /// @Autowired
@@ -17,3 +17,4 @@ int main(int argc, char* argv[]) {
 }
 
 #endif // ARDUINO
+
