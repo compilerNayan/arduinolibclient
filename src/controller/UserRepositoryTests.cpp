@@ -3,7 +3,7 @@
 #include "IHttpRequestManager.h"
 
 AUTOWIRED
-IHttpRequestManagerPtr requestManager
+IHttpRequestManagerPtr requestManager;
 
 
 // Main function - just calls RunAllTests
