@@ -3,10 +3,10 @@
 
 #include <StandardDefines.h>
 
-_Entity
+/// @Entity
 class User {
 
-    _Id_
+    /// @Id
     Public optional<int> id;
 
     Public optional<StdString> name;
