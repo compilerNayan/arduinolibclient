@@ -3,9 +3,9 @@
 
 #include "01-IMyController.h"
 
-RestController
 RequestMapping("/myUrlTee")
 COMPONENT
+/// @RestController
 class MyController final : public IMyController {
   public:
 
