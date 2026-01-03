@@ -11,6 +11,9 @@ class MyController final : public IMyController {
 
   /// @GetMapping("/mysomeget2ee")
   RetDto myFunee(TestDto x) override{
+    println(x.a.value());
+    println(x.b.value());
+    println(x.c.value().c_str());
     return RetDto();
   }
 
