@@ -15,9 +15,9 @@ endif()
 # Fetch libraries from GitHub
 include(FetchContent)
 
-# Fetch arduinolib2
+# Fetch springbootplusplus-web
 FetchContent_Declare(
-    arduinolib2
+    springbootplusplus-web
     GIT_REPOSITORY https://github.com/compilerNayan/arduinolib2.git
     GIT_TAG        dev  # or use a specific tag/commit like "v1.0.0"
 )
@@ -31,7 +31,7 @@ FetchContent_Declare(
 
 # Fetch and use the libraries' CMakeLists.txt
 # This will automatically run the pre-build scripts
-FetchContent_MakeAvailable(arduinolib2)
+FetchContent_MakeAvailable(springbootplusplus-web)
 FetchContent_MakeAvailable(arduinolib3)
 
 # Add test executable only (ignore other cpp files)
@@ -47,7 +47,7 @@ target_include_directories(user_repository_tests PRIVATE
 
 # Link the libraries
 target_link_libraries(user_repository_tests PRIVATE 
-    arduinolib2
+    springbootplusplus-web
     arduinolib3
 )
 
