@@ -44,6 +44,9 @@ void setup() {
 }
 
 void loop() {
+    requestManager->RetrieveRequest();
+    requestManager->ProcessRequest();
+    requestManager->ProcessResponse();
 }
 
 #endif // ARDUINO
