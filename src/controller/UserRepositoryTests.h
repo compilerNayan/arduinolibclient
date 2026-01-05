@@ -15,8 +15,8 @@
     #include <filesystem>
 #endif
 
-//@Entity
-//@Id
+#define _Entity
+#define _Id_
 
 // Include StandardDefines first
 #include <StandardDefines.h>

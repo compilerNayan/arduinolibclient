@@ -3,10 +3,10 @@
 
 #include <StandardDefines.h>
 
-//@Entity
+/// @Entity
 class TestDto {
 
-    //@Id
+    /// @Id
     int xx;
 
     Public optional<int> a;

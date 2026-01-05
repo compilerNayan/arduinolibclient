@@ -1,7 +1,41 @@
-.pio
-.vscode
-*.swp
-*.swo
-*~
+# CLion IDE files
+.idea/
+*.iml
+cmake-build-*/
+.cmake/
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
 
+# PlatformIO
+.pio/
+.vscode/
 
+# Build directories
+build/
+dist/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Compiled files
+*.class
+*.exe
+*.out
+*.app
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
