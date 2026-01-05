@@ -6,7 +6,7 @@
 #include "controller/UserRepositoryTests.h"
 #include "IHttpRequestManager.h"    
 
-/// @Autowired
+/* @Autowired */
 IHttpRequestManagerPtr requestManager;
 
 // println macro for Arduino
