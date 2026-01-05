@@ -12,6 +12,7 @@ int main(int argc, char* argv[]) {
     while(true) {
         requestManager->RetrieveRequest();
         requestManager->ProcessRequest();
+        requestManager->ProcessResponse();
     }
     return 0;
 }

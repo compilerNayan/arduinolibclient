@@ -23,7 +23,11 @@ class MyController final : public IMyController {
     println(x.a.value());
     println(x.b.value());
     println(x.c.value().c_str());
-    return RetDto();
+    RetDto retDto;
+    retDto.a = 1;
+    retDto.b = 2;
+    retDto.c = "Hello";
+    return retDto;
   }
 };
 
