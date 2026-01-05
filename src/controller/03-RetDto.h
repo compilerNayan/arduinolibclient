@@ -6,9 +6,9 @@
 /// @Serializable
 class RetDto {
 public:
-    int a;
-    int b;
-    int c;
+    optional<int> a;
+    optional<int> b;
+    optional<int> c;
 };
 
 #endif
