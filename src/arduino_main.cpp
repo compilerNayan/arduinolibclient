@@ -10,8 +10,8 @@
 IHttpRequestManagerPtr requestManager;
 
 // std_println macro for Arduino
-#define std_println(x) Serial.println(x)
-#define std_print(x) Serial.print(x)
+#define std_println2(x) Serial.println(x)
+#define std_print2(x) Serial.print(x)
 
 // WiFi credentials
 const char* ssid = "Garfield";
@@ -25,7 +25,7 @@ void setup() {
     char* empty_argv[] = { (char*)"arduino_main" };
     RunAllTests(1, empty_argv);
     // Connect to WiFi
-    std_println("Connecting to WiFi");
+    std_println2("Connecting to WiFi");
     WiFi.begin(ssid, password);
 
     // Wait for connection, print "." while connecting
@@ -35,9 +35,9 @@ void setup() {
     }
 
     // Print connected message when connected
-    std_println("\nConnected!");
-    std_println("IP Address: ");
-    std_println(WiFi.localIP());
+    std_println2("\nConnected!");
+    std_println2("IP Address: ");
+    std_println2(WiFi.localIP());
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     //s2->Start(8080);
     delay(7000);
