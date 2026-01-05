@@ -1,14 +1,8 @@
-# PlatformIO
-.pio/
-.pioenvs/
-.piolibdeps/
-platformio.ini.bak
-*.pioenvs
-*.piolibdeps
-
-# CMake
-build/
+# CLion IDE files
+.idea/
+*.iml
 cmake-build-*/
+.cmake/
 CMakeCache.txt
 CMakeFiles/
 CMakeScripts/
@@ -20,10 +14,28 @@ compile_commands.json
 CTestTestfile.cmake
 _deps/
 
-# IDE
+# PlatformIO
+.pio/
 .vscode/
-*.swp
-*.swo
-*~
-.DS_Store
 
+# Build directories
+build/
+dist/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+
+# Compiled files
+*.class
+*.exe
+*.out
+*.app
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
