@@ -19,7 +19,7 @@ include(FetchContent)
 FetchContent_Declare(
     arduinolib4
     GIT_REPOSITORY https://github.com/compilerNayan/arduinolib4.git
-    GIT_TAG        dev  # or use a specific tag/commit like "v1.0.0"
+    GIT_TAG        main  # or use a specific tag/commit like "v1.0.0"
 )
 
 # Fetch and use the library's CMakeLists.txt
