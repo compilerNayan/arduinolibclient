@@ -26,7 +26,7 @@ class MyController final : public IMyController {
     RetDto retDto;
     retDto.a = 1;
     retDto.b = 2;
-    retDto.c = "Hello";
+    retDto.c = 5;
     return retDto;
   }
 };
