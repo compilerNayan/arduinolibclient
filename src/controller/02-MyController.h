@@ -11,18 +11,18 @@ class MyController final : public IMyController {
 
   /// @GetMapping("/mysomeget2ee")
   RetDto myFunee(TestDto x) override{
-    println(x.a.value());
-    println(x.b.value());
-    println(x.c.value().c_str());
+    std_println(x.a.value());
+    std_println(x.b.value());
+    std_println(x.c.value().c_str());
     return RetDto();
   }
 
   /// @PostMapping("/somePost2ee")
   RetDto MyPostFunnee(TestDto x) override{
-    println("MyPostFunnee called");
-    println(x.a.value());
-    println(x.b.value());
-    println(x.c.value().c_str());
+    std_println("MyPostFunnee called");
+    std_println(x.a.value());
+    std_println(x.b.value());
+    std_println(x.c.value().c_str());
     RetDto retDto;
     retDto.a = 1;
     retDto.b = 2;

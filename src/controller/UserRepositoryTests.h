@@ -28,51 +28,51 @@
 // Print macros - compatible with both Arduino and non-Arduino
 #ifdef ARDUINO
     // Arduino version using Serial.print/Serial.println
-    #define print(x) Serial.print(x)
-    #define println(x) Serial.println(x)
+    #define std_print(x) Serial.print(x)
+    #define std_println(x) Serial.println(x)
 #else
     // Non-Arduino version using std::cout
-    #define print(x) std::cout << x
-    #define println(x) std::cout << x << std::endl
+    #define std_print(x) std::cout << x
+    #define std_println(x) std::cout << x << std::endl
 #endif
 
 // Test helper macros - compatible with both Arduino and non-Arduino
 #ifdef ARDUINO
-    // Arduino version using print/println macros
+    // Arduino version using std_print/std_println macros
     #define ASSERT(condition, message) \
         do { \
             if (!(condition)) { \
-                print("❌ FAIL: "); \
-                println(message); \
+                std_print("❌ FAIL: "); \
+                std_println(message); \
                 return false; \
             } else { \
-                print("✅ PASS: "); \
-                println(message); \
+                std_print("✅ PASS: "); \
+                std_println(message); \
             } \
         } while(0)
 
     #define TEST_START(testName) \
-        print("\n========== "); \
-        print(testName); \
-        println(" ==========");
+        std_print("\n========== "); \
+        std_print(testName); \
+        std_println(" ==========");
 #else
-    // Non-Arduino version using print/println macros
+    // Non-Arduino version using std_print/std_println macros
     #define ASSERT(condition, message) \
         do { \
             if (!(condition)) { \
-                print("❌ FAIL: "); \
-                println(message); \
+                std_print("❌ FAIL: "); \
+                std_println(message); \
                 return false; \
             } else { \
-                print("✅ PASS: "); \
-                println(message); \
+                std_print("✅ PASS: "); \
+                std_println(message); \
             } \
         } while(0)
 
     #define TEST_START(testName) \
-        print("\n========== "); \
-        print(testName); \
-        println(" ==========");
+        std_print("\n========== "); \
+        std_print(testName); \
+        std_println(" ==========");
 #endif
 
 // Helper class for file verification - different implementations for Arduino and non-Arduino
@@ -650,39 +650,39 @@ int RunAllTests(int argc, char* argv[]) {
     for (const auto& arg : args) {
         if (arg == "--cleanup" || arg == "--clean" || arg == "-c") {
             g_cleanupAfterTests = true;
-            println("Cleanup mode enabled: Test files will be deleted after tests.");
-            println("");
+            std_println("Cleanup mode enabled: Test files will be deleted after tests.");
+            std_println("");
         } else if (arg == "--help" || arg == "-h") {
-            print("Usage: ");
-            print(argv[0]);
-            println(" [options]");
-            println("Options:");
-            println("  --cleanup, --clean, -c    Delete test files after tests complete");
-            println("  --help, -h                Show this help message");
-            println("");
+            std_print("Usage: ");
+            std_print(argv[0]);
+            std_println(" [options]");
+            std_println("Options:");
+            std_println("  --cleanup, --clean, -c    Delete test files after tests complete");
+            std_println("  --help, -h                Show this help message");
+            std_println("");
             return 0;
         }
     }
     
     if (!g_cleanupAfterTests) {
         #ifndef ARDUINO
-        println("Note: Test files will be left on disk for inspection.");
+        std_println("Note: Test files will be left on disk for inspection.");
         #else
-        println("Note: Test files will be left in Arduino Preferences for inspection.");
+        std_println("Note: Test files will be left in Arduino Preferences for inspection.");
         #endif
-        println("      Use --cleanup flag to delete them after tests.");
-        println("");
+        std_println("      Use --cleanup flag to delete them after tests.");
+        std_println("");
     } else {
         // Only clean up at the start if cleanup flag is set
-        println("Cleaning up any existing test files before starting...");
+        std_println("Cleaning up any existing test files before starting...");
         FileVerifier::CleanupTestFiles();
     }
     
-    println("");
-    println("========================================");
-    println("  UserRepository Comprehensive Tests");
-    println("========================================");
-    println("");
+    std_println("");
+    std_println("========================================");
+    std_println("  UserRepository Comprehensive Tests");
+    std_println("========================================");
+    std_println("");
     
     testsPassed = 0;
     testsFailed = 0;
@@ -703,41 +703,41 @@ int RunAllTests(int argc, char* argv[]) {
     if (!TestFileContentsMatchEntity()) testsFailed++;
     
     // Print summary
-    println("");
-    println("========================================");
-    println("  Test Summary");
-    println("========================================");
-    print("Tests Passed: ");
-    println(testsPassed);
-    print("Tests Failed: ");
-    println(testsFailed);
-    print("Total Tests: ");
-    println(testsPassed + testsFailed);
-    println("========================================");
-    println("");
+    std_println("");
+    std_println("========================================");
+    std_println("  Test Summary");
+    std_println("========================================");
+    std_print("Tests Passed: ");
+    std_println(testsPassed);
+    std_print("Tests Failed: ");
+    std_println(testsFailed);
+    std_print("Total Tests: ");
+    std_println(testsPassed + testsFailed);
+    std_println("========================================");
+    std_println("");
     
     // Final cleanup if flag is set
     if (g_cleanupAfterTests) {
-        println("Cleaning up test files...");
+        std_println("Cleaning up test files...");
         FileVerifier::CleanupTestFiles();
-        println("Cleanup complete.");
-        println("");
+        std_println("Cleanup complete.");
+        std_println("");
     } else {
         #ifndef ARDUINO
-        print("Test files are available at: /Users/nkurude/db/");
+        std_print("Test files are available at: /Users/nkurude/db/");
         #else
-        print("Test files are stored in Arduino Preferences.");
+        std_print("Test files are stored in Arduino Preferences.");
         #endif
-        println("");
-        println("Use --cleanup flag to delete them.");
-        println("");
+        std_println("");
+        std_println("Use --cleanup flag to delete them.");
+        std_println("");
     }
     
     if (testsFailed == 0) {
-        println("✅ All tests passed!");
+        std_println("✅ All tests passed!");
         return 0;
     } else {
-        println("❌ Some tests failed!");
+        std_println("❌ Some tests failed!");
         return 1;
     }
 }

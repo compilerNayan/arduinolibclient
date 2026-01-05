@@ -22,7 +22,7 @@ void setup() {
     delay(1000);
 
     // Connect to WiFi
-    println("Connecting to WiFi");
+    std_println("Connecting to WiFi");
     WiFi.begin(ssid, password);
     
     // Wait for connection, print "." while connecting
@@ -32,9 +32,9 @@ void setup() {
     }
     
     // Print connected message when connected
-    println("\nConnected!");
-    println("IP Address: ");
-    println(WiFi.localIP());
+    std_println("\nConnected!");
+    std_println("IP Address: ");
+    std_println(WiFi.localIP());
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     //s2->Start(8080);
     delay(7000);
