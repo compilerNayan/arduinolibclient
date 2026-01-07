@@ -1,14 +1,29 @@
 #ifndef ARDUINO
 #include "controller/UserRepositoryTests.h"
 #include "IHttpRequestManager.h"
+#include "controller/06-MyEntityRepository.h"
 
 /// @Autowired
 IHttpRequestManagerPtr requestManager;
 
+/// @Autowired
+MyEntityRepositoryPtr myEntityRepository;
 
 // Main function - just calls RunAllTests
 int main(int argc, char* argv[]) {
     RunAllTests(argc, argv);
+
+    Val myEntity = MyEntity();
+    myEntity.id = 1;
+    myEntity.username = "test";
+    myEntity.password = "test";
+    myEntityRepository->Save(myEntity);
+
+    Val myEntity2 = myEntityRepository->FindById(1);
+    std_println2("myEntity2: ");
+    std_println2(myEntity2->Serialize().c_str());
+
+
     while(true) {
         requestManager->RetrieveRequest();
         requestManager->ProcessRequest();
