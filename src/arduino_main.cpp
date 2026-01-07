@@ -5,7 +5,6 @@
 
 #include "controller/UserRepositoryTests.h"
 #include "IHttpRequestManager.h"    
-#include "controller/06-MyEntityRepository.h"
 
 /* @Autowired */
 IHttpRequestManagerPtr requestManager;
@@ -17,9 +16,6 @@ IHttpRequestManagerPtr requestManager;
 // WiFi credentials
 const char* ssid = "Garfield";
 const char* password = "123Madhu$$";
-
-/// @Autowired
-MyEntityRepositoryPtr myEntityRepository;
 
 
 void setup() {
@@ -42,17 +38,6 @@ void setup() {
     std_println2("\nConnected!");
     std_println2("IP Address: ");
     std_println2(WiFi.localIP());
-
-    Val myEntity = MyEntity();
-    myEntity.id = 1;
-    myEntity.username = "test";
-    myEntity.password = "test";
-    myEntityRepository->Save(myEntity);
-
-    Val myEntity2 = myEntityRepository->FindById(1);
-    std_println2("myEntity2: ");
-    std_println2(myEntity2->Serialize().c_str());
-
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     //s2->Start(8080);
     delay(7000);
