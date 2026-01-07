@@ -20,8 +20,8 @@ int main(int argc, char* argv[]) {
     myEntityRepository->Save(myEntity);
 
     Val myEntity2 = myEntityRepository->FindById(1);
-    std_println2("myEntity2: ");
-    std_println2(myEntity2->Serialize().c_str());
+    std_println("myEntity2: ");
+    std_println(myEntity2->Serialize().c_str());
 
 
     while(true) {
