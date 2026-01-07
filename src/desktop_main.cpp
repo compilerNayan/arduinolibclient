@@ -13,13 +13,13 @@ MyEntityRepositoryPtr myEntityRepository;
 int main(int argc, char* argv[]) {
     RunAllTests(argc, argv);
 
-    Val myEntity = MyEntity();
+    Var myEntity = MyEntity();
     myEntity.id = 1;
     myEntity.username = "test";
     myEntity.password = "test";
     myEntityRepository->Save(myEntity);
 
-    Val myEntity2 = myEntityRepository->FindById(1);
+    Var myEntity2 = myEntityRepository->FindById(1);
     std_println("myEntity2: ");
     std_println(myEntity2->Serialize().c_str());
 
