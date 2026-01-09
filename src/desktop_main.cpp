@@ -1,6 +1,7 @@
 #ifndef ARDUINO
 #include "controller/UserRepositoryTests.h"
 #include "repository_tests/RepositoryTests.h"
+#include "controller_tests/WifiCredentialsControllerTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
 
@@ -16,6 +17,9 @@ int main(int argc, char* argv[]) {
     
     // Run repository tests
     RunAllRepositoryTests();
+    
+    // Run WiFi Credentials Controller tests
+    RunAllWifiCredentialsControllerTests();
 
     Var myEntity = MyEntity();
     myEntity.id = 1;
