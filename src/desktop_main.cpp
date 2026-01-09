@@ -1,5 +1,6 @@
 #ifndef ARDUINO
 #include "controller/UserRepositoryTests.h"
+#include "repository_tests/RepositoryTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
 
@@ -12,6 +13,9 @@ MyEntityRepositoryPtr myEntityRepository;
 // Main function - just calls RunAllTests
 int main(int argc, char* argv[]) {
     RunAllTests(argc, argv);
+    
+    // Run repository tests
+    RunAllRepositoryTests();
 
     Var myEntity = MyEntity();
     myEntity.id = 1;
