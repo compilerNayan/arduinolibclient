@@ -17,9 +17,11 @@
 #include "ProductRepository.h"
 #include "OrderRepository.h"
 #include "CustomerRepository.h"
+#include "UserAccountRepository.h"
 #include "Product.h"
 #include "Order.h"
 #include "Customer.h"
+#include "UserAccount.h"
 
 // Print macros - compatible with both Arduino and non-Arduino
 #ifdef ARDUINO
@@ -40,6 +42,9 @@ OrderRepositoryPtr orderRepository = Implementation<OrderRepository>::type::GetI
 
 /* @Autowired */
 CustomerRepositoryPtr customerRepository = Implementation<CustomerRepository>::type::GetInstance();
+
+/* @Autowired */
+UserAccountRepositoryPtr userAccountRepository = Implementation<UserAccountRepository>::type::GetInstance();
 
 // Test helper function
 void PrintTestResult(const StdString& testName, bool passed) {
@@ -283,6 +288,87 @@ void TestCustomerRepository() {
     PrintTestResult("Delete Customer", !deletedExists);
 }
 
+// Test UserAccountRepository
+void TestUserAccountRepository() {
+    std_println("\n=== Testing UserAccountRepository ===");
+    
+    // Test 1: Save a user account
+    UserAccount account1;
+    account1.username = "john_doe";
+    account1.password = "password123";
+    account1.name = "John Doe";
+    
+    UserAccount savedAccount = userAccountRepository->Save(account1);
+    PrintTestResult("Save UserAccount", savedAccount.username.has_value() && savedAccount.username.value() == "john_doe");
+    
+    // Test 2: FindById (by username)
+    optional<UserAccount> foundAccount = userAccountRepository->FindById("john_doe");
+    PrintTestResult("FindById - Account exists", foundAccount.has_value() && foundAccount.value().username.value() == "john_doe");
+    
+    // Test 3: FindByName
+    optional<UserAccount> accountByName = userAccountRepository->FindByName("John Doe");
+    PrintTestResult("FindByName - Found by name", accountByName.has_value() && accountByName.value().name.value() == "John Doe");
+    
+    // Test 4: FindByName - Not found
+    optional<UserAccount> nameNotFound = userAccountRepository->FindByName("NonExistent");
+    PrintTestResult("FindByName - Not found", !nameNotFound.has_value());
+    
+    // Test 5: Save multiple accounts with different names
+    UserAccount account2;
+    account2.username = "jane_smith";
+    account2.password = "password456";
+    account2.name = "Jane Smith";
+    userAccountRepository->Save(account2);
+    
+    UserAccount account3;
+    account3.username = "bob_wilson";
+    account3.password = "password789";
+    account3.name = "Bob Wilson";
+    userAccountRepository->Save(account3);
+    
+    // Test 6: FindByName - Different account
+    optional<UserAccount> janeAccount = userAccountRepository->FindByName("Jane Smith");
+    PrintTestResult("FindByName - Different account", janeAccount.has_value() && janeAccount.value().username.value() == "jane_smith");
+    
+    // Test 7: FindAll
+    vector<UserAccount> allAccounts = userAccountRepository->FindAll();
+    PrintTestResult("FindAll - All accounts", allAccounts.size() >= 3);
+    
+    // Test 8: Update account
+    UserAccount updatedAccount = foundAccount.value();
+    updatedAccount.password = "newpassword123";
+    UserAccount savedUpdated = userAccountRepository->Update(updatedAccount);
+    optional<UserAccount> verifyUpdate = userAccountRepository->FindById("john_doe");
+    PrintTestResult("Update UserAccount", verifyUpdate.has_value() && verifyUpdate.value().password.value() == "newpassword123");
+    
+    // Test 9: ExistsById
+    bool exists = userAccountRepository->ExistsById("john_doe");
+    PrintTestResult("ExistsById - Account exists", exists);
+    
+    bool notExists = userAccountRepository->ExistsById("nonexistent");
+    PrintTestResult("ExistsById - Account not exists", !notExists);
+    
+    // Test 10: DeleteById
+    userAccountRepository->DeleteById("bob_wilson");
+    bool deletedExists = userAccountRepository->ExistsById("bob_wilson");
+    PrintTestResult("DeleteById - Account deleted", !deletedExists);
+    
+    // Test 11: FindByName after deletion
+    optional<UserAccount> deletedAccount = userAccountRepository->FindByName("Bob Wilson");
+    PrintTestResult("FindByName - Deleted account not found", !deletedAccount.has_value());
+    
+    // Test 12: Save account with same name (different username)
+    UserAccount account4;
+    account4.username = "john_doe2";
+    account4.password = "password999";
+    account4.name = "John Doe";  // Same name as account1
+    userAccountRepository->Save(account4);
+    
+    // FindByName should return the first match (account1)
+    optional<UserAccount> sameNameAccount = userAccountRepository->FindByName("John Doe");
+    PrintTestResult("FindByName - Same name (returns first match)", sameNameAccount.has_value());
+}
+
 // Run all tests
 void RunAllRepositoryTests() {
     std_println("\n========================================");
@@ -292,6 +378,7 @@ void RunAllRepositoryTests() {
     TestProductRepository();
     TestOrderRepository();
     TestCustomerRepository();
+    TestUserAccountRepository();
     
     std_println("\n========================================");
     std_println("Repository Tests Completed");
