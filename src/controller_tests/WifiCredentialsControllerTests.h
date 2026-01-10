@@ -33,7 +33,7 @@
 #endif
 
 // Test assertion macros
-#define ASSERT(condition, message) \
+#define ASSERT_WIFI(condition, message) \
     do { \
         if (!(condition)) { \
             std_print("FAILED: "); \
@@ -42,7 +42,7 @@
         } \
     } while(0)
 
-#define TEST_START(test_name) \
+#define TEST_WIFI_START(test_name) \
     std_print("Running: "); \
     std_println(test_name);
 
@@ -75,17 +75,17 @@ WifiCredentials CreateTestCredentials(const StdString& ssid, const StdString& pa
 
 // Test 1: Create WiFi credentials - Success
 bool TestCreateWifiCredentials_Success() {
-    TEST_START("Test Create WiFi Credentials - Success");
+    TEST_WIFI_START("Test Create WiFi Credentials - Success");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
     WifiCredentials creds = CreateTestCredentials("TestNetwork", "TestPassword123");
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present in result");
-    ASSERT(result.ssid.value() == "TestNetwork", "SSID should match input");
-    ASSERT(result.password.has_value(), "Password should be present in result");
-    ASSERT(result.password.value() == "TestPassword123", "Password should match input");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present in result");
+    ASSERT_WIFI(result.ssid.value() == "TestNetwork", "SSID should match input");
+    ASSERT_WIFI(result.password.has_value(), "Password should be present in result");
+    ASSERT_WIFI(result.password.value() == "TestPassword123", "Password should match input");
     
     PrintTestResult("Create WiFi Credentials - Success", true);
     return true;
@@ -93,7 +93,7 @@ bool TestCreateWifiCredentials_Success() {
 
 // Test 2: Create WiFi credentials - Empty SSID
 bool TestCreateWifiCredentials_EmptySsid() {
-    TEST_START("Test Create WiFi Credentials - Empty SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Empty SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -110,7 +110,7 @@ bool TestCreateWifiCredentials_EmptySsid() {
 
 // Test 3: Create WiFi credentials - Empty Password
 bool TestCreateWifiCredentials_EmptyPassword() {
-    TEST_START("Test Create WiFi Credentials - Empty Password");
+    TEST_WIFI_START("Test Create WiFi Credentials - Empty Password");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -120,8 +120,8 @@ bool TestCreateWifiCredentials_EmptyPassword() {
     
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
-    ASSERT(result.ssid.value() == "TestNetwork", "SSID should match");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.value() == "TestNetwork", "SSID should match");
     
     PrintTestResult("Create WiFi Credentials - Empty Password", true);
     return true;
@@ -129,7 +129,7 @@ bool TestCreateWifiCredentials_EmptyPassword() {
 
 // Test 4: Create WiFi credentials - Very Long SSID
 bool TestCreateWifiCredentials_VeryLongSsid() {
-    TEST_START("Test Create WiFi Credentials - Very Long SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Very Long SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -138,8 +138,8 @@ bool TestCreateWifiCredentials_VeryLongSsid() {
     
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
-    ASSERT(result.ssid.value().length() == 256, "SSID length should match");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.value().length() == 256, "SSID length should match");
     
     PrintTestResult("Create WiFi Credentials - Very Long SSID", true);
     return true;
@@ -147,7 +147,7 @@ bool TestCreateWifiCredentials_VeryLongSsid() {
 
 // Test 5: Create WiFi credentials - Special Characters
 bool TestCreateWifiCredentials_SpecialCharacters() {
-    TEST_START("Test Create WiFi Credentials - Special Characters");
+    TEST_WIFI_START("Test Create WiFi Credentials - Special Characters");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -155,8 +155,8 @@ bool TestCreateWifiCredentials_SpecialCharacters() {
     
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
-    ASSERT(result.ssid.value() == "Network_123-ABC", "SSID with special chars should match");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.value() == "Network_123-ABC", "SSID with special chars should match");
     
     PrintTestResult("Create WiFi Credentials - Special Characters", true);
     return true;
@@ -166,7 +166,7 @@ bool TestCreateWifiCredentials_SpecialCharacters() {
 
 // Test 6: Get WiFi credentials by SSID - Success
 bool TestGetWifiCredentials_BySsid_Success() {
-    TEST_START("Test Get WiFi Credentials by SSID - Success");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Success");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -177,11 +177,11 @@ bool TestGetWifiCredentials_BySsid_Success() {
     // Then retrieve them
     optional<WifiCredentials> result = controller->GetWifiCredentials("GetTestNetwork");
     
-    ASSERT(result.has_value(), "Credentials should be found");
-    ASSERT(result.value().ssid.has_value(), "SSID should be present");
-    ASSERT(result.value().ssid.value() == "GetTestNetwork", "SSID should match");
-    ASSERT(result.value().password.has_value(), "Password should be present");
-    ASSERT(result.value().password.value() == "GetTestPassword", "Password should match");
+    ASSERT_WIFI(result.has_value(), "Credentials should be found");
+    ASSERT_WIFI(result.value().ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.value().ssid.value() == "GetTestNetwork", "SSID should match");
+    ASSERT_WIFI(result.value().password.has_value(), "Password should be present");
+    ASSERT_WIFI(result.value().password.value() == "GetTestPassword", "Password should match");
     
     PrintTestResult("Get WiFi Credentials by SSID - Success", true);
     return true;
@@ -189,13 +189,13 @@ bool TestGetWifiCredentials_BySsid_Success() {
 
 // Test 7: Get WiFi credentials by SSID - Not Found
 bool TestGetWifiCredentials_BySsid_NotFound() {
-    TEST_START("Test Get WiFi Credentials by SSID - Not Found");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Not Found");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
     optional<WifiCredentials> result = controller->GetWifiCredentials("NonExistentNetwork");
     
-    ASSERT(!result.has_value(), "Credentials should not be found");
+    ASSERT_WIFI(!result.has_value(), "Credentials should not be found");
     
     PrintTestResult("Get WiFi Credentials by SSID - Not Found", true);
     return true;
@@ -203,14 +203,14 @@ bool TestGetWifiCredentials_BySsid_NotFound() {
 
 // Test 8: Get WiFi credentials by SSID - Empty SSID
 bool TestGetWifiCredentials_BySsid_EmptySsid() {
-    TEST_START("Test Get WiFi Credentials by SSID - Empty SSID");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Empty SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
     optional<WifiCredentials> result = controller->GetWifiCredentials("");
     
     // Should return nullopt for empty SSID
-    ASSERT(!result.has_value(), "Empty SSID should return nullopt");
+    ASSERT_WIFI(!result.has_value(), "Empty SSID should return nullopt");
     
     PrintTestResult("Get WiFi Credentials by SSID - Empty SSID", true);
     return true;
@@ -218,7 +218,7 @@ bool TestGetWifiCredentials_BySsid_EmptySsid() {
 
 // Test 9: Get All WiFi credentials - Empty
 bool TestGetAllWifiCredentials_Empty() {
-    TEST_START("Test Get All WiFi Credentials - Empty");
+    TEST_WIFI_START("Test Get All WiFi Credentials - Empty");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -234,7 +234,7 @@ bool TestGetAllWifiCredentials_Empty() {
 
 // Test 10: Get All WiFi credentials - Multiple
 bool TestGetAllWifiCredentials_Multiple() {
-    TEST_START("Test Get All WiFi Credentials - Multiple");
+    TEST_WIFI_START("Test Get All WiFi Credentials - Multiple");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -249,7 +249,7 @@ bool TestGetAllWifiCredentials_Multiple() {
     
     vector<WifiCredentials> result = controller->GetAllWifiCredentials();
     
-    ASSERT(result.size() >= 3, "Should return at least 3 credentials");
+    ASSERT_WIFI(result.size() >= 3, "Should return at least 3 credentials");
     
     // Verify all three are present
     bool found1 = false, found2 = false, found3 = false;
@@ -261,7 +261,7 @@ bool TestGetAllWifiCredentials_Multiple() {
         }
     }
     
-    ASSERT(found1 && found2 && found3, "All three networks should be found");
+    ASSERT_WIFI(found1 && found2 && found3, "All three networks should be found");
     
     PrintTestResult("Get All WiFi Credentials - Multiple", true);
     return true;
@@ -271,7 +271,7 @@ bool TestGetAllWifiCredentials_Multiple() {
 
 // Test 11: Update WiFi credentials - Success
 bool TestUpdateWifiCredentials_Success() {
-    TEST_START("Test Update WiFi Credentials - Success");
+    TEST_WIFI_START("Test Update WiFi Credentials - Success");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -283,15 +283,15 @@ bool TestUpdateWifiCredentials_Success() {
     WifiCredentials updatedCreds = CreateTestCredentials("UpdateTestNetwork", "NewPassword");
     WifiCredentials result = controller->UpdateWifiCredentials(updatedCreds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
-    ASSERT(result.ssid.value() == "UpdateTestNetwork", "SSID should match");
-    ASSERT(result.password.has_value(), "Password should be present");
-    ASSERT(result.password.value() == "NewPassword", "Password should be updated");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.value() == "UpdateTestNetwork", "SSID should match");
+    ASSERT_WIFI(result.password.has_value(), "Password should be present");
+    ASSERT_WIFI(result.password.value() == "NewPassword", "Password should be updated");
     
     // Verify update by retrieving
     optional<WifiCredentials> retrieved = controller->GetWifiCredentials("UpdateTestNetwork");
-    ASSERT(retrieved.has_value(), "Credentials should still exist");
-    ASSERT(retrieved.value().password.value() == "NewPassword", "Password should be updated in storage");
+    ASSERT_WIFI(retrieved.has_value(), "Credentials should still exist");
+    ASSERT_WIFI(retrieved.value().password.value() == "NewPassword", "Password should be updated in storage");
     
     PrintTestResult("Update WiFi Credentials - Success", true);
     return true;
@@ -299,7 +299,7 @@ bool TestUpdateWifiCredentials_Success() {
 
 // Test 12: Update WiFi credentials - Non-existent SSID
 bool TestUpdateWifiCredentials_NonExistent() {
-    TEST_START("Test Update WiFi Credentials - Non-existent SSID");
+    TEST_WIFI_START("Test Update WiFi Credentials - Non-existent SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -308,7 +308,7 @@ bool TestUpdateWifiCredentials_NonExistent() {
     // Update should still work (might create if not exists, depending on service implementation)
     WifiCredentials result = controller->UpdateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     
     PrintTestResult("Update WiFi Credentials - Non-existent SSID", true);
     return true;
@@ -316,7 +316,7 @@ bool TestUpdateWifiCredentials_NonExistent() {
 
 // Test 13: Update WiFi credentials - Empty Password
 bool TestUpdateWifiCredentials_EmptyPassword() {
-    TEST_START("Test Update WiFi Credentials - Empty Password");
+    TEST_WIFI_START("Test Update WiFi Credentials - Empty Password");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -331,7 +331,7 @@ bool TestUpdateWifiCredentials_EmptyPassword() {
     
     WifiCredentials result = controller->UpdateWifiCredentials(updatedCreds);
     
-    ASSERT(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     
     PrintTestResult("Update WiFi Credentials - Empty Password", true);
     return true;
@@ -341,7 +341,7 @@ bool TestUpdateWifiCredentials_EmptyPassword() {
 
 // Test 14: Delete WiFi credentials - Success
 bool TestDeleteWifiCredentials_Success() {
-    TEST_START("Test Delete WiFi Credentials - Success");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Success");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -351,14 +351,14 @@ bool TestDeleteWifiCredentials_Success() {
     
     // Verify it exists
     optional<WifiCredentials> beforeDelete = controller->GetWifiCredentials("DeleteTestNetwork");
-    ASSERT(beforeDelete.has_value(), "Credentials should exist before delete");
+    ASSERT_WIFI(beforeDelete.has_value(), "Credentials should exist before delete");
     
     // Delete
     controller->DeleteWifiCredentials("DeleteTestNetwork");
     
     // Verify it's deleted
     optional<WifiCredentials> afterDelete = controller->GetWifiCredentials("DeleteTestNetwork");
-    ASSERT(!afterDelete.has_value(), "Credentials should not exist after delete");
+    ASSERT_WIFI(!afterDelete.has_value(), "Credentials should not exist after delete");
     
     PrintTestResult("Delete WiFi Credentials - Success", true);
     return true;
@@ -366,7 +366,7 @@ bool TestDeleteWifiCredentials_Success() {
 
 // Test 15: Delete WiFi credentials - Non-existent SSID
 bool TestDeleteWifiCredentials_NonExistent() {
-    TEST_START("Test Delete WiFi Credentials - Non-existent SSID");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Non-existent SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -380,7 +380,7 @@ bool TestDeleteWifiCredentials_NonExistent() {
 
 // Test 16: Delete WiFi credentials - Empty SSID
 bool TestDeleteWifiCredentials_EmptySsid() {
-    TEST_START("Test Delete WiFi Credentials - Empty SSID");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Empty SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -393,7 +393,7 @@ bool TestDeleteWifiCredentials_EmptySsid() {
 
 // Test 17: Delete and verify last connected is cleared
 bool TestDeleteWifiCredentials_ClearsLastConnected() {
-    TEST_START("Test Delete WiFi Credentials - Clears Last Connected");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Clears Last Connected");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -403,7 +403,7 @@ bool TestDeleteWifiCredentials_ClearsLastConnected() {
     
     // Verify it's last connected
     optional<WifiCredentials> lastConnected = controller->GetLastConnectedWifi();
-    ASSERT(lastConnected.has_value(), "Should have last connected WiFi");
+    ASSERT_WIFI(lastConnected.has_value(), "Should have last connected WiFi");
     
     // Delete it
     controller->DeleteWifiCredentials("LastConnectedNetwork");
@@ -420,7 +420,7 @@ bool TestDeleteWifiCredentials_ClearsLastConnected() {
 
 // Test 18: Get Last Connected WiFi - Success
 bool TestGetLastConnectedWifi_Success() {
-    TEST_START("Test Get Last Connected WiFi - Success");
+    TEST_WIFI_START("Test Get Last Connected WiFi - Success");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -430,9 +430,9 @@ bool TestGetLastConnectedWifi_Success() {
     
     optional<WifiCredentials> result = controller->GetLastConnectedWifi();
     
-    ASSERT(result.has_value(), "Last connected WiFi should be found");
-    ASSERT(result.value().ssid.has_value(), "SSID should be present");
-    ASSERT(result.value().ssid.value() == "LastConnectedTest", "SSID should match last created");
+    ASSERT_WIFI(result.has_value(), "Last connected WiFi should be found");
+    ASSERT_WIFI(result.value().ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.value().ssid.value() == "LastConnectedTest", "SSID should match last created");
     
     PrintTestResult("Get Last Connected WiFi - Success", true);
     return true;
@@ -440,7 +440,7 @@ bool TestGetLastConnectedWifi_Success() {
 
 // Test 19: Get Last Connected WiFi - Not Set
 bool TestGetLastConnectedWifi_NotSet() {
-    TEST_START("Test Get Last Connected WiFi - Not Set");
+    TEST_WIFI_START("Test Get Last Connected WiFi - Not Set");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -456,7 +456,7 @@ bool TestGetLastConnectedWifi_NotSet() {
 
 // Test 20: Get Last Connected WiFi - After Update
 bool TestGetLastConnectedWifi_AfterUpdate() {
-    TEST_START("Test Get Last Connected WiFi - After Update");
+    TEST_WIFI_START("Test Get Last Connected WiFi - After Update");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -470,8 +470,8 @@ bool TestGetLastConnectedWifi_AfterUpdate() {
     
     // Last connected should be NetworkB
     optional<WifiCredentials> result = controller->GetLastConnectedWifi();
-    ASSERT(result.has_value(), "Last connected should be found");
-    ASSERT(result.value().ssid.value() == "NetworkB", "Last connected should be NetworkB");
+    ASSERT_WIFI(result.has_value(), "Last connected should be found");
+    ASSERT_WIFI(result.value().ssid.value() == "NetworkB", "Last connected should be NetworkB");
     
     // Update NetworkA (should become last connected)
     WifiCredentials updatedCreds1 = CreateTestCredentials("NetworkA", "NewPasswordA");
@@ -479,8 +479,8 @@ bool TestGetLastConnectedWifi_AfterUpdate() {
     
     // Last connected should now be NetworkA
     optional<WifiCredentials> result2 = controller->GetLastConnectedWifi();
-    ASSERT(result2.has_value(), "Last connected should still be found");
-    ASSERT(result2.value().ssid.value() == "NetworkA", "Last connected should be NetworkA after update");
+    ASSERT_WIFI(result2.has_value(), "Last connected should still be found");
+    ASSERT_WIFI(result2.value().ssid.value() == "NetworkA", "Last connected should be NetworkA after update");
     
     PrintTestResult("Get Last Connected WiFi - After Update", true);
     return true;
@@ -490,7 +490,7 @@ bool TestGetLastConnectedWifi_AfterUpdate() {
 
 // Test 21: Create with same SSID twice (should update)
 bool TestCreateWifiCredentials_DuplicateSsid() {
-    TEST_START("Test Create WiFi Credentials - Duplicate SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Duplicate SSID");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -501,7 +501,7 @@ bool TestCreateWifiCredentials_DuplicateSsid() {
     WifiCredentials result = controller->CreateWifiCredentials(creds2);
     
     // Should either update or create new (depends on service implementation)
-    ASSERT(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     
     PrintTestResult("Create WiFi Credentials - Duplicate SSID", true);
     return true;
@@ -509,7 +509,7 @@ bool TestCreateWifiCredentials_DuplicateSsid() {
 
 // Test 22: Get with null controller (should handle gracefully or crash - testing behavior)
 bool TestGetWifiCredentials_NullController() {
-    TEST_START("Test Get WiFi Credentials - Null Controller");
+    TEST_WIFI_START("Test Get WiFi Credentials - Null Controller");
     
     // Test with null controller pointer - this tests the interface behavior
     IWifiCredentialsControllerPtr controller = nullptr;
@@ -531,7 +531,7 @@ bool TestGetWifiCredentials_NullController() {
 
 // Test 23: Multiple operations in sequence
 bool TestWifiCredentials_MultipleOperationsSequence() {
-    TEST_START("Test WiFi Credentials - Multiple Operations Sequence");
+    TEST_WIFI_START("Test WiFi Credentials - Multiple Operations Sequence");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -541,7 +541,7 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
     
     // Read
     optional<WifiCredentials> read1 = controller->GetWifiCredentials("SequenceNetwork");
-    ASSERT(read1.has_value(), "Should be able to read after create");
+    ASSERT_WIFI(read1.has_value(), "Should be able to read after create");
     
     // Update
     WifiCredentials creds2 = CreateTestCredentials("SequenceNetwork", "Password2");
@@ -549,15 +549,15 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
     
     // Read again
     optional<WifiCredentials> read2 = controller->GetWifiCredentials("SequenceNetwork");
-    ASSERT(read2.has_value(), "Should be able to read after update");
-    ASSERT(read2.value().password.value() == "Password2", "Password should be updated");
+    ASSERT_WIFI(read2.has_value(), "Should be able to read after update");
+    ASSERT_WIFI(read2.value().password.value() == "Password2", "Password should be updated");
     
     // Delete
     controller->DeleteWifiCredentials("SequenceNetwork");
     
     // Read after delete
     optional<WifiCredentials> read3 = controller->GetWifiCredentials("SequenceNetwork");
-    ASSERT(!read3.has_value(), "Should not be able to read after delete");
+    ASSERT_WIFI(!read3.has_value(), "Should not be able to read after delete");
     
     PrintTestResult("WiFi Credentials - Multiple Operations Sequence", true);
     return true;
@@ -565,7 +565,7 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
 
 // Test 24: Very long password
 bool TestCreateWifiCredentials_VeryLongPassword() {
-    TEST_START("Test Create WiFi Credentials - Very Long Password");
+    TEST_WIFI_START("Test Create WiFi Credentials - Very Long Password");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -574,8 +574,8 @@ bool TestCreateWifiCredentials_VeryLongPassword() {
     
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.password.has_value(), "Password should be present");
-    ASSERT(result.password.value().length() == 512, "Password length should match");
+    ASSERT_WIFI(result.password.has_value(), "Password should be present");
+    ASSERT_WIFI(result.password.value().length() == 512, "Password length should match");
     
     PrintTestResult("Create WiFi Credentials - Very Long Password", true);
     return true;
@@ -583,7 +583,7 @@ bool TestCreateWifiCredentials_VeryLongPassword() {
 
 // Test 25: Unicode characters in SSID and password
 bool TestCreateWifiCredentials_UnicodeCharacters() {
-    TEST_START("Test Create WiFi Credentials - Unicode Characters");
+    TEST_WIFI_START("Test Create WiFi Credentials - Unicode Characters");
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
@@ -593,8 +593,8 @@ bool TestCreateWifiCredentials_UnicodeCharacters() {
     
     WifiCredentials result = controller->CreateWifiCredentials(creds);
     
-    ASSERT(result.ssid.has_value(), "SSID with unicode should be present");
-    ASSERT(result.password.has_value(), "Password with unicode should be present");
+    ASSERT_WIFI(result.ssid.has_value(), "SSID with unicode should be present");
+    ASSERT_WIFI(result.password.has_value(), "Password with unicode should be present");
     
     PrintTestResult("Create WiFi Credentials - Unicode Characters", true);
     return true;
