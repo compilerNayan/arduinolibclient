@@ -180,8 +180,8 @@ public:
 #endif // ARDUINO
 
 // Test counters and cleanup flag - available for both Arduino and non-Arduino
-static int testsPassed = 0;
-static int testsFailed = 0;
+static int testsPassed_urp = 0;
+static int testsFailed_urp = 0;
 static bool g_cleanupAfterTests = false;
 
 // Helper function to get file path - platform-specific
@@ -230,7 +230,7 @@ bool TestSaveUser() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -266,7 +266,7 @@ bool TestSaveAndFindById() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -287,7 +287,7 @@ bool TestFindByIdNotFound() {
     std::string expectedFilePath = GetTestFilePath("User_id_999.txt");
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent ID");
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -330,7 +330,7 @@ bool TestUpdateUser() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -367,7 +367,7 @@ bool TestDeleteById() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -399,7 +399,7 @@ bool TestDeleteEntity() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -431,7 +431,7 @@ bool TestExistsByIdTrue() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -455,7 +455,7 @@ bool TestExistsByIdFalse() {
 #endif
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent user");
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -513,7 +513,7 @@ bool TestFindAll() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -545,7 +545,7 @@ bool TestSaveMultipleUsers() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -583,7 +583,7 @@ bool TestUpdateNonExistentUser() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -604,7 +604,7 @@ bool TestDeleteByIdNonExistent() {
     std::string expectedFilePath = GetTestFilePath("User_id_999.txt");
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent user");
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -639,7 +639,7 @@ bool TestFileContentsMatchEntity() {
         FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
     }
     
-    testsPassed++;
+    testsPassed_urp++;
     return true;
 }
 
@@ -684,23 +684,23 @@ int RunAllTests(int argc, char* argv[]) {
     std_println("========================================");
     std_println("");
     
-    testsPassed = 0;
-    testsFailed = 0;
+    testsPassed_urp = 0;
+    testsFailed_urp = 0;
     
     // Run all tests
-    if (!TestSaveUser()) testsFailed++;
-    if (!TestSaveAndFindById()) testsFailed++;
-    if (!TestFindByIdNotFound()) testsFailed++;
-    if (!TestUpdateUser()) testsFailed++;
-    if (!TestDeleteById()) testsFailed++;
-    if (!TestDeleteEntity()) testsFailed++;
-    if (!TestExistsByIdTrue()) testsFailed++;
-    if (!TestExistsByIdFalse()) testsFailed++;
-    if (!TestFindAll()) testsFailed++;
-    if (!TestSaveMultipleUsers()) testsFailed++;
-    if (!TestUpdateNonExistentUser()) testsFailed++;
-    if (!TestDeleteByIdNonExistent()) testsFailed++;
-    if (!TestFileContentsMatchEntity()) testsFailed++;
+    if (!TestSaveUser()) testsFailed_urp++;
+    if (!TestSaveAndFindById()) testsFailed_urp++;
+    if (!TestFindByIdNotFound()) testsFailed_urp++;
+    if (!TestUpdateUser()) testsFailed_urp++;
+    if (!TestDeleteById()) testsFailed_urp++;
+    if (!TestDeleteEntity()) testsFailed_urp++;
+    if (!TestExistsByIdTrue()) testsFailed_urp++;
+    if (!TestExistsByIdFalse()) testsFailed_urp++;
+    if (!TestFindAll()) testsFailed_urp++;
+    if (!TestSaveMultipleUsers()) testsFailed_urp++;
+    if (!TestUpdateNonExistentUser()) testsFailed_urp++;
+    if (!TestDeleteByIdNonExistent()) testsFailed_urp++;
+    if (!TestFileContentsMatchEntity()) testsFailed_urp++;
     
     // Print summary
     std_println("");
@@ -708,11 +708,11 @@ int RunAllTests(int argc, char* argv[]) {
     std_println("  Test Summary");
     std_println("========================================");
     std_print("Tests Passed: ");
-    std_println(testsPassed);
+    std_println(testsPassed_urp);
     std_print("Tests Failed: ");
-    std_println(testsFailed);
+    std_println(testsFailed_urp);
     std_print("Total Tests: ");
-    std_println(testsPassed + testsFailed);
+    std_println(testsPassed_urp + testsFailed_urp);
     std_println("========================================");
     std_println("");
     
@@ -733,7 +733,7 @@ int RunAllTests(int argc, char* argv[]) {
         std_println("");
     }
     
-    if (testsFailed == 0) {
+    if (testsFailed_urp == 0) {
         std_println("✅ All tests passed!");
         return 0;
     } else {

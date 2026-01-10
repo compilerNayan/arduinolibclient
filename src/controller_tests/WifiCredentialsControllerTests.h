@@ -47,19 +47,19 @@
     std_println(test_name);
 
 // Global test counters
-static int testsPassed = 0;
-static int testsFailed = 0;
+static int testsPassed_wifi = 0;
+static int testsFailed_wifi = 0;
 
 // Helper function to print test result
 void PrintTestResult(const char* testName, bool passed) {
     if (passed) {
         std_print("✓ PASS: ");
         std_println(testName);
-        testsPassed++;
+        testsPassed_wifi++;
     } else {
         std_print("✗ FAIL: ");
         std_println(testName);
-        testsFailed++;
+        testsFailed_wifi++;
     }
 }
 
@@ -607,53 +607,53 @@ void RunAllWifiCredentialsControllerTests() {
     std_println("========================================");
     std_println("");
     
-    testsPassed = 0;
-    testsFailed = 0;
+    testsPassed_wifi = 0;
+    testsFailed_wifi = 0;
     
     // CREATE Tests
-    if (!TestCreateWifiCredentials_Success()) testsFailed++;
-    if (!TestCreateWifiCredentials_EmptySsid()) testsFailed++;
-    if (!TestCreateWifiCredentials_EmptyPassword()) testsFailed++;
-    if (!TestCreateWifiCredentials_VeryLongSsid()) testsFailed++;
-    if (!TestCreateWifiCredentials_SpecialCharacters()) testsFailed++;
-    if (!TestCreateWifiCredentials_DuplicateSsid()) testsFailed++;
-    if (!TestCreateWifiCredentials_VeryLongPassword()) testsFailed++;
-    if (!TestCreateWifiCredentials_UnicodeCharacters()) testsFailed++;
+    if (!TestCreateWifiCredentials_Success()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_EmptySsid()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_EmptyPassword()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_VeryLongSsid()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_SpecialCharacters()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_DuplicateSsid()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_VeryLongPassword()) testsFailed_wifi++;
+    if (!TestCreateWifiCredentials_UnicodeCharacters()) testsFailed_wifi++;
     
     // READ Tests
-    if (!TestGetWifiCredentials_BySsid_Success()) testsFailed++;
-    if (!TestGetWifiCredentials_BySsid_NotFound()) testsFailed++;
-    if (!TestGetWifiCredentials_BySsid_EmptySsid()) testsFailed++;
-    if (!TestGetAllWifiCredentials_Empty()) testsFailed++;
-    if (!TestGetAllWifiCredentials_Multiple()) testsFailed++;
+    if (!TestGetWifiCredentials_BySsid_Success()) testsFailed_wifi++;
+    if (!TestGetWifiCredentials_BySsid_NotFound()) testsFailed_wifi++;
+    if (!TestGetWifiCredentials_BySsid_EmptySsid()) testsFailed_wifi++;
+    if (!TestGetAllWifiCredentials_Empty()) testsFailed_wifi++;
+    if (!TestGetAllWifiCredentials_Multiple()) testsFailed_wifi++;
     
     // UPDATE Tests
-    if (!TestUpdateWifiCredentials_Success()) testsFailed++;
-    if (!TestUpdateWifiCredentials_NonExistent()) testsFailed++;
-    if (!TestUpdateWifiCredentials_EmptyPassword()) testsFailed++;
+    if (!TestUpdateWifiCredentials_Success()) testsFailed_wifi++;
+    if (!TestUpdateWifiCredentials_NonExistent()) testsFailed_wifi++;
+    if (!TestUpdateWifiCredentials_EmptyPassword()) testsFailed_wifi++;
     
     // DELETE Tests
-    if (!TestDeleteWifiCredentials_Success()) testsFailed++;
-    if (!TestDeleteWifiCredentials_NonExistent()) testsFailed++;
-    if (!TestDeleteWifiCredentials_EmptySsid()) testsFailed++;
-    if (!TestDeleteWifiCredentials_ClearsLastConnected()) testsFailed++;
+    if (!TestDeleteWifiCredentials_Success()) testsFailed_wifi++;
+    if (!TestDeleteWifiCredentials_NonExistent()) testsFailed_wifi++;
+    if (!TestDeleteWifiCredentials_EmptySsid()) testsFailed_wifi++;
+    if (!TestDeleteWifiCredentials_ClearsLastConnected()) testsFailed_wifi++;
     
     // LAST CONNECTED Tests
-    if (!TestGetLastConnectedWifi_Success()) testsFailed++;
-    if (!TestGetLastConnectedWifi_NotSet()) testsFailed++;
-    if (!TestGetLastConnectedWifi_AfterUpdate()) testsFailed++;
+    if (!TestGetLastConnectedWifi_Success()) testsFailed_wifi++;
+    if (!TestGetLastConnectedWifi_NotSet()) testsFailed_wifi++;
+    if (!TestGetLastConnectedWifi_AfterUpdate()) testsFailed_wifi++;
     
     // EDGE CASES
-    if (!TestGetWifiCredentials_NullController()) testsFailed++;
-    if (!TestWifiCredentials_MultipleOperationsSequence()) testsFailed++;
+    if (!TestGetWifiCredentials_NullController()) testsFailed_wifi++;
+    if (!TestWifiCredentials_MultipleOperationsSequence()) testsFailed_wifi++;
     
     // Print summary
     std_println("");
     std_println("========================================");
     std_print("Tests Passed: ");
-    std_println(std::to_string(testsPassed).c_str());
+    std_println(std::to_string(testsPassed_wifi).c_str());
     std_print("Tests Failed: ");
-    std_println(std::to_string(testsFailed).c_str());
+    std_println(std::to_string(testsFailed_wifi).c_str());
     std_println("========================================");
     std_println("");
 }
