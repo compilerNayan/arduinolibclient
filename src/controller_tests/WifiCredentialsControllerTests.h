@@ -19,6 +19,8 @@
 // The library is fetched as a dependency, so we use the include path from the build system
 // These should be available through the arduino-core library
 #include "controller/IWifiCredentialsController.h"
+#include "controller/GetWifiCredentialsRequestDto.h"
+#include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
 
 // Print macros - compatible with both Arduino and non-Arduino
@@ -175,7 +177,9 @@ bool TestGetWifiCredentials_BySsid_Success() {
     controller->CreateWifiCredentials(creds);
     
     // Then retrieve them
-    optional<WifiCredentials> result = controller->GetWifiCredentials("GetTestNetwork");
+    GetWifiCredentialsRequestDto request;
+    request.ssid = StdString("GetTestNetwork");
+    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
     
     ASSERT_WIFI(result.has_value(), "Credentials should be found");
     ASSERT_WIFI(result.value().ssid.has_value(), "SSID should be present");
@@ -193,7 +197,9 @@ bool TestGetWifiCredentials_BySsid_NotFound() {
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
-    optional<WifiCredentials> result = controller->GetWifiCredentials("NonExistentNetwork");
+    GetWifiCredentialsRequestDto request;
+    request.ssid = StdString("NonExistentNetwork");
+    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
     
     ASSERT_WIFI(!result.has_value(), "Credentials should not be found");
     
@@ -207,7 +213,9 @@ bool TestGetWifiCredentials_BySsid_EmptySsid() {
     
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
-    optional<WifiCredentials> result = controller->GetWifiCredentials("");
+    GetWifiCredentialsRequestDto request;
+    request.ssid = StdString("");
+    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
     
     // Should return nullopt for empty SSID
     ASSERT_WIFI(!result.has_value(), "Empty SSID should return nullopt");
@@ -289,7 +297,9 @@ bool TestUpdateWifiCredentials_Success() {
     ASSERT_WIFI(result.password.value() == "NewPassword", "Password should be updated");
     
     // Verify update by retrieving
-    optional<WifiCredentials> retrieved = controller->GetWifiCredentials("UpdateTestNetwork");
+    GetWifiCredentialsRequestDto request;
+    request.ssid = StdString("UpdateTestNetwork");
+    optional<WifiCredentials> retrieved = controller->GetWifiCredentials(request);
     ASSERT_WIFI(retrieved.has_value(), "Credentials should still exist");
     ASSERT_WIFI(retrieved.value().password.value() == "NewPassword", "Password should be updated in storage");
     
@@ -350,14 +360,18 @@ bool TestDeleteWifiCredentials_Success() {
     controller->CreateWifiCredentials(creds);
     
     // Verify it exists
-    optional<WifiCredentials> beforeDelete = controller->GetWifiCredentials("DeleteTestNetwork");
+    GetWifiCredentialsRequestDto getRequest;
+    getRequest.ssid = StdString("DeleteTestNetwork");
+    optional<WifiCredentials> beforeDelete = controller->GetWifiCredentials(getRequest);
     ASSERT_WIFI(beforeDelete.has_value(), "Credentials should exist before delete");
     
     // Delete
-    controller->DeleteWifiCredentials("DeleteTestNetwork");
+    DeleteWifiCredentialsRequestDto deleteRequest;
+    deleteRequest.ssid = StdString("DeleteTestNetwork");
+    controller->DeleteWifiCredentials(deleteRequest);
     
     // Verify it's deleted
-    optional<WifiCredentials> afterDelete = controller->GetWifiCredentials("DeleteTestNetwork");
+    optional<WifiCredentials> afterDelete = controller->GetWifiCredentials(getRequest);
     ASSERT_WIFI(!afterDelete.has_value(), "Credentials should not exist after delete");
     
     PrintTestResult("Delete WiFi Credentials - Success", true);
@@ -371,7 +385,9 @@ bool TestDeleteWifiCredentials_NonExistent() {
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
     // Delete non-existent should not throw error
-    controller->DeleteWifiCredentials("NonExistentNetworkToDelete");
+    DeleteWifiCredentialsRequestDto deleteRequest;
+    deleteRequest.ssid = StdString("NonExistentNetworkToDelete");
+    controller->DeleteWifiCredentials(deleteRequest);
     
     // Should complete without error
     PrintTestResult("Delete WiFi Credentials - Non-existent SSID", true);
@@ -385,7 +401,9 @@ bool TestDeleteWifiCredentials_EmptySsid() {
     IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
     
     // Delete with empty SSID should not throw error
-    controller->DeleteWifiCredentials("");
+    DeleteWifiCredentialsRequestDto deleteRequest;
+    deleteRequest.ssid = StdString("");
+    controller->DeleteWifiCredentials(deleteRequest);
     
     PrintTestResult("Delete WiFi Credentials - Empty SSID", true);
     return true;
@@ -406,7 +424,9 @@ bool TestDeleteWifiCredentials_ClearsLastConnected() {
     ASSERT_WIFI(lastConnected.has_value(), "Should have last connected WiFi");
     
     // Delete it
-    controller->DeleteWifiCredentials("LastConnectedNetwork");
+    DeleteWifiCredentialsRequestDto deleteRequest;
+    deleteRequest.ssid = StdString("LastConnectedNetwork");
+    controller->DeleteWifiCredentials(deleteRequest);
     
     // Verify last connected is cleared (or points to something else)
     optional<WifiCredentials> lastConnectedAfter = controller->GetLastConnectedWifi();
@@ -518,7 +538,9 @@ bool TestGetWifiCredentials_NullController() {
     // We're testing the controller's behavior
     try {
         if (controller != nullptr) {
-            optional<WifiCredentials> result = controller->GetWifiCredentials("TestNetwork");
+            GetWifiCredentialsRequestDto request;
+            request.ssid = StdString("TestNetwork");
+            optional<WifiCredentials> result = controller->GetWifiCredentials(request);
         }
         // If it doesn't crash, that's also a valid behavior
         PrintTestResult("Get WiFi Credentials - Null Controller (handled)", true);
@@ -540,7 +562,9 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
     controller->CreateWifiCredentials(creds1);
     
     // Read
-    optional<WifiCredentials> read1 = controller->GetWifiCredentials("SequenceNetwork");
+    GetWifiCredentialsRequestDto getRequest;
+    getRequest.ssid = StdString("SequenceNetwork");
+    optional<WifiCredentials> read1 = controller->GetWifiCredentials(getRequest);
     ASSERT_WIFI(read1.has_value(), "Should be able to read after create");
     
     // Update
@@ -548,15 +572,17 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
     controller->UpdateWifiCredentials(creds2);
     
     // Read again
-    optional<WifiCredentials> read2 = controller->GetWifiCredentials("SequenceNetwork");
+    optional<WifiCredentials> read2 = controller->GetWifiCredentials(getRequest);
     ASSERT_WIFI(read2.has_value(), "Should be able to read after update");
     ASSERT_WIFI(read2.value().password.value() == "Password2", "Password should be updated");
     
     // Delete
-    controller->DeleteWifiCredentials("SequenceNetwork");
+    DeleteWifiCredentialsRequestDto deleteRequest;
+    deleteRequest.ssid = StdString("SequenceNetwork");
+    controller->DeleteWifiCredentials(deleteRequest);
     
     // Read after delete
-    optional<WifiCredentials> read3 = controller->GetWifiCredentials("SequenceNetwork");
+    optional<WifiCredentials> read3 = controller->GetWifiCredentials(getRequest);
     ASSERT_WIFI(!read3.has_value(), "Should not be able to read after delete");
     
     PrintTestResult("WiFi Credentials - Multiple Operations Sequence", true);
