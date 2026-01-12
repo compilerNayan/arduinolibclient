@@ -37,9 +37,13 @@ target_include_directories(user_repository_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
+# Find libcurl
+find_package(CURL REQUIRED)
+
 # Link the library (arduinolib4 includes both springbootplusplus-web and springbootplusplus-data)
 target_link_libraries(user_repository_tests PRIVATE 
     arduino-core
+    CURL::libcurl
 )
 
 # Compiler-specific options

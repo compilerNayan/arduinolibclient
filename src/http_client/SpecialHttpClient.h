@@ -4,10 +4,9 @@
 #include <StandardDefines.h>
 #include "ISpecialHttpClient.h"
 
-// Only include curl for non-Arduino platforms
-    #include <curl/curl.h>
-    #include <sstream>
-    #include <map>
+#include <curl/curl.h>
+#include <sstream>
+#include <map>
 
 /**
  * Implementation of ISpecialHttpClient using libcurl
