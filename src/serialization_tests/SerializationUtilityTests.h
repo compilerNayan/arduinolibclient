@@ -564,7 +564,7 @@ bool TestSerializeArrayInt() {
 bool TestSerializeForwardListInt() {
     TEST_START("Test Serialize Forward List of Int");
     
-    forward_list<int> numbers;
+    std::forward_list<int> numbers;
     numbers.push_front(30);
     numbers.push_front(20);
     numbers.push_front(10);
@@ -583,7 +583,7 @@ bool TestSerializeForwardListInt() {
 bool TestSerializeMapStringInt() {
     TEST_START("Test Serialize Map String to Int");
     
-    map<StdString, int> scores;
+    std_map<StdString, int> scores;
     scores["Alice"] = 95;
     scores["Bob"] = 87;
     scores["Charlie"] = 92;
@@ -607,7 +607,7 @@ bool TestSerializeMapStringInt() {
 bool TestSerializeMapIntProductX() {
     TEST_START("Test Serialize Map Int to ProductX");
     
-    map<int, ProductX> productMap;
+    std_map<int, ProductX> productMap;
     
     ProductX p1;
     p1.productId = optional<int>(501);
@@ -712,8 +712,8 @@ bool TestSerializeEmptyVector() {
 bool TestSerializeEmptyMap() {
     TEST_START("Test Serialize Empty Map");
     
-    map<StdString, int> empty;
-    StdString serialized = SerializationUtility::Serialize(empty);
+    std_map<StdString, int> emptyMap;
+    StdString serialized = SerializationUtility::Serialize(emptyMap);
     
     StdString expectedJson = "{}";
     ASSERT(serialized == expectedJson, "Serialized empty map should be empty object");
