@@ -2,6 +2,7 @@
 #include "controller/UserRepositoryTests.h"
 #include "repository_tests/RepositoryTests.h"
 //#include "controller_tests/WifiCredentialsControllerTests.h"
+#include "serialization_tests/SerializationUtilityTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
 
@@ -17,6 +18,9 @@ int main(int argc, char* argv[]) {
     
     // Run repository tests
     RunAllRepositoryTests();
+    
+    // Run SerializationUtility tests
+    RunAllSerializationTests();
     
     // Run WiFi Credentials Controller tests
     //RunAllWifiCredentialsControllerTests();
