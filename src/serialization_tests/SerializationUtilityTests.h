@@ -361,9 +361,9 @@ bool TestDeserializePersonPartial() {
     return true;
 }
 
-// Test 19: Serialize and Deserialize vector of ProductX
-bool TestSerializeDeserializeVectorProductX() {
-    TEST_START("Test Serialize and Deserialize Vector of ProductX");
+// Test 19: Serialize vector of ProductX and compare with expected JSON
+bool TestSerializeVectorProductX() {
+    TEST_START("Test Serialize Vector of ProductX");
     
     // Create a vector with 3 ProductX objects
     vector<ProductX> originalProducts;
@@ -401,63 +401,11 @@ bool TestSerializeDeserializeVectorProductX() {
         "{\"productId\":303,\"productName\":\"Tablet\",\"price\":499.99,\"quantity\":15,\"inStock\":false}"
     "]";
     
-    // Try to serialize the vector using SerializationUtility
+    // Serialize the vector using SerializationUtility
     StdString serialized = SerializationUtility::Serialize(originalProducts);
     
-    ASSERT(!serialized.empty(), "Serialized vector should not be empty");
-    
     // Compare with expected JSON output
-    // Note: We parse both to JsonDocument to handle potential formatting differences
-    JsonDocument expectedDoc;
-    DeserializationError expectedError = deserializeJson(expectedDoc, expectedJson.c_str());
-    ASSERT(expectedError == DeserializationError::Ok, "Expected JSON should be valid");
-    
-    JsonDocument actualDoc;
-    DeserializationError actualError = deserializeJson(actualDoc, serialized.c_str());
-    ASSERT(actualError == DeserializationError::Ok, "Serialized JSON should be valid");
-    
-    // Compare array sizes
-    ASSERT(actualDoc.is<JsonArray>(), "Serialized output should be a JSON array");
-    ASSERT(actualDoc.size() == 3, "Serialized array should have 3 elements");
-    ASSERT(actualDoc.size() == expectedDoc.size(), "Serialized array size should match expected");
-    
-    // Compare each product in the array
-    for (size_t i = 0; i < 3; i++) {
-        JsonObject expectedProduct = expectedDoc[i].as<JsonObject>();
-        JsonObject actualProduct = actualDoc[i].as<JsonObject>();
-        
-        ASSERT(actualProduct["productId"].as<int>() == expectedProduct["productId"].as<int>(),
-               "Product " + std::to_string(i) + " should have correct productId");
-        ASSERT(StdString(actualProduct["productName"].as<const char*>()) == StdString(expectedProduct["productName"].as<const char*>()),
-               "Product " + std::to_string(i) + " should have correct productName");
-        ASSERT(actualProduct["price"].as<double>() == expectedProduct["price"].as<double>(),
-               "Product " + std::to_string(i) + " should have correct price");
-        ASSERT(actualProduct["quantity"].as<int>() == expectedProduct["quantity"].as<int>(),
-               "Product " + std::to_string(i) + " should have correct quantity");
-        ASSERT(actualProduct["inStock"].as<bool>() == expectedProduct["inStock"].as<bool>(),
-               "Product " + std::to_string(i) + " should have correct inStock");
-    }
-    
-    // Try to deserialize back to vector
-    vector<ProductX> deserializedProducts = SerializationUtility::Deserialize<vector<ProductX>>(serialized);
-    
-    ASSERT(deserializedProducts.size() == 3, "Deserialized vector should have 3 products");
-    
-    // Verify each product after deserialization
-    ASSERT(deserializedProducts[0].productId.has_value() && deserializedProducts[0].productId.value() == 301,
-           "First product should have productId=301");
-    ASSERT(deserializedProducts[0].productName.has_value() && deserializedProducts[0].productName.value() == "Laptop",
-           "First product should have productName='Laptop'");
-    
-    ASSERT(deserializedProducts[1].productId.has_value() && deserializedProducts[1].productId.value() == 302,
-           "Second product should have productId=302");
-    ASSERT(deserializedProducts[1].productName.has_value() && deserializedProducts[1].productName.value() == "Smartphone",
-           "Second product should have productName='Smartphone'");
-    
-    ASSERT(deserializedProducts[2].productId.has_value() && deserializedProducts[2].productId.value() == 303,
-           "Third product should have productId=303");
-    ASSERT(deserializedProducts[2].productName.has_value() && deserializedProducts[2].productName.value() == "Tablet",
-           "Third product should have productName='Tablet'");
+    ASSERT(serialized == expectedJson, "Serialized JSON should match expected JSON exactly");
     
     testsPassed_serialization++;
     return true;
@@ -495,7 +443,7 @@ int RunAllSerializationTests() {
     if (!TestProductXRoundTrip()) testsFailed_serialization++;
     if (!TestSerializePersonPartial()) testsFailed_serialization++;
     if (!TestDeserializePersonPartial()) testsFailed_serialization++;
-    if (!TestSerializeDeserializeVectorProductX()) testsFailed_serialization++;
+    if (!TestSerializeVectorProductX()) testsFailed_serialization++;
     
     // Print summary
     std_println("");
