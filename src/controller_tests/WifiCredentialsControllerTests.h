@@ -22,7 +22,7 @@
 #include "controller/GetWifiCredentialsRequestDto.h"
 #include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
-#include "../TestUtils.h"
+#include "../tests/TestUtils.h"
 
 // Test assertion macros (using common ASSERT macro from TestUtils.h)
 #define ASSERT_WIFI(condition, message) ASSERT(condition, message)

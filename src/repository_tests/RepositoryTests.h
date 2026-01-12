@@ -22,7 +22,7 @@
 #include "Order.h"
 #include "Customer.h"
 #include "UserAccount.h"
-#include "../TestUtils.h"
+#include "../tests/TestUtils.h"
 
 /* @Autowired */
 ProductRepositoryPtr productRepository = Implementation<ProductRepository>::type::GetInstance();

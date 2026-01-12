@@ -32,7 +32,7 @@
 
 #include <StandardDefines.h>
 #include <SerializationUtility.h>
-#include "../TestUtils.h"
+#include "../tests/TestUtils.h"
 #include "Person.h"
 #include "Address.h"
 #include "ProductX.h"

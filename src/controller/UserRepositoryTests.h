@@ -24,7 +24,7 @@
 
 #include "UserRepository.h"
 #include "User.h"
-#include "../TestUtils.h"
+#include "../tests/TestUtils.h"
 
 // Helper class for file verification - different implementations for Arduino and non-Arduino
 #ifdef ARDUINO
