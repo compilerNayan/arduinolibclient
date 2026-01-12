@@ -2,6 +2,10 @@
 #include "tests/AllTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
+#include "http_client/ISpecialHttpClient.h"
+
+/// @Autowired
+ISpecialHttpClientPtr specialHttpClient;
 
 /// @Autowired
 IHttpRequestManagerPtr requestManager;
@@ -13,6 +17,10 @@ MyEntityRepositoryPtr myEntityRepository;
 int main(int argc, char* argv[]) {
     // Run all test suites
     RunAllTestSuites(argc, argv);
+
+    Var response = specialHttpClient->Get("https://api.example.com/data");
+    std_println("response: ");
+    std_println(response.c_str());
 
     Var myEntity = MyEntity();
     myEntity.id = 1;
