@@ -1332,6 +1332,76 @@ bool TestSerializeVectorProductXVaryingStock() {
     return true;
 }
 
+// Test: Deserialize Vector of ProductX from JSON array string
+bool TestDeserializeVectorProductX() {
+    TEST_START("Test Deserialize Vector of ProductX");
+    
+    // JSON string with array of 4 ProductX objects
+    StdString jsonString = "["
+        "{\"productId\":401,\"productName\":\"Keyboard\",\"price\":79.99,\"quantity\":50,\"inStock\":true},"
+        "{\"productId\":402,\"productName\":\"Mouse\",\"price\":29.99,\"quantity\":100,\"inStock\":true},"
+        "{\"productId\":403,\"productName\":\"Monitor\",\"price\":299.99,\"quantity\":20,\"inStock\":false},"
+        "{\"productId\":404,\"productName\":\"Speaker\",\"price\":149.50,\"quantity\":30,\"inStock\":true}"
+    "]";
+    
+    // Deserialize the JSON string to Vector<ProductX>
+    Vector<ProductX> deserializedProducts = SerializationUtility::Deserialize<Vector<ProductX>>(jsonString);
+    
+    // Verify the vector has 4 products
+    ASSERT(deserializedProducts.size() == 4, "Deserialized vector should have 4 products");
+    
+    // Verify first product (Keyboard)
+    ASSERT(deserializedProducts[0].productId.has_value(), "Product 0 should have productId");
+    ASSERT(deserializedProducts[0].productId.value() == 401, "Product 0 productId should be 401");
+    ASSERT(deserializedProducts[0].productName.has_value(), "Product 0 should have productName");
+    ASSERT(deserializedProducts[0].productName.value() == "Keyboard", "Product 0 productName should be Keyboard");
+    ASSERT(deserializedProducts[0].price.has_value(), "Product 0 should have price");
+    ASSERT(std::abs(deserializedProducts[0].price.value() - 79.99) < 0.01, "Product 0 price should be 79.99");
+    ASSERT(deserializedProducts[0].quantity.has_value(), "Product 0 should have quantity");
+    ASSERT(deserializedProducts[0].quantity.value() == 50, "Product 0 quantity should be 50");
+    ASSERT(deserializedProducts[0].inStock.has_value(), "Product 0 should have inStock");
+    ASSERT(deserializedProducts[0].inStock.value() == true, "Product 0 inStock should be true");
+    
+    // Verify second product (Mouse)
+    ASSERT(deserializedProducts[1].productId.has_value(), "Product 1 should have productId");
+    ASSERT(deserializedProducts[1].productId.value() == 402, "Product 1 productId should be 402");
+    ASSERT(deserializedProducts[1].productName.has_value(), "Product 1 should have productName");
+    ASSERT(deserializedProducts[1].productName.value() == "Mouse", "Product 1 productName should be Mouse");
+    ASSERT(deserializedProducts[1].price.has_value(), "Product 1 should have price");
+    ASSERT(std::abs(deserializedProducts[1].price.value() - 29.99) < 0.01, "Product 1 price should be 29.99");
+    ASSERT(deserializedProducts[1].quantity.has_value(), "Product 1 should have quantity");
+    ASSERT(deserializedProducts[1].quantity.value() == 100, "Product 1 quantity should be 100");
+    ASSERT(deserializedProducts[1].inStock.has_value(), "Product 1 should have inStock");
+    ASSERT(deserializedProducts[1].inStock.value() == true, "Product 1 inStock should be true");
+    
+    // Verify third product (Monitor)
+    ASSERT(deserializedProducts[2].productId.has_value(), "Product 2 should have productId");
+    ASSERT(deserializedProducts[2].productId.value() == 403, "Product 2 productId should be 403");
+    ASSERT(deserializedProducts[2].productName.has_value(), "Product 2 should have productName");
+    ASSERT(deserializedProducts[2].productName.value() == "Monitor", "Product 2 productName should be Monitor");
+    ASSERT(deserializedProducts[2].price.has_value(), "Product 2 should have price");
+    ASSERT(std::abs(deserializedProducts[2].price.value() - 299.99) < 0.01, "Product 2 price should be 299.99");
+    ASSERT(deserializedProducts[2].quantity.has_value(), "Product 2 should have quantity");
+    ASSERT(deserializedProducts[2].quantity.value() == 20, "Product 2 quantity should be 20");
+    ASSERT(deserializedProducts[2].inStock.has_value(), "Product 2 should have inStock");
+    ASSERT(deserializedProducts[2].inStock.value() == false, "Product 2 inStock should be false");
+    
+    // Verify fourth product (Speaker)
+    ASSERT(deserializedProducts[3].productId.has_value(), "Product 3 should have productId");
+    ASSERT(deserializedProducts[3].productId.value() == 404, "Product 3 productId should be 404");
+    ASSERT(deserializedProducts[3].productName.has_value(), "Product 3 should have productName");
+    ASSERT(deserializedProducts[3].productName.value() == "Speaker", "Product 3 productName should be Speaker");
+    ASSERT(deserializedProducts[3].price.has_value(), "Product 3 should have price");
+    ASSERT(std::abs(deserializedProducts[3].price.value() - 149.50) < 0.01, "Product 3 price should be 149.50");
+    ASSERT(deserializedProducts[3].quantity.has_value(), "Product 3 should have quantity");
+    ASSERT(deserializedProducts[3].quantity.value() == 30, "Product 3 quantity should be 30");
+    ASSERT(deserializedProducts[3].inStock.has_value(), "Product 3 should have inStock");
+    ASSERT(deserializedProducts[3].inStock.value() == true, "Product 3 inStock should be true");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
 // Main test runner function
 int RunAllSerializationTests() {
     std_println("");
@@ -1365,6 +1435,7 @@ int RunAllSerializationTests() {
     if (!TestSerializePersonPartial()) testsFailed_serialization++;
     if (!TestDeserializePersonPartial()) testsFailed_serialization++;
     if (!TestSerializeVectorProductX()) testsFailed_serialization++;
+    if (!TestDeserializeVectorProductX()) testsFailed_serialization++;
     
     // Container type tests
     if (!TestSerializeVectorInt()) testsFailed_serialization++;
