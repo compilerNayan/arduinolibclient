@@ -3,10 +3,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 
-#include "controller/UserRepositoryTests.h"
+#include "AllTests.h"
 #include "IHttpRequestManager.h"    
 #include "controller/06-MyEntityRepository.h"
-#include "serialization_tests/SerializationUtilityTests.h"
 
 /* @Autowired */
 IHttpRequestManagerPtr requestManager;
@@ -26,9 +25,9 @@ MyEntityRepositoryPtr myEntityRepository;
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    // Call RunAllTests with no command-line arguments (as if nothing was passed)
+    // Run all test suites
     char* empty_argv[] = { (char*)"arduino_main" };
-    RunAllTests(1, empty_argv);
+    RunAllTestSuites(1, empty_argv);
     // Connect to WiFi
     std_println2("Connecting to WiFi");
     WiFi.begin(ssid, password);
@@ -53,8 +52,6 @@ void setup() {
     Var myEntity2 = myEntityRepository->FindById(1);
     std_println2("myEntity2: ");
     std_println2(myEntity2->Serialize().c_str());
-
-    RunAllSerializationTests();
 
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     //s2->Start(8080);

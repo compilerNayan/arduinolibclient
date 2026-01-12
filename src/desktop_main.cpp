@@ -1,8 +1,5 @@
 #ifndef ARDUINO
-#include "controller/UserRepositoryTests.h"
-#include "repository_tests/RepositoryTests.h"
-//#include "controller_tests/WifiCredentialsControllerTests.h"
-#include "serialization_tests/SerializationUtilityTests.h"
+#include "AllTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
 
@@ -12,18 +9,10 @@ IHttpRequestManagerPtr requestManager;
 /// @Autowired
 MyEntityRepositoryPtr myEntityRepository;
 
-// Main function - just calls RunAllTests
+// Main function - runs all test suites
 int main(int argc, char* argv[]) {
-    RunAllTests(argc, argv);
-    
-    // Run repository tests
-    RunAllRepositoryTests();
-    
-    // Run SerializationUtility tests
-    RunAllSerializationTests();
-    
-    // Run WiFi Credentials Controller tests
-    //RunAllWifiCredentialsControllerTests();
+    // Run all test suites
+    RunAllTestSuites(argc, argv);
 
     Var myEntity = MyEntity();
     myEntity.id = 1;
