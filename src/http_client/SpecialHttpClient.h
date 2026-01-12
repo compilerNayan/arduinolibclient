@@ -1,3 +1,4 @@
+#ifndef ARDUINO
 #ifndef SPECIAL_HTTP_CLIENT_H
 #define SPECIAL_HTTP_CLIENT_H
 
@@ -244,4 +245,4 @@ class SpecialHttpClient : public ISpecialHttpClient {
 };
 
 #endif // SPECIAL_HTTP_CLIENT_H
-
+#endif // ARDUINO
