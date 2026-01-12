@@ -16,7 +16,6 @@
 #include <StandardDefines.h>
 #include <SerializationUtility.h>
 #include "http_client/ISpecialHttpClient.h"
-#include "http_client/SpecialHttpClient.h"
 #include "controller/GetWifiCredentialsRequestDto.h"
 #include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
@@ -80,7 +79,7 @@ HttpResponse ParseHttpResponse(const StdString& responseJson) {
 
 // Helper function to get HTTP client instance
 ISpecialHttpClientPtr GetHttpClient() {
-    return SpecialHttpClient::GetInstance();
+    return Implementation<ISpecialHttpClient>::type::GetInstance();
 }
 
 // ========== CREATE OPERATIONS TESTS ==========
