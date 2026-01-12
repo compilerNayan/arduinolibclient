@@ -31,8 +31,18 @@ add_executable(user_repository_tests
     src/desktop_main.cpp
 )
 
+# Add server executable
+add_executable(desktop_server
+    src/desktop_server.cpp
+)
+
 # Include directories (if needed for headers)
 target_include_directories(user_repository_tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_include_directories(desktop_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
@@ -46,9 +56,19 @@ target_link_libraries(user_repository_tests PRIVATE
     CURL::libcurl
 )
 
+target_link_libraries(desktop_server PRIVATE 
+    arduino-core
+    CURL::libcurl
+)
+
 # Compiler-specific options
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     target_compile_options(user_repository_tests PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+    )
+    target_compile_options(desktop_server PRIVATE
         -Wall
         -Wextra
         -Wpedantic
