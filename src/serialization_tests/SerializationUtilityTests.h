@@ -17,6 +17,7 @@
 #else
     #include <iostream>
     #include <cassert>
+    #include <cmath>
     #include <string>
     #include <vector>
     #include <list>
