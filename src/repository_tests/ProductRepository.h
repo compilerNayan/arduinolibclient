@@ -12,7 +12,7 @@ class ProductRepository : public CpaRepository<Product, int> {
     
     // Custom FindBy methods
     Public Virtual optional<Product> FindByName(StdString name) = 0;
-    Public Virtual vector<Product> FindByCategory(StdString category) = 0;
+    Public Virtual Vector<Product> FindByCategory(StdString category) = 0;
 };
 
 #endif // _PRODUCT_REPOSITORY_H_

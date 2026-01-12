@@ -438,7 +438,7 @@ bool TestFindAll() {
     ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_12.txt")), "File for user 12 should exist");
     
     // Find all users
-    vector<User> allUsers = repository->FindAll();
+    Vector<User> allUsers = repository->FindAll();
     
     ASSERT(allUsers.size() >= 3, "FindAll should return at least 3 users");
     
@@ -597,7 +597,7 @@ bool TestFileContentsMatchEntity() {
 // Main test runner function
 int RunAllTests(int argc, char* argv[]) {
     // Parse command-line arguments
-    std::vector<std::string> args(argv + 1, argv + argc);
+    Vector<std::string> args(argv + 1, argv + argc);
     for (const auto& arg : args) {
         if (arg == "--cleanup" || arg == "--clean" || arg == "-c") {
             g_cleanupAfterTests = true;

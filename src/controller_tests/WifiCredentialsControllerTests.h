@@ -212,7 +212,7 @@ bool TestGetAllWifiCredentials_Empty() {
     
     // Note: This test assumes we can clear or start fresh
     // In real scenario, you might need to clean up first
-    vector<WifiCredentials> result = controller->GetAllWifiCredentials();
+    Vector<WifiCredentials> result = controller->GetAllWifiCredentials();
     
     // Should return empty vector if no credentials exist
     // This is a valid scenario
@@ -235,7 +235,7 @@ bool TestGetAllWifiCredentials_Multiple() {
     controller->CreateWifiCredentials(creds2);
     controller->CreateWifiCredentials(creds3);
     
-    vector<WifiCredentials> result = controller->GetAllWifiCredentials();
+    Vector<WifiCredentials> result = controller->GetAllWifiCredentials();
     
     ASSERT_WIFI(result.size() >= 3, "Should return at least 3 credentials");
     
