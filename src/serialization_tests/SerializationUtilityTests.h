@@ -361,6 +361,69 @@ bool TestDeserializePersonPartial() {
     return true;
 }
 
+// Test 19: Serialize and Deserialize vector of ProductX
+bool TestSerializeDeserializeVectorProductX() {
+    TEST_START("Test Serialize and Deserialize Vector of ProductX");
+    
+    // Create a vector with 3 ProductX objects
+    vector<ProductX> originalProducts;
+    
+    ProductX product1;
+    product1.productId = optional<int>(301);
+    product1.productName = optional<StdString>(StdString("Laptop"));
+    product1.price = optional<double>(999.99);
+    product1.quantity = optional<int>(10);
+    product1.inStock = optional<bool>(true);
+    originalProducts.push_back(product1);
+    
+    ProductX product2;
+    product2.productId = optional<int>(302);
+    product2.productName = optional<StdString>(StdString("Smartphone"));
+    product2.price = optional<double>(699.50);
+    product2.quantity = optional<int>(25);
+    product2.inStock = optional<bool>(true);
+    originalProducts.push_back(product2);
+    
+    ProductX product3;
+    product3.productId = optional<int>(303);
+    product3.productName = optional<StdString>(StdString("Tablet"));
+    product3.price = optional<double>(499.99);
+    product3.quantity = optional<int>(15);
+    product3.inStock = optional<bool>(false);
+    originalProducts.push_back(product3);
+    
+    ASSERT(originalProducts.size() == 3, "Original vector should have 3 products");
+    
+    // Try to serialize the vector using SerializationUtility
+    StdString serialized = SerializationUtility::Serialize(originalProducts);
+    
+    ASSERT(!serialized.empty(), "Serialized vector should not be empty");
+    
+    // Try to deserialize back to vector
+    vector<ProductX> deserializedProducts = SerializationUtility::Deserialize<vector<ProductX>>(serialized);
+    
+    ASSERT(deserializedProducts.size() == 3, "Deserialized vector should have 3 products");
+    
+    // Verify each product
+    ASSERT(deserializedProducts[0].productId.has_value() && deserializedProducts[0].productId.value() == 301,
+           "First product should have productId=301");
+    ASSERT(deserializedProducts[0].productName.has_value() && deserializedProducts[0].productName.value() == "Laptop",
+           "First product should have productName='Laptop'");
+    
+    ASSERT(deserializedProducts[1].productId.has_value() && deserializedProducts[1].productId.value() == 302,
+           "Second product should have productId=302");
+    ASSERT(deserializedProducts[1].productName.has_value() && deserializedProducts[1].productName.value() == "Smartphone",
+           "Second product should have productName='Smartphone'");
+    
+    ASSERT(deserializedProducts[2].productId.has_value() && deserializedProducts[2].productId.value() == 303,
+           "Third product should have productId=303");
+    ASSERT(deserializedProducts[2].productName.has_value() && deserializedProducts[2].productName.value() == "Tablet",
+           "Third product should have productName='Tablet'");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
 // Main test runner function
 int RunAllSerializationTests() {
     std_println("");
@@ -393,6 +456,7 @@ int RunAllSerializationTests() {
     if (!TestProductXRoundTrip()) testsFailed_serialization++;
     if (!TestSerializePersonPartial()) testsFailed_serialization++;
     if (!TestDeserializePersonPartial()) testsFailed_serialization++;
+    if (!TestSerializeDeserializeVectorProductX()) testsFailed_serialization++;
     
     // Print summary
     std_println("");
