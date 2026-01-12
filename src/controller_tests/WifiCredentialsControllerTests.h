@@ -88,25 +88,70 @@ ISpecialHttpClientPtr GetHttpClient() {
 bool TestCreateWifiCredentials_Success() {
     TEST_WIFI_START("Test Create WiFi Credentials - Success (REST API)");
     
-    ISpecialHttpClientPtr httpClient = GetHttpClient();
+    std_println("[DEBUG] Starting test...");
     
+    std_print("[DEBUG] Getting HTTP client instance...");
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
+    if (!httpClient) {
+        std_println("FAILED - HTTP client is null!");
+        PrintWifiTestResult("Create WiFi Credentials - Success", false);
+        return false;
+    }
+    std_println("OK");
+    
+    std_print("[DEBUG] Creating test credentials...");
     WifiCredentials creds = CreateTestCredentials("TestNetwork", "TestPassword123");
+    std_println("OK");
+    
+    std_print("[DEBUG] Serializing credentials to JSON...");
     StdString jsonBody = SerializationUtility::Serialize(creds);
+    std_print("OK - Body length: ");
+    std_println(std::to_string(jsonBody.length()).c_str());
     
     StdString url = BASE_URL;
-    StdString responseJson = httpClient->Post(url, jsonBody);
-    HttpResponse response = ParseHttpResponse(responseJson);
+    std_print("[DEBUG] URL: ");
+    std_println(url.c_str());
+    std_print("[DEBUG] Request body: ");
+    std_println(jsonBody.c_str());
     
+    std_println("[DEBUG] About to call httpClient->Post()...");
+    std_println("[DEBUG] This may take up to 30 seconds if server is not responding...");
+    
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    
+    std_println("[DEBUG] httpClient->Post() returned!");
+    std_print("[DEBUG] Response length: ");
+    std_println(std::to_string(responseJson.length()).c_str());
+    std_print("[DEBUG] Response received: ");
+    std_println(responseJson.c_str());
+    
+    std_print("[DEBUG] Parsing HTTP response...");
+    HttpResponse response = ParseHttpResponse(responseJson);
+    std_print("OK - Status code: ");
+    std_println(std::to_string(response.statusCode).c_str());
+    
+    std_print("[DEBUG] Checking status code...");
+    if (response.statusCode != 200 && response.statusCode != 201) {
+        std_print("[DEBUG] ERROR: Unexpected status code: ");
+        std_println(std::to_string(response.statusCode).c_str());
+        std_print("[DEBUG] Response body: ");
+        std_println(response.body.c_str());
+    }
     ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
                 "HTTP status should be 200 or 201");
     
+    std_print("[DEBUG] Deserializing response body...");
     WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
+    std_println("OK");
     
+    std_print("[DEBUG] Validating result...");
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present in result");
     ASSERT_WIFI(result.ssid.value() == "TestNetwork", "SSID should match input");
     ASSERT_WIFI(result.password.has_value(), "Password should be present in result");
     ASSERT_WIFI(result.password.value() == "TestPassword123", "Password should match input");
+    std_println("OK");
     
+    std_println("[DEBUG] Test completed successfully!");
     PrintWifiTestResult("Create WiFi Credentials - Success", true);
     return true;
 }

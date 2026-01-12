@@ -8,6 +8,7 @@
 #include <curl/curl.h>
 #include <sstream>
 #include <map>
+#include <iostream>
 
 /**
  * Implementation of ISpecialHttpClient using libcurl
@@ -84,13 +85,28 @@ class SpecialHttpClient : public ISpecialHttpClient {
             const optional<StdString>& jsonBody,
             const optional<Map<StdString, StdString>>& customHeaders
         ) {
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] Starting " << method << " request to: " << url << std::endl;
+            #endif
+            
             // Initialize curl globally
             InitializeCurl();
             
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] Curl initialized" << std::endl;
+            #endif
+            
             CURL* curl = curl_easy_init();
             if (!curl) {
+                #ifndef ARDUINO
+                std::cout << "[HTTP_CLIENT] ERROR: Failed to initialize curl" << std::endl;
+                #endif
                 return CreateErrorResponse(500, "Failed to initialize curl");
             }
+
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] Curl handle created" << std::endl;
+            #endif
 
             StdString responseBody;
             Map<StdString, StdString> responseHeaders;
@@ -98,6 +114,16 @@ class SpecialHttpClient : public ISpecialHttpClient {
 
             // Set URL
             curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] URL set: " << url << std::endl;
+            #endif
+
+            // Set timeout (10 seconds for connection, 30 seconds for total request)
+            curl_easy_setopt(curl, CURLOPT_CONNECTTIMEOUT, 10L);
+            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 30L);
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] Timeouts set: connect=10s, total=30s" << std::endl;
+            #endif
 
             // Set write callback for response body
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -144,12 +170,25 @@ class SpecialHttpClient : public ISpecialHttpClient {
             }
 
             // Perform request
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] About to perform curl_easy_perform()..." << std::endl;
+            #endif
             CURLcode res = curl_easy_perform(curl);
+            #ifndef ARDUINO
+            std::cout << "[HTTP_CLIENT] curl_easy_perform() returned with code: " << res << std::endl;
+            #endif
 
             // Get status code
             if (res == CURLE_OK) {
                 curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &statusCode);
+                #ifndef ARDUINO
+                std::cout << "[HTTP_CLIENT] Request successful, status code: " << statusCode << std::endl;
+                std::cout << "[HTTP_CLIENT] Response body length: " << responseBody.length() << std::endl;
+                #endif
             } else {
+                #ifndef ARDUINO
+                std::cout << "[HTTP_CLIENT] ERROR: Curl error code: " << res << ", message: " << curl_easy_strerror(res) << std::endl;
+                #endif
                 curl_easy_cleanup(curl);
                 if (headerList) {
                     curl_slist_free_all(headerList);
