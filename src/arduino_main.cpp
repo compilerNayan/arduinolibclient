@@ -43,13 +43,13 @@ void setup() {
     std_println2("IP Address: ");
     std_println2(WiFi.localIP());
 
-    Val myEntity = MyEntity();
+    Var myEntity = MyEntity();
     myEntity.id = 1;
     myEntity.username = "test";
     myEntity.password = "test";
     myEntityRepository->Save(myEntity);
 
-    Val myEntity2 = myEntityRepository->FindById(1);
+    Var myEntity2 = myEntityRepository->FindById(1);
     std_println2("myEntity2: ");
     std_println2(myEntity2->Serialize().c_str());
 
