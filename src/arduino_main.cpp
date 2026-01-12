@@ -6,6 +6,7 @@
 #include "controller/UserRepositoryTests.h"
 #include "IHttpRequestManager.h"    
 #include "controller/06-MyEntityRepository.h"
+#include "serialization_tests/SerializationUtilityTests.h"
 
 /* @Autowired */
 IHttpRequestManagerPtr requestManager;
@@ -52,6 +53,8 @@ void setup() {
     Var myEntity2 = myEntityRepository->FindById(1);
     std_println2("myEntity2: ");
     std_println2(myEntity2->Serialize().c_str());
+
+    RunAllSerializationTests();
 
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     //s2->Start(8080);
