@@ -1403,6 +1403,334 @@ bool TestDeserializeVectorProductX() {
     return true;
 }
 
+// ========== Deserialization Tests for Sequential Containers ==========
+
+// Test: Deserialize Vector<int>
+bool TestDeserializeVectorInt() {
+    TEST_START("Test Deserialize Vector of Int");
+    
+    StdString jsonString = "[10,20,30,40,50]";
+    Vector<int> deserialized = SerializationUtility::Deserialize<Vector<int>>(jsonString);
+    
+    ASSERT(deserialized.size() == 5, "Deserialized vector should have 5 elements");
+    ASSERT(deserialized[0] == 10, "First element should be 10");
+    ASSERT(deserialized[1] == 20, "Second element should be 20");
+    ASSERT(deserialized[2] == 30, "Third element should be 30");
+    ASSERT(deserialized[3] == 40, "Fourth element should be 40");
+    ASSERT(deserialized[4] == 50, "Fifth element should be 50");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize List<string>
+bool TestDeserializeListString() {
+    TEST_START("Test Deserialize List of String");
+    
+    StdString jsonString = "[\"apple\",\"banana\",\"cherry\"]";
+    List<StdString> deserialized = SerializationUtility::Deserialize<List<StdString>>(jsonString);
+    
+    ASSERT(deserialized.size() == 3, "Deserialized list should have 3 elements");
+    auto it = deserialized.begin();
+    ASSERT(*it == "apple", "First element should be apple");
+    ++it;
+    ASSERT(*it == "banana", "Second element should be banana");
+    ++it;
+    ASSERT(*it == "cherry", "Third element should be cherry");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Deque<double>
+bool TestDeserializeDequeDouble() {
+    TEST_START("Test Deserialize Deque of Double");
+    
+    StdString jsonString = "[3.14,2.71,1.41,0.57]";
+    Deque<double> deserialized = SerializationUtility::Deserialize<Deque<double>>(jsonString);
+    
+    ASSERT(deserialized.size() == 4, "Deserialized deque should have 4 elements");
+    ASSERT(std::abs(deserialized[0] - 3.14) < 0.01, "First element should be 3.14");
+    ASSERT(std::abs(deserialized[1] - 2.71) < 0.01, "Second element should be 2.71");
+    ASSERT(std::abs(deserialized[2] - 1.41) < 0.01, "Third element should be 1.41");
+    ASSERT(std::abs(deserialized[3] - 0.57) < 0.01, "Fourth element should be 0.57");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Set<int>
+bool TestDeserializeSetInt() {
+    TEST_START("Test Deserialize Set of Int");
+    
+    StdString jsonString = "[5,3,8,1,9]";
+    Set<int> deserialized = SerializationUtility::Deserialize<Set<int>>(jsonString);
+    
+    ASSERT(deserialized.size() == 5, "Deserialized set should have 5 elements");
+    ASSERT(deserialized.find(5) != deserialized.end(), "Set should contain 5");
+    ASSERT(deserialized.find(3) != deserialized.end(), "Set should contain 3");
+    ASSERT(deserialized.find(8) != deserialized.end(), "Set should contain 8");
+    ASSERT(deserialized.find(1) != deserialized.end(), "Set should contain 1");
+    ASSERT(deserialized.find(9) != deserialized.end(), "Set should contain 9");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize UnorderedSet<string>
+bool TestDeserializeUnorderedSetString() {
+    TEST_START("Test Deserialize UnorderedSet of String");
+    
+    StdString jsonString = "[\"red\",\"green\",\"blue\"]";
+    UnorderedSet<StdString> deserialized = SerializationUtility::Deserialize<UnorderedSet<StdString>>(jsonString);
+    
+    ASSERT(deserialized.size() == 3, "Deserialized unordered_set should have 3 elements");
+    ASSERT(deserialized.find("red") != deserialized.end(), "Set should contain red");
+    ASSERT(deserialized.find("green") != deserialized.end(), "Set should contain green");
+    ASSERT(deserialized.find("blue") != deserialized.end(), "Set should contain blue");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Array<int, 4>
+bool TestDeserializeArrayInt() {
+    TEST_START("Test Deserialize Array of Int");
+    
+    StdString jsonString = "[1,2,3,4]";
+    Array<int, 4> deserialized = SerializationUtility::Deserialize<Array<int, 4>>(jsonString);
+    
+    ASSERT(deserialized.size() == 4, "Deserialized array should have 4 elements");
+    ASSERT(deserialized[0] == 1, "First element should be 1");
+    ASSERT(deserialized[1] == 2, "Second element should be 2");
+    ASSERT(deserialized[2] == 3, "Third element should be 3");
+    ASSERT(deserialized[3] == 4, "Fourth element should be 4");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Vector<bool>
+bool TestDeserializeVectorBool() {
+    TEST_START("Test Deserialize Vector of Bool");
+    
+    StdString jsonString = "[true,false,true,true,false]";
+    Vector<bool> deserialized = SerializationUtility::Deserialize<Vector<bool>>(jsonString);
+    
+    ASSERT(deserialized.size() == 5, "Deserialized vector should have 5 elements");
+    ASSERT(deserialized[0] == true, "First element should be true");
+    ASSERT(deserialized[1] == false, "Second element should be false");
+    ASSERT(deserialized[2] == true, "Third element should be true");
+    ASSERT(deserialized[3] == true, "Fourth element should be true");
+    ASSERT(deserialized[4] == false, "Fifth element should be false");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize empty Vector
+bool TestDeserializeEmptyVector() {
+    TEST_START("Test Deserialize Empty Vector");
+    
+    StdString jsonString = "[]";
+    Vector<int> deserialized = SerializationUtility::Deserialize<Vector<int>>(jsonString);
+    
+    ASSERT(deserialized.size() == 0, "Deserialized vector should be empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize List<Person>
+bool TestDeserializeListPerson() {
+    TEST_START("Test Deserialize List of Person");
+    
+    StdString jsonString = "["
+        "{\"id\":101,\"name\":\"Alice\",\"age\":30,\"isActive\":true,\"salary\":50000.0},"
+        "{\"id\":102,\"name\":\"Bob\",\"age\":25,\"isActive\":false,\"salary\":45000.0}"
+    "]";
+    
+    List<Person> deserialized = SerializationUtility::Deserialize<List<Person>>(jsonString);
+    
+    ASSERT(deserialized.size() == 2, "Deserialized list should have 2 persons");
+    
+    auto it = deserialized.begin();
+    ASSERT(it->id.has_value() && it->id.value() == 101, "First person should have id 101");
+    ASSERT(it->name.has_value() && it->name.value() == "Alice", "First person should have name Alice");
+    ASSERT(it->age.has_value() && it->age.value() == 30, "First person should have age 30");
+    
+    ++it;
+    ASSERT(it->id.has_value() && it->id.value() == 102, "Second person should have id 102");
+    ASSERT(it->name.has_value() && it->name.value() == "Bob", "Second person should have name Bob");
+    ASSERT(it->age.has_value() && it->age.value() == 25, "Second person should have age 25");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Deque<Address>
+bool TestDeserializeDequeAddress() {
+    TEST_START("Test Deserialize Deque of Address");
+    
+    StdString jsonString = "["
+        "{\"street\":\"123 Main St\",\"city\":\"New York\",\"state\":\"NY\",\"zipCode\":\"10001\",\"isPrimary\":true},"
+        "{\"street\":\"456 Oak Ave\",\"city\":\"Los Angeles\",\"state\":\"CA\",\"zipCode\":\"90001\",\"isPrimary\":false}"
+    "]";
+    
+    Deque<Address> deserialized = SerializationUtility::Deserialize<Deque<Address>>(jsonString);
+    
+    ASSERT(deserialized.size() == 2, "Deserialized deque should have 2 addresses");
+    ASSERT(deserialized[0].street.has_value() && deserialized[0].street.value() == "123 Main St", "First address should have correct street");
+    ASSERT(deserialized[0].city.has_value() && deserialized[0].city.value() == "New York", "First address should have correct city");
+    ASSERT(deserialized[1].street.has_value() && deserialized[1].street.value() == "456 Oak Ave", "Second address should have correct street");
+    ASSERT(deserialized[1].city.has_value() && deserialized[1].city.value() == "Los Angeles", "Second address should have correct city");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Array<Address, 3>
+bool TestDeserializeArrayAddress() {
+    TEST_START("Test Deserialize Array of Address");
+    
+    StdString jsonString = "["
+        "{\"street\":\"100 First St\",\"city\":\"Boston\",\"state\":\"MA\",\"zipCode\":\"02101\",\"isPrimary\":true},"
+        "{\"street\":\"200 Second St\",\"city\":\"Chicago\",\"state\":\"IL\",\"zipCode\":\"60601\",\"isPrimary\":false},"
+        "{\"street\":\"300 Third St\",\"city\":\"Houston\",\"state\":\"TX\",\"zipCode\":\"77001\",\"isPrimary\":false}"
+    "]";
+    
+    Array<Address, 3> deserialized = SerializationUtility::Deserialize<Array<Address, 3>>(jsonString);
+    
+    ASSERT(deserialized.size() == 3, "Deserialized array should have 3 addresses");
+    ASSERT(deserialized[0].city.has_value() && deserialized[0].city.value() == "Boston", "First address should be Boston");
+    ASSERT(deserialized[1].city.has_value() && deserialized[1].city.value() == "Chicago", "Second address should be Chicago");
+    ASSERT(deserialized[2].city.has_value() && deserialized[2].city.value() == "Houston", "Third address should be Houston");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// ========== Deserialization Tests for Associative Containers ==========
+
+// Test: Deserialize Map<string, int>
+bool TestDeserializeMapStringInt() {
+    TEST_START("Test Deserialize Map String to Int");
+    
+    StdString jsonString = "{\"apple\":10,\"banana\":20,\"cherry\":30}";
+    Map<StdString, int> deserialized = SerializationUtility::Deserialize<Map<StdString, int>>(jsonString);
+    
+    ASSERT(deserialized.size() == 3, "Deserialized map should have 3 entries");
+    ASSERT(deserialized["apple"] == 10, "apple should map to 10");
+    ASSERT(deserialized["banana"] == 20, "banana should map to 20");
+    ASSERT(deserialized["cherry"] == 30, "cherry should map to 30");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Map<int, ProductX>
+bool TestDeserializeMapIntProductX() {
+    TEST_START("Test Deserialize Map Int to ProductX");
+    
+    StdString jsonString = "{"
+        "\"1001\":{\"productId\":1001,\"productName\":\"Laptop\",\"price\":999.99,\"quantity\":5,\"inStock\":true},"
+        "\"1002\":{\"productId\":1002,\"productName\":\"Phone\",\"price\":699.99,\"quantity\":10,\"inStock\":true}"
+    "}";
+    
+    // Note: JSON keys must be strings, so we'll use string keys and convert
+    // For this test, we'll use Map<string, ProductX> instead
+    Map<StdString, ProductX> deserialized = SerializationUtility::Deserialize<Map<StdString, ProductX>>(jsonString);
+    
+    ASSERT(deserialized.size() == 2, "Deserialized map should have 2 entries");
+    ASSERT(deserialized.find("1001") != deserialized.end(), "Map should contain key 1001");
+    ASSERT(deserialized.find("1002") != deserialized.end(), "Map should contain key 1002");
+    
+    ProductX p1 = deserialized["1001"];
+    ASSERT(p1.productId.has_value() && p1.productId.value() == 1001, "Product 1001 should have correct id");
+    ASSERT(p1.productName.has_value() && p1.productName.value() == "Laptop", "Product 1001 should be Laptop");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize Map<string, Person>
+bool TestDeserializeMapStringPerson() {
+    TEST_START("Test Deserialize Map String to Person");
+    
+    StdString jsonString = "{"
+        "\"alice\":{\"id\":201,\"name\":\"Alice Smith\",\"age\":28,\"isActive\":true,\"salary\":55000.0},"
+        "\"bob\":{\"id\":202,\"name\":\"Bob Jones\",\"age\":35,\"isActive\":true,\"salary\":60000.0}"
+    "}";
+    
+    Map<StdString, Person> deserialized = SerializationUtility::Deserialize<Map<StdString, Person>>(jsonString);
+    
+    ASSERT(deserialized.size() == 2, "Deserialized map should have 2 entries");
+    ASSERT(deserialized.find("alice") != deserialized.end(), "Map should contain key alice");
+    ASSERT(deserialized.find("bob") != deserialized.end(), "Map should contain key bob");
+    
+    Person alice = deserialized["alice"];
+    ASSERT(alice.name.has_value() && alice.name.value() == "Alice Smith", "Alice should have correct name");
+    ASSERT(alice.age.has_value() && alice.age.value() == 28, "Alice should have age 28");
+    
+    Person bob = deserialized["bob"];
+    ASSERT(bob.name.has_value() && bob.name.value() == "Bob Jones", "Bob should have correct name");
+    ASSERT(bob.age.has_value() && bob.age.value() == 35, "Bob should have age 35");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize UnorderedMap<string, string>
+bool TestDeserializeUnorderedMapStringString() {
+    TEST_START("Test Deserialize UnorderedMap String to String");
+    
+    StdString jsonString = "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3\":\"value3\"}";
+    UnorderedMap<StdString, StdString> deserialized = SerializationUtility::Deserialize<UnorderedMap<StdString, StdString>>(jsonString);
+    
+    ASSERT(deserialized.size() == 3, "Deserialized unordered_map should have 3 entries");
+    ASSERT(deserialized["key1"] == "value1", "key1 should map to value1");
+    ASSERT(deserialized["key2"] == "value2", "key2 should map to value2");
+    ASSERT(deserialized["key3"] == "value3", "key3 should map to value3");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize UnorderedMap<string, ProductX>
+bool TestDeserializeUnorderedMapStringProductX() {
+    TEST_START("Test Deserialize UnorderedMap String to ProductX");
+    
+    StdString jsonString = "{"
+        "\"prod1\":{\"productId\":501,\"productName\":\"Tablet\",\"price\":399.99,\"quantity\":15,\"inStock\":true},"
+        "\"prod2\":{\"productId\":502,\"productName\":\"Watch\",\"price\":199.99,\"quantity\":25,\"inStock\":true}"
+    "}";
+    
+    UnorderedMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<UnorderedMap<StdString, ProductX>>(jsonString);
+    
+    ASSERT(deserialized.size() == 2, "Deserialized unordered_map should have 2 entries");
+    ASSERT(deserialized.find("prod1") != deserialized.end(), "Map should contain key prod1");
+    ASSERT(deserialized.find("prod2") != deserialized.end(), "Map should contain key prod2");
+    
+    ProductX p1 = deserialized["prod1"];
+    ASSERT(p1.productName.has_value() && p1.productName.value() == "Tablet", "prod1 should be Tablet");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test: Deserialize empty Map
+bool TestDeserializeEmptyMap() {
+    TEST_START("Test Deserialize Empty Map");
+    
+    StdString jsonString = "{}";
+    Map<StdString, int> deserialized = SerializationUtility::Deserialize<Map<StdString, int>>(jsonString);
+    
+    ASSERT(deserialized.size() == 0, "Deserialized map should be empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
 // Main test runner function
 int RunAllSerializationTests() {
     std_println("");
@@ -1438,7 +1766,7 @@ int RunAllSerializationTests() {
     if (!TestSerializeVectorProductX()) testsFailed_serialization++;
     if (!TestDeserializeVectorProductX()) testsFailed_serialization++;
     
-    // Container type tests
+    // Container type tests - Serialization
     if (!TestSerializeVectorInt()) testsFailed_serialization++;
     if (!TestSerializeListString()) testsFailed_serialization++;
     if (!TestSerializeDequeProductX()) testsFailed_serialization++;
@@ -1454,7 +1782,20 @@ int RunAllSerializationTests() {
     if (!TestSerializeEmptyVector()) testsFailed_serialization++;
     if (!TestSerializeEmptyMap()) testsFailed_serialization++;
     
-    // Container with entity objects tests
+    // Container type tests - Deserialization
+    if (!TestDeserializeVectorInt()) testsFailed_serialization++;
+    if (!TestDeserializeListString()) testsFailed_serialization++;
+    if (!TestDeserializeDequeDouble()) testsFailed_serialization++;
+    if (!TestDeserializeSetInt()) testsFailed_serialization++;
+    if (!TestDeserializeUnorderedSetString()) testsFailed_serialization++;
+    if (!TestDeserializeArrayInt()) testsFailed_serialization++;
+    if (!TestDeserializeVectorBool()) testsFailed_serialization++;
+    if (!TestDeserializeEmptyVector()) testsFailed_serialization++;
+    if (!TestDeserializeMapStringInt()) testsFailed_serialization++;
+    if (!TestDeserializeUnorderedMapStringString()) testsFailed_serialization++;
+    if (!TestDeserializeEmptyMap()) testsFailed_serialization++;
+    
+    // Container with entity objects tests - Serialization
     if (!TestSerializeListPerson()) testsFailed_serialization++;
     if (!TestSerializeDequeAddress()) testsFailed_serialization++;
     if (!TestSerializeVectorProductXMultiple()) testsFailed_serialization++;
@@ -1472,6 +1813,14 @@ int RunAllSerializationTests() {
     if (!TestSerializeDequePersonDifferentAges()) testsFailed_serialization++;
     if (!TestSerializeUnorderedMapIntPerson()) testsFailed_serialization++;
     if (!TestSerializeVectorProductXVaryingStock()) testsFailed_serialization++;
+    
+    // Container with entity objects tests - Deserialization
+    if (!TestDeserializeListPerson()) testsFailed_serialization++;
+    if (!TestDeserializeDequeAddress()) testsFailed_serialization++;
+    if (!TestDeserializeArrayAddress()) testsFailed_serialization++;
+    if (!TestDeserializeMapStringPerson()) testsFailed_serialization++;
+    if (!TestDeserializeMapIntProductX()) testsFailed_serialization++;
+    if (!TestDeserializeUnorderedMapStringProductX()) testsFailed_serialization++;
     
     // Print summary
     std_println("");
