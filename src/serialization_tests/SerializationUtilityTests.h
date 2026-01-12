@@ -583,7 +583,7 @@ bool TestSerializeForwardListInt() {
 bool TestSerializeMapStringInt() {
     TEST_START("Test Serialize Map String to Int");
     
-    std_map<StdString, int> scores;
+    Map<StdString, int> scores;
     scores["Alice"] = 95;
     scores["Bob"] = 87;
     scores["Charlie"] = 92;
@@ -607,7 +607,7 @@ bool TestSerializeMapStringInt() {
 bool TestSerializeMapIntProductX() {
     TEST_START("Test Serialize Map Int to ProductX");
     
-    std_map<int, ProductX> productMap;
+    Map<int, ProductX> productMap;
     
     ProductX p1;
     p1.productId = optional<int>(501);
@@ -712,7 +712,7 @@ bool TestSerializeEmptyVector() {
 bool TestSerializeEmptyMap() {
     TEST_START("Test Serialize Empty Map");
     
-    std_map<StdString, int> emptyMap;
+    Map<StdString, int> emptyMap;
     StdString serialized = SerializationUtility::Serialize(emptyMap);
     
     StdString expectedJson = "{}";
@@ -909,7 +909,7 @@ bool TestSerializeArrayAddress() {
 bool TestSerializeMapStringPerson() {
     TEST_START("Test Serialize Map String to Person");
     
-    std_map<StdString, Person> personMap;
+    Map<StdString, Person> personMap;
     
     Person p1;
     p1.id = optional<int>(3001);
@@ -943,7 +943,7 @@ bool TestSerializeMapStringPerson() {
 bool TestSerializeMapIntAddress() {
     TEST_START("Test Serialize Map Int to Address");
     
-    std_map<int, Address> addressMap;
+    Map<int, Address> addressMap;
     
     Address a1;
     a1.street = optional<StdString>(StdString("600 Maple St"));
@@ -1068,7 +1068,7 @@ bool TestSerializeLargeVectorProductX() {
 bool TestSerializeMapStringVectorAddress() {
     TEST_START("Test Serialize Map String to Vector of Address");
     
-    std_map<StdString, vector<Address>> addressMap;
+    Map<StdString, vector<Address>> addressMap;
     
     vector<Address> homeAddresses;
     Address a1;
@@ -1130,7 +1130,7 @@ bool TestSerializeVectorPersonEmptyFields() {
 bool TestSerializeMapIntListProductX() {
     TEST_START("Test Serialize Map Int to List of ProductX");
     
-    std_map<int, list<ProductX>> categoryMap;
+    Map<int, list<ProductX>> categoryMap;
     
     list<ProductX> electronics;
     ProductX p1;
