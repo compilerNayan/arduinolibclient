@@ -378,6 +378,271 @@ bool TestDeserializePersonPartial() {
     return true;
 }
 
+// ========== OPTIONAL TYPE TESTS ==========
+
+// Test 19a: Serialize optional<int> with value
+bool TestSerializeOptionalIntWithValue() {
+    TEST_START("Test Serialize Optional Int With Value");
+    
+    optional<int> optValue = 42;
+    StdString result = SerializationUtility::Serialize(optValue);
+    
+    ASSERT(result == "42", "Serialize optional<int> with value should return '42'");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19b: Serialize optional<int> without value (empty)
+bool TestSerializeOptionalIntEmpty() {
+    TEST_START("Test Serialize Optional Int Empty");
+    
+    optional<int> optValue;
+    StdString result = SerializationUtility::Serialize(optValue);
+    
+    ASSERT(result == "", "Serialize empty optional<int> should return empty string");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19c: Deserialize optional<int> with value
+bool TestDeserializeOptionalIntWithValue() {
+    TEST_START("Test Deserialize Optional Int With Value");
+    
+    StdString input = "42";
+    optional<int> result = SerializationUtility::Deserialize<optional<int>>(input);
+    
+    ASSERT(result.has_value(), "Deserialized optional<int> should have value");
+    ASSERT(result.value() == 42, "Deserialized optional<int> should equal 42");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19d: Deserialize optional<int> without value (null input)
+bool TestDeserializeOptionalIntEmpty() {
+    TEST_START("Test Deserialize Optional Int Empty");
+    
+    StdString input = "null";
+    optional<int> result = SerializationUtility::Deserialize<optional<int>>(input);
+    
+    ASSERT(!result.has_value(), "Deserialized optional<int> from null should be empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19e: Deserialize optional<int> from empty string
+bool TestDeserializeOptionalIntFromEmptyString() {
+    TEST_START("Test Deserialize Optional Int From Empty String");
+    
+    StdString input = "";
+    optional<int> result = SerializationUtility::Deserialize<optional<int>>(input);
+    
+    ASSERT(!result.has_value(), "Deserialized optional<int> from empty string should be empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19f: Serialize optional<StdString> with value
+bool TestSerializeOptionalStringWithValue() {
+    TEST_START("Test Serialize Optional String With Value");
+    
+    optional<StdString> optValue = StdString("Hello World");
+    StdString result = SerializationUtility::Serialize(optValue);
+    
+    ASSERT(result == "Hello World", "Serialize optional<string> with value should return the string");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19g: Serialize optional<StdString> without value
+bool TestSerializeOptionalStringEmpty() {
+    TEST_START("Test Serialize Optional String Empty");
+    
+    optional<StdString> optValue;
+    StdString result = SerializationUtility::Serialize(optValue);
+    
+    ASSERT(result == "", "Serialize empty optional<string> should return empty string");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19h: Deserialize optional<StdString> with value
+bool TestDeserializeOptionalStringWithValue() {
+    TEST_START("Test Deserialize Optional String With Value");
+    
+    StdString input = "\"Hello World\"";
+    optional<StdString> result = SerializationUtility::Deserialize<optional<StdString>>(input);
+    
+    ASSERT(result.has_value(), "Deserialized optional<string> should have value");
+    ASSERT(result.value() == "Hello World", "Deserialized optional<string> should equal 'Hello World'");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19i: Serialize optional<Person> with value
+bool TestSerializeOptionalPersonWithValue() {
+    TEST_START("Test Serialize Optional Person With Value");
+    
+    Person person;
+    person.id = optional<int>(1);
+    person.name = optional<StdString>(StdString("John Doe"));
+    person.age = optional<int>(30);
+    person.isActive = optional<bool>(true);
+    
+    optional<Person> optPerson = person;
+    StdString result = SerializationUtility::Serialize(optPerson);
+    
+    ASSERT(!result.empty(), "Serialize optional<Person> with value should not be empty");
+    // The result should be a valid JSON object
+    ASSERT(result.find("\"id\":1") != StdString::npos || result.find("\"id\": 1") != StdString::npos, 
+           "Serialized optional<Person> should contain id");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19j: Serialize optional<Person> without value
+bool TestSerializeOptionalPersonEmpty() {
+    TEST_START("Test Serialize Optional Person Empty");
+    
+    optional<Person> optPerson;
+    StdString result = SerializationUtility::Serialize(optPerson);
+    
+    ASSERT(result == "", "Serialize empty optional<Person> should return empty string");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19k: Deserialize optional<Person> with value
+bool TestDeserializeOptionalPersonWithValue() {
+    TEST_START("Test Deserialize Optional Person With Value");
+    
+    StdString input = "{\"id\":1,\"name\":\"John Doe\",\"age\":30,\"isActive\":true}";
+    optional<Person> result = SerializationUtility::Deserialize<optional<Person>>(input);
+    
+    ASSERT(result.has_value(), "Deserialized optional<Person> should have value");
+    ASSERT(result.value().id.has_value() && result.value().id.value() == 1, 
+           "Deserialized Person should have correct id");
+    ASSERT(result.value().name.has_value() && result.value().name.value() == "John Doe", 
+           "Deserialized Person should have correct name");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19l: Deserialize optional<Person> without value (null input)
+bool TestDeserializeOptionalPersonEmpty() {
+    TEST_START("Test Deserialize Optional Person Empty");
+    
+    StdString input = "null";
+    optional<Person> result = SerializationUtility::Deserialize<optional<Person>>(input);
+    
+    ASSERT(!result.has_value(), "Deserialized optional<Person> from null should be empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19m: Serialize optional<ProductX> with value
+bool TestSerializeOptionalProductXWithValue() {
+    TEST_START("Test Serialize Optional ProductX With Value");
+    
+    ProductX product;
+    product.productId = optional<int>(101);
+    product.productName = optional<StdString>(StdString("Laptop"));
+    product.price = optional<double>(999.99);
+    product.quantity = optional<int>(50);
+    product.inStock = optional<bool>(true);
+    
+    optional<ProductX> optProduct = product;
+    StdString result = SerializationUtility::Serialize(optProduct);
+    
+    ASSERT(!result.empty(), "Serialize optional<ProductX> with value should not be empty");
+    ASSERT(result.find("\"productId\":101") != StdString::npos || result.find("\"productId\": 101") != StdString::npos, 
+           "Serialized optional<ProductX> should contain productId");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19n: Deserialize optional<ProductX> with value
+bool TestDeserializeOptionalProductXWithValue() {
+    TEST_START("Test Deserialize Optional ProductX With Value");
+    
+    StdString input = "{\"productId\":101,\"productName\":\"Laptop\",\"price\":999.99,\"quantity\":50,\"inStock\":true}";
+    optional<ProductX> result = SerializationUtility::Deserialize<optional<ProductX>>(input);
+    
+    ASSERT(result.has_value(), "Deserialized optional<ProductX> should have value");
+    ASSERT(result.value().productId.has_value() && result.value().productId.value() == 101, 
+           "Deserialized ProductX should have correct productId");
+    ASSERT(result.value().productName.has_value() && result.value().productName.value() == "Laptop", 
+           "Deserialized ProductX should have correct productName");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19o: Round trip test for optional<int>
+bool TestOptionalIntRoundTrip() {
+    TEST_START("Test Optional Int Round Trip");
+    
+    optional<int> original = 123;
+    StdString serialized = SerializationUtility::Serialize(original);
+    optional<int> deserialized = SerializationUtility::Deserialize<optional<int>>(serialized);
+    
+    ASSERT(deserialized.has_value(), "Round trip optional<int> should have value");
+    ASSERT(deserialized.value() == original.value(), "Round trip optional<int> should preserve value");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19p: Round trip test for optional<Person>
+bool TestOptionalPersonRoundTrip() {
+    TEST_START("Test Optional Person Round Trip");
+    
+    Person person;
+    person.id = optional<int>(5);
+    person.name = optional<StdString>(StdString("Jane Smith"));
+    person.age = optional<int>(25);
+    person.isActive = optional<bool>(false);
+    
+    optional<Person> original = person;
+    StdString serialized = SerializationUtility::Serialize(original);
+    optional<Person> deserialized = SerializationUtility::Deserialize<optional<Person>>(serialized);
+    
+    ASSERT(deserialized.has_value(), "Round trip optional<Person> should have value");
+    ASSERT(deserialized.value().id.has_value() && deserialized.value().id.value() == original.value().id.value(), 
+           "Round trip optional<Person> should preserve id");
+    ASSERT(deserialized.value().name.has_value() && deserialized.value().name.value() == original.value().name.value(), 
+           "Round trip optional<Person> should preserve name");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 19q: Round trip test for empty optional<int>
+bool TestOptionalIntEmptyRoundTrip() {
+    TEST_START("Test Optional Int Empty Round Trip");
+    
+    optional<int> original;
+    StdString serialized = SerializationUtility::Serialize(original);
+    optional<int> deserialized = SerializationUtility::Deserialize<optional<int>>(serialized);
+    
+    ASSERT(!deserialized.has_value(), "Round trip empty optional<int> should remain empty");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
 // Test 19: Serialize vector of ProductX and compare with expected JSON
 bool TestSerializeVectorProductX() {
     TEST_START("Test Serialize Vector of ProductX");
@@ -1765,6 +2030,25 @@ int RunAllSerializationTests() {
     if (!TestDeserializePersonPartial()) testsFailed_serialization++;
     if (!TestSerializeVectorProductX()) testsFailed_serialization++;
     if (!TestDeserializeVectorProductX()) testsFailed_serialization++;
+    
+    // Optional type tests
+    if (!TestSerializeOptionalIntWithValue()) testsFailed_serialization++;
+    if (!TestSerializeOptionalIntEmpty()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalIntWithValue()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalIntEmpty()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalIntFromEmptyString()) testsFailed_serialization++;
+    if (!TestSerializeOptionalStringWithValue()) testsFailed_serialization++;
+    if (!TestSerializeOptionalStringEmpty()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalStringWithValue()) testsFailed_serialization++;
+    if (!TestSerializeOptionalPersonWithValue()) testsFailed_serialization++;
+    if (!TestSerializeOptionalPersonEmpty()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalPersonWithValue()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalPersonEmpty()) testsFailed_serialization++;
+    if (!TestSerializeOptionalProductXWithValue()) testsFailed_serialization++;
+    if (!TestDeserializeOptionalProductXWithValue()) testsFailed_serialization++;
+    if (!TestOptionalIntRoundTrip()) testsFailed_serialization++;
+    if (!TestOptionalPersonRoundTrip()) testsFailed_serialization++;
+    if (!TestOptionalIntEmptyRoundTrip()) testsFailed_serialization++;
     
     // Container type tests - Serialization
     if (!TestSerializeVectorInt()) testsFailed_serialization++;
