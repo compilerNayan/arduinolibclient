@@ -722,6 +722,616 @@ bool TestSerializeEmptyMap() {
     return true;
 }
 
+// ========== CONTAINER WITH ENTITY OBJECTS TESTS ==========
+
+// Test 34: Serialize list of Person objects
+bool TestSerializeListPerson() {
+    TEST_START("Test Serialize List of Person");
+    
+    list<Person> people;
+    
+    Person p1;
+    p1.id = optional<int>(1001);
+    p1.name = optional<StdString>(StdString("Alice Johnson"));
+    p1.age = optional<int>(28);
+    p1.isActive = optional<bool>(true);
+    p1.salary = optional<double>(75000.0);
+    people.push_back(p1);
+    
+    Person p2;
+    p2.id = optional<int>(1002);
+    p2.name = optional<StdString>(StdString("Bob Williams"));
+    p2.age = optional<int>(35);
+    p2.isActive = optional<bool>(true);
+    p2.salary = optional<double>(85000.0);
+    people.push_back(p2);
+    
+    Person p3;
+    p3.id = optional<int>(1003);
+    p3.name = optional<StdString>(StdString("Carol Davis"));
+    p3.age = optional<int>(42);
+    p3.isActive = optional<bool>(false);
+    p3.salary = optional<double>(95000.0);
+    people.push_back(p3);
+    
+    StdString serialized = SerializationUtility::Serialize(people);
+    
+    // Verify all person names are present
+    ASSERT(serialized.find("Alice Johnson") != std::string::npos, "Serialized list should contain Alice Johnson");
+    ASSERT(serialized.find("Bob Williams") != std::string::npos, "Serialized list should contain Bob Williams");
+    ASSERT(serialized.find("Carol Davis") != std::string::npos, "Serialized list should contain Carol Davis");
+    ASSERT(serialized[0] == '[', "Serialized list should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 35: Serialize deque of Address objects
+bool TestSerializeDequeAddress() {
+    TEST_START("Test Serialize Deque of Address");
+    
+    deque<Address> addresses;
+    
+    Address a1;
+    a1.street = optional<StdString>(StdString("100 Main St"));
+    a1.city = optional<StdString>(StdString("Boston"));
+    a1.state = optional<StdString>(StdString("MA"));
+    a1.zipCode = optional<int>(02101);
+    a1.isPrimary = optional<bool>(true);
+    addresses.push_back(a1);
+    
+    Address a2;
+    a2.street = optional<StdString>(StdString("200 Park Ave"));
+    a2.city = optional<StdString>(StdString("New York"));
+    a2.state = optional<StdString>(StdString("NY"));
+    a2.zipCode = optional<int>(10001);
+    a2.isPrimary = optional<bool>(false);
+    addresses.push_back(a2);
+    
+    StdString serialized = SerializationUtility::Serialize(addresses);
+    
+    ASSERT(serialized.find("Boston") != std::string::npos, "Serialized deque should contain Boston");
+    ASSERT(serialized.find("New York") != std::string::npos, "Serialized deque should contain New York");
+    ASSERT(serialized.find("MA") != std::string::npos, "Serialized deque should contain MA");
+    ASSERT(serialized.find("NY") != std::string::npos, "Serialized deque should contain NY");
+    ASSERT(serialized[0] == '[', "Serialized deque should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 36: Serialize set of ProductX objects
+bool TestSerializeSetProductX() {
+    TEST_START("Test Serialize Set of ProductX");
+    
+    set<ProductX> products;
+    
+    ProductX p1;
+    p1.productId = optional<int>(601);
+    p1.productName = optional<StdString>(StdString("Headphones"));
+    p1.price = optional<double>(199.99);
+    p1.quantity = optional<int>(75);
+    p1.inStock = optional<bool>(true);
+    products.insert(p1);
+    
+    ProductX p2;
+    p2.productId = optional<int>(602);
+    p2.productName = optional<StdString>(StdString("Webcam"));
+    p2.price = optional<double>(89.99);
+    p2.quantity = optional<int>(120);
+    p2.inStock = optional<bool>(true);
+    products.insert(p2);
+    
+    StdString serialized = SerializationUtility::Serialize(products);
+    
+    ASSERT(serialized.find("Headphones") != std::string::npos, "Serialized set should contain Headphones");
+    ASSERT(serialized.find("Webcam") != std::string::npos, "Serialized set should contain Webcam");
+    ASSERT(serialized[0] == '[', "Serialized set should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 37: Serialize unordered_set of Person objects
+bool TestSerializeUnorderedSetPerson() {
+    TEST_START("Test Serialize Unordered Set of Person");
+    
+    unordered_set<Person> people;
+    
+    Person p1;
+    p1.id = optional<int>(2001);
+    p1.name = optional<StdString>(StdString("David Miller"));
+    p1.age = optional<int>(29);
+    p1.isActive = optional<bool>(true);
+    p1.salary = optional<double>(70000.0);
+    people.insert(p1);
+    
+    Person p2;
+    p2.id = optional<int>(2002);
+    p2.name = optional<StdString>(StdString("Emma Wilson"));
+    p2.age = optional<int>(31);
+    p2.isActive = optional<bool>(true);
+    p2.salary = optional<double>(80000.0);
+    people.insert(p2);
+    
+    StdString serialized = SerializationUtility::Serialize(people);
+    
+    ASSERT(serialized.find("David Miller") != std::string::npos, "Serialized unordered_set should contain David Miller");
+    ASSERT(serialized.find("Emma Wilson") != std::string::npos, "Serialized unordered_set should contain Emma Wilson");
+    ASSERT(serialized[0] == '[', "Serialized unordered_set should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 38: Serialize array of Address objects
+bool TestSerializeArrayAddress() {
+    TEST_START("Test Serialize Array of Address");
+    
+    std::array<Address, 3> addresses;
+    
+    Address a1;
+    a1.street = optional<StdString>(StdString("300 Oak St"));
+    a1.city = optional<StdString>(StdString("Chicago"));
+    a1.state = optional<StdString>(StdString("IL"));
+    a1.zipCode = optional<int>(60601);
+    a1.isPrimary = optional<bool>(false);
+    addresses[0] = a1;
+    
+    Address a2;
+    a2.street = optional<StdString>(StdString("400 Pine St"));
+    a2.city = optional<StdString>(StdString("Seattle"));
+    a2.state = optional<StdString>(StdString("WA"));
+    a2.zipCode = optional<int>(98101);
+    a2.isPrimary = optional<bool>(true);
+    addresses[1] = a2;
+    
+    Address a3;
+    a3.street = optional<StdString>(StdString("500 Elm St"));
+    a3.city = optional<StdString>(StdString("Austin"));
+    a3.state = optional<StdString>(StdString("TX"));
+    a3.zipCode = optional<int>(78701);
+    a3.isPrimary = optional<bool>(false);
+    addresses[2] = a3;
+    
+    StdString serialized = SerializationUtility::Serialize(addresses);
+    
+    ASSERT(serialized.find("Chicago") != std::string::npos, "Serialized array should contain Chicago");
+    ASSERT(serialized.find("Seattle") != std::string::npos, "Serialized array should contain Seattle");
+    ASSERT(serialized.find("Austin") != std::string::npos, "Serialized array should contain Austin");
+    ASSERT(serialized[0] == '[', "Serialized array should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 39: Serialize map<string, Person>
+bool TestSerializeMapStringPerson() {
+    TEST_START("Test Serialize Map String to Person");
+    
+    std_map<StdString, Person> personMap;
+    
+    Person p1;
+    p1.id = optional<int>(3001);
+    p1.name = optional<StdString>(StdString("Frank Brown"));
+    p1.age = optional<int>(33);
+    p1.isActive = optional<bool>(true);
+    p1.salary = optional<double>(90000.0);
+    personMap["employee1"] = p1;
+    
+    Person p2;
+    p2.id = optional<int>(3002);
+    p2.name = optional<StdString>(StdString("Grace Lee"));
+    p2.age = optional<int>(27);
+    p2.isActive = optional<bool>(true);
+    p2.salary = optional<double>(75000.0);
+    personMap["employee2"] = p2;
+    
+    StdString serialized = SerializationUtility::Serialize(personMap);
+    
+    ASSERT(serialized.find("employee1") != std::string::npos, "Serialized map should contain key 'employee1'");
+    ASSERT(serialized.find("employee2") != std::string::npos, "Serialized map should contain key 'employee2'");
+    ASSERT(serialized.find("Frank Brown") != std::string::npos, "Serialized map should contain Frank Brown");
+    ASSERT(serialized.find("Grace Lee") != std::string::npos, "Serialized map should contain Grace Lee");
+    ASSERT(serialized[0] == '{', "Serialized map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 40: Serialize map<int, Address>
+bool TestSerializeMapIntAddress() {
+    TEST_START("Test Serialize Map Int to Address");
+    
+    std_map<int, Address> addressMap;
+    
+    Address a1;
+    a1.street = optional<StdString>(StdString("600 Maple St"));
+    a1.city = optional<StdString>(StdString("Denver"));
+    a1.state = optional<StdString>(StdString("CO"));
+    a1.zipCode = optional<int>(80201);
+    a1.isPrimary = optional<bool>(true);
+    addressMap[1] = a1;
+    
+    Address a2;
+    a2.street = optional<StdString>(StdString("700 Cedar St"));
+    a2.city = optional<StdString>(StdString("Portland"));
+    a2.state = optional<StdString>(StdString("OR"));
+    a2.zipCode = optional<int>(97201);
+    a2.isPrimary = optional<bool>(false);
+    addressMap[2] = a2;
+    
+    StdString serialized = SerializationUtility::Serialize(addressMap);
+    
+    ASSERT(serialized.find("1") != std::string::npos, "Serialized map should contain key '1'");
+    ASSERT(serialized.find("2") != std::string::npos, "Serialized map should contain key '2'");
+    ASSERT(serialized.find("Denver") != std::string::npos, "Serialized map should contain Denver");
+    ASSERT(serialized.find("Portland") != std::string::npos, "Serialized map should contain Portland");
+    ASSERT(serialized[0] == '{', "Serialized map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 41: Serialize unordered_map<string, ProductX>
+bool TestSerializeUnorderedMapStringProductX() {
+    TEST_START("Test Serialize Unordered Map String to ProductX");
+    
+    unordered_map<StdString, ProductX> productMap;
+    
+    ProductX p1;
+    p1.productId = optional<int>(701);
+    p1.productName = optional<StdString>(StdString("Microphone"));
+    p1.price = optional<double>(149.99);
+    p1.quantity = optional<int>(50);
+    p1.inStock = optional<bool>(true);
+    productMap["audio1"] = p1;
+    
+    ProductX p2;
+    p2.productId = optional<int>(702);
+    p2.productName = optional<StdString>(StdString("Stand"));
+    p2.price = optional<double>(79.99);
+    p2.quantity = optional<int>(100);
+    p2.inStock = optional<bool>(true);
+    productMap["accessory1"] = p2;
+    
+    StdString serialized = SerializationUtility::Serialize(productMap);
+    
+    ASSERT(serialized.find("audio1") != std::string::npos, "Serialized unordered_map should contain key 'audio1'");
+    ASSERT(serialized.find("accessory1") != std::string::npos, "Serialized unordered_map should contain key 'accessory1'");
+    ASSERT(serialized.find("Microphone") != std::string::npos, "Serialized unordered_map should contain Microphone");
+    ASSERT(serialized.find("Stand") != std::string::npos, "Serialized unordered_map should contain Stand");
+    ASSERT(serialized[0] == '{', "Serialized unordered_map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 42: Serialize vector of Person with partial fields
+bool TestSerializeVectorPersonPartial() {
+    TEST_START("Test Serialize Vector of Person with Partial Fields");
+    
+    vector<Person> people;
+    
+    Person p1;
+    p1.id = optional<int>(4001);
+    p1.name = optional<StdString>(StdString("Henry Taylor"));
+    // age, isActive, salary not set
+    people.push_back(p1);
+    
+    Person p2;
+    p2.id = optional<int>(4002);
+    p2.name = optional<StdString>(StdString("Iris Martinez"));
+    p2.age = optional<int>(26);
+    // isActive, salary not set
+    people.push_back(p2);
+    
+    StdString serialized = SerializationUtility::Serialize(people);
+    
+    ASSERT(serialized.find("Henry Taylor") != std::string::npos, "Serialized vector should contain Henry Taylor");
+    ASSERT(serialized.find("Iris Martinez") != std::string::npos, "Serialized vector should contain Iris Martinez");
+    ASSERT(serialized[0] == '[', "Serialized vector should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 43: Serialize large vector of ProductX
+bool TestSerializeLargeVectorProductX() {
+    TEST_START("Test Serialize Large Vector of ProductX");
+    
+    vector<ProductX> products;
+    
+    // Create 10 products
+    for (int i = 1; i <= 10; i++) {
+        ProductX p;
+        p.productId = optional<int>(8000 + i);
+        p.productName = optional<StdString>(StdString("Product " + std::to_string(i)));
+        p.price = optional<double>(10.0 * i);
+        p.quantity = optional<int>(i * 10);
+        p.inStock = optional<bool>(i % 2 == 0);
+        products.push_back(p);
+    }
+    
+    StdString serialized = SerializationUtility::Serialize(products);
+    
+    ASSERT(serialized.find("Product 1") != std::string::npos, "Serialized vector should contain Product 1");
+    ASSERT(serialized.find("Product 5") != std::string::npos, "Serialized vector should contain Product 5");
+    ASSERT(serialized.find("Product 10") != std::string::npos, "Serialized vector should contain Product 10");
+    ASSERT(serialized[0] == '[', "Serialized vector should be a JSON array");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 44: Serialize map<string, vector<Address>>
+bool TestSerializeMapStringVectorAddress() {
+    TEST_START("Test Serialize Map String to Vector of Address");
+    
+    std_map<StdString, vector<Address>> addressMap;
+    
+    vector<Address> homeAddresses;
+    Address a1;
+    a1.street = optional<StdString>(StdString("100 Home St"));
+    a1.city = optional<StdString>(StdString("Miami"));
+    a1.state = optional<StdString>(StdString("FL"));
+    a1.zipCode = optional<int>(33101);
+    a1.isPrimary = optional<bool>(true);
+    homeAddresses.push_back(a1);
+    addressMap["home"] = homeAddresses;
+    
+    vector<Address> workAddresses;
+    Address a2;
+    a2.street = optional<StdString>(StdString("200 Work Ave"));
+    a2.city = optional<StdString>(StdString("Tampa"));
+    a2.state = optional<StdString>(StdString("FL"));
+    a2.zipCode = optional<int>(33601);
+    a2.isPrimary = optional<bool>(false);
+    workAddresses.push_back(a2);
+    addressMap["work"] = workAddresses;
+    
+    StdString serialized = SerializationUtility::Serialize(addressMap);
+    
+    ASSERT(serialized.find("home") != std::string::npos, "Serialized map should contain key 'home'");
+    ASSERT(serialized.find("work") != std::string::npos, "Serialized map should contain key 'work'");
+    ASSERT(serialized.find("Miami") != std::string::npos, "Serialized map should contain Miami");
+    ASSERT(serialized.find("Tampa") != std::string::npos, "Serialized map should contain Tampa");
+    ASSERT(serialized[0] == '{', "Serialized map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 45: Serialize vector of Person with all fields empty
+bool TestSerializeVectorPersonEmptyFields() {
+    TEST_START("Test Serialize Vector of Person with Empty Fields");
+    
+    vector<Person> people;
+    
+    Person p1;
+    // All fields are empty/not set
+    people.push_back(p1);
+    
+    Person p2;
+    // All fields are empty/not set
+    people.push_back(p2);
+    
+    StdString serialized = SerializationUtility::Serialize(people);
+    
+    ASSERT(serialized[0] == '[', "Serialized vector should be a JSON array");
+    ASSERT(serialized.find("id") != std::string::npos || serialized.find("null") != std::string::npos, 
+           "Serialized vector should handle empty fields");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 46: Serialize map<int, list<ProductX>>
+bool TestSerializeMapIntListProductX() {
+    TEST_START("Test Serialize Map Int to List of ProductX");
+    
+    std_map<int, list<ProductX>> categoryMap;
+    
+    list<ProductX> electronics;
+    ProductX p1;
+    p1.productId = optional<int>(9001);
+    p1.productName = optional<StdString>(StdString("TV"));
+    p1.price = optional<double>(599.99);
+    p1.quantity = optional<int>(25);
+    p1.inStock = optional<bool>(true);
+    electronics.push_back(p1);
+    
+    ProductX p2;
+    p2.productId = optional<int>(9002);
+    p2.productName = optional<StdString>(StdString("Radio"));
+    p2.price = optional<double>(49.99);
+    p2.quantity = optional<int>(100);
+    p2.inStock = optional<bool>(true);
+    electronics.push_back(p2);
+    categoryMap[1] = electronics;
+    
+    list<ProductX> furniture;
+    ProductX p3;
+    p3.productId = optional<int>(9003);
+    p3.productName = optional<StdString>(StdString("Chair"));
+    p3.price = optional<double>(199.99);
+    p3.quantity = optional<int>(50);
+    p3.inStock = optional<bool>(true);
+    furniture.push_back(p3);
+    categoryMap[2] = furniture;
+    
+    StdString serialized = SerializationUtility::Serialize(categoryMap);
+    
+    ASSERT(serialized.find("1") != std::string::npos, "Serialized map should contain key '1'");
+    ASSERT(serialized.find("2") != std::string::npos, "Serialized map should contain key '2'");
+    ASSERT(serialized.find("TV") != std::string::npos, "Serialized map should contain TV");
+    ASSERT(serialized.find("Radio") != std::string::npos, "Serialized map should contain Radio");
+    ASSERT(serialized.find("Chair") != std::string::npos, "Serialized map should contain Chair");
+    ASSERT(serialized[0] == '{', "Serialized map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 47: Serialize deque of Address with mixed primary flags
+bool TestSerializeDequeAddressMixedPrimary() {
+    TEST_START("Test Serialize Deque of Address with Mixed Primary Flags");
+    
+    deque<Address> addresses;
+    
+    Address a1;
+    a1.street = optional<StdString>(StdString("800 First St"));
+    a1.city = optional<StdString>(StdString("Phoenix"));
+    a1.state = optional<StdString>(StdString("AZ"));
+    a1.zipCode = optional<int>(85001);
+    a1.isPrimary = optional<bool>(false);
+    addresses.push_back(a1);
+    
+    Address a2;
+    a2.street = optional<StdString>(StdString("900 Second St"));
+    a2.city = optional<StdString>(StdString("Las Vegas"));
+    a2.state = optional<StdString>(StdString("NV"));
+    a2.zipCode = optional<int>(89101);
+    a2.isPrimary = optional<bool>(true);
+    addresses.push_back(a2);
+    
+    Address a3;
+    a3.street = optional<StdString>(StdString("1000 Third St"));
+    a3.city = optional<StdString>(StdString("Reno"));
+    a3.state = optional<StdString>(StdString("NV"));
+    a3.zipCode = optional<int>(89501);
+    a3.isPrimary = optional<bool>(false);
+    addresses.push_back(a3);
+    
+    StdString serialized = SerializationUtility::Serialize(addresses);
+    
+    ASSERT(serialized.find("Phoenix") != std::string::npos, "Serialized deque should contain Phoenix");
+    ASSERT(serialized.find("Las Vegas") != std::string::npos, "Serialized deque should contain Las Vegas");
+    ASSERT(serialized.find("Reno") != std::string::npos, "Serialized deque should contain Reno");
+    ASSERT(serialized.find("true") != std::string::npos, "Serialized deque should contain true for isPrimary");
+    ASSERT(serialized.find("false") != std::string::npos, "Serialized deque should contain false for isPrimary");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 48: Serialize set of Person with different ages
+bool TestSerializeSetPersonDifferentAges() {
+    TEST_START("Test Serialize Set of Person with Different Ages");
+    
+    set<Person> people;
+    
+    Person p1;
+    p1.id = optional<int>(5001);
+    p1.name = optional<StdString>(StdString("Jack Anderson"));
+    p1.age = optional<int>(25);
+    p1.isActive = optional<bool>(true);
+    p1.salary = optional<double>(60000.0);
+    people.insert(p1);
+    
+    Person p2;
+    p2.id = optional<int>(5002);
+    p2.name = optional<StdString>(StdString("Kate Thompson"));
+    p2.age = optional<int>(45);
+    p2.isActive = optional<bool>(true);
+    p2.salary = optional<double>(110000.0);
+    people.insert(p2);
+    
+    Person p3;
+    p3.id = optional<int>(5003);
+    p3.name = optional<StdString>(StdString("Liam White"));
+    p3.age = optional<int>(30);
+    p3.isActive = optional<bool>(false);
+    p3.salary = optional<double>(80000.0);
+    people.insert(p3);
+    
+    StdString serialized = SerializationUtility::Serialize(people);
+    
+    ASSERT(serialized.find("Jack Anderson") != std::string::npos, "Serialized set should contain Jack Anderson");
+    ASSERT(serialized.find("Kate Thompson") != std::string::npos, "Serialized set should contain Kate Thompson");
+    ASSERT(serialized.find("Liam White") != std::string::npos, "Serialized set should contain Liam White");
+    ASSERT(serialized.find("25") != std::string::npos, "Serialized set should contain age 25");
+    ASSERT(serialized.find("45") != std::string::npos, "Serialized set should contain age 45");
+    ASSERT(serialized.find("30") != std::string::npos, "Serialized set should contain age 30");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 49: Serialize unordered_map<int, Person>
+bool TestSerializeUnorderedMapIntPerson() {
+    TEST_START("Test Serialize Unordered Map Int to Person");
+    
+    unordered_map<int, Person> personMap;
+    
+    Person p1;
+    p1.id = optional<int>(6001);
+    p1.name = optional<StdString>(StdString("Mia Garcia"));
+    p1.age = optional<int>(32);
+    p1.isActive = optional<bool>(true);
+    p1.salary = optional<double>(95000.0);
+    personMap[101] = p1;
+    
+    Person p2;
+    p2.id = optional<int>(6002);
+    p2.name = optional<StdString>(StdString("Noah Rodriguez"));
+    p2.age = optional<int>(38);
+    p2.isActive = optional<bool>(true);
+    p2.salary = optional<double>(105000.0);
+    personMap[102] = p2;
+    
+    StdString serialized = SerializationUtility::Serialize(personMap);
+    
+    ASSERT(serialized.find("101") != std::string::npos, "Serialized unordered_map should contain key 101");
+    ASSERT(serialized.find("102") != std::string::npos, "Serialized unordered_map should contain key 102");
+    ASSERT(serialized.find("Mia Garcia") != std::string::npos, "Serialized unordered_map should contain Mia Garcia");
+    ASSERT(serialized.find("Noah Rodriguez") != std::string::npos, "Serialized unordered_map should contain Noah Rodriguez");
+    ASSERT(serialized[0] == '{', "Serialized unordered_map should be a JSON object");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
+// Test 50: Serialize vector of ProductX with varying stock status
+bool TestSerializeVectorProductXVaryingStock() {
+    TEST_START("Test Serialize Vector of ProductX with Varying Stock");
+    
+    vector<ProductX> products;
+    
+    // In stock products
+    for (int i = 1; i <= 3; i++) {
+        ProductX p;
+        p.productId = optional<int>(10000 + i);
+        p.productName = optional<StdString>(StdString("InStockProduct" + std::to_string(i)));
+        p.price = optional<double>(50.0 * i);
+        p.quantity = optional<int>(i * 20);
+        p.inStock = optional<bool>(true);
+        products.push_back(p);
+    }
+    
+    // Out of stock products
+    for (int i = 4; i <= 5; i++) {
+        ProductX p;
+        p.productId = optional<int>(10000 + i);
+        p.productName = optional<StdString>(StdString("OutOfStockProduct" + std::to_string(i)));
+        p.price = optional<double>(50.0 * i);
+        p.quantity = optional<int>(0);
+        p.inStock = optional<bool>(false);
+        products.push_back(p);
+    }
+    
+    StdString serialized = SerializationUtility::Serialize(products);
+    
+    ASSERT(serialized.find("InStockProduct1") != std::string::npos, "Serialized vector should contain InStockProduct1");
+    ASSERT(serialized.find("OutOfStockProduct4") != std::string::npos, "Serialized vector should contain OutOfStockProduct4");
+    ASSERT(serialized.find("OutOfStockProduct5") != std::string::npos, "Serialized vector should contain OutOfStockProduct5");
+    ASSERT(serialized.find("\"inStock\":true") != std::string::npos, "Serialized vector should contain inStock:true");
+    ASSERT(serialized.find("\"inStock\":false") != std::string::npos, "Serialized vector should contain inStock:false");
+    
+    testsPassed_serialization++;
+    return true;
+}
+
 // Main test runner function
 int RunAllSerializationTests() {
     std_println("");
@@ -771,6 +1381,25 @@ int RunAllSerializationTests() {
     if (!TestSerializeVectorDouble()) testsFailed_serialization++;
     if (!TestSerializeEmptyVector()) testsFailed_serialization++;
     if (!TestSerializeEmptyMap()) testsFailed_serialization++;
+    
+    // Container with entity objects tests
+    if (!TestSerializeListPerson()) testsFailed_serialization++;
+    if (!TestSerializeDequeAddress()) testsFailed_serialization++;
+    if (!TestSerializeSetProductX()) testsFailed_serialization++;
+    if (!TestSerializeUnorderedSetPerson()) testsFailed_serialization++;
+    if (!TestSerializeArrayAddress()) testsFailed_serialization++;
+    if (!TestSerializeMapStringPerson()) testsFailed_serialization++;
+    if (!TestSerializeMapIntAddress()) testsFailed_serialization++;
+    if (!TestSerializeUnorderedMapStringProductX()) testsFailed_serialization++;
+    if (!TestSerializeVectorPersonPartial()) testsFailed_serialization++;
+    if (!TestSerializeLargeVectorProductX()) testsFailed_serialization++;
+    if (!TestSerializeMapStringVectorAddress()) testsFailed_serialization++;
+    if (!TestSerializeVectorPersonEmptyFields()) testsFailed_serialization++;
+    if (!TestSerializeMapIntListProductX()) testsFailed_serialization++;
+    if (!TestSerializeDequeAddressMixedPrimary()) testsFailed_serialization++;
+    if (!TestSerializeSetPersonDifferentAges()) testsFailed_serialization++;
+    if (!TestSerializeUnorderedMapIntPerson()) testsFailed_serialization++;
+    if (!TestSerializeVectorProductXVaryingStock()) testsFailed_serialization++;
     
     // Print summary
     std_println("");
