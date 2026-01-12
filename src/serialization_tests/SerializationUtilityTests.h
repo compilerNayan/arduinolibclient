@@ -404,6 +404,18 @@ bool TestSerializeVectorProductX() {
     // Serialize the vector using SerializationUtility
     StdString serialized = SerializationUtility::Serialize(originalProducts);
     
+    // Debug: Print actual vs expected
+    std_println("");
+    std_print("Expected JSON: ");
+    std_println(expectedJson.c_str());
+    std_print("Actual JSON:   ");
+    std_println(serialized.c_str());
+    std_print("Expected length: ");
+    std_println(std::to_string(expectedJson.length()).c_str());
+    std_print("Actual length:   ");
+    std_println(std::to_string(serialized.length()).c_str());
+    std_println("");
+    
     // Compare with expected JSON output
     ASSERT(serialized == expectedJson, "Serialized JSON should match expected JSON exactly");
     
