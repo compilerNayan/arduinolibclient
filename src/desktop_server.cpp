@@ -1,4 +1,5 @@
 #ifndef ARDUINO
+#include "tests/TestUtils.h"
 #include "IHttpRequestManager.h"
 
 /// @Autowired
