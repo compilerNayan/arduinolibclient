@@ -18,7 +18,7 @@
 #include "../TestUtils.h"
 #include "Person.h"
 #include "Address.h"
-#include "Product.h"
+#include "ProductX.h"
 
 using namespace nayan::serializer;
 
@@ -255,11 +255,11 @@ bool TestDeserializeAddress() {
     return true;
 }
 
-// Test 14: Serialize Product
-bool TestSerializeProduct() {
-    TEST_START("Test Serialize Product");
+// Test 14: Serialize ProductX
+bool TestSerializeProductX() {
+    TEST_START("Test Serialize ProductX");
     
-    Product product;
+    ProductX product;
     product.productId = optional<int>(101);
     product.productName = optional<StdString>(StdString("Laptop"));
     product.price = optional<double>(999.99);
@@ -268,41 +268,41 @@ bool TestSerializeProduct() {
     
     StdString result = SerializationUtility::Serialize(product);
     
-    ASSERT(!result.empty(), "Serialize Product should not be empty");
+    ASSERT(!result.empty(), "Serialize ProductX should not be empty");
     ASSERT(result.find("Laptop") != std::string::npos || result.find("\"productName\":\"Laptop\"") != std::string::npos,
-           "Serialized Product should contain productName");
+           "Serialized ProductX should contain productName");
     
     testsPassed_serialization++;
     return true;
 }
 
-// Test 15: Deserialize Product
-bool TestDeserializeProduct() {
-    TEST_START("Test Deserialize Product");
+// Test 15: Deserialize ProductX
+bool TestDeserializeProductX() {
+    TEST_START("Test Deserialize ProductX");
     
     StdString json = "{\"productId\":101,\"productName\":\"Laptop\",\"price\":999.99,\"quantity\":50,\"inStock\":true}";
-    Product result = SerializationUtility::Deserialize<Product>(json);
+    ProductX result = SerializationUtility::Deserialize<ProductX>(json);
     
     ASSERT(result.productId.has_value() && result.productId.value() == 101, 
-           "Deserialized Product should have correct productId");
+           "Deserialized ProductX should have correct productId");
     ASSERT(result.productName.has_value() && result.productName.value() == "Laptop", 
-           "Deserialized Product should have correct productName");
+           "Deserialized ProductX should have correct productName");
     ASSERT(result.price.has_value() && result.price.value() > 999.0 && result.price.value() < 1000.0, 
-           "Deserialized Product should have correct price");
+           "Deserialized ProductX should have correct price");
     ASSERT(result.quantity.has_value() && result.quantity.value() == 50, 
-           "Deserialized Product should have correct quantity");
+           "Deserialized ProductX should have correct quantity");
     ASSERT(result.inStock.has_value() && result.inStock.value() == true, 
-           "Deserialized Product should have correct inStock");
+           "Deserialized ProductX should have correct inStock");
     
     testsPassed_serialization++;
     return true;
 }
 
-// Test 16: Serialize and Deserialize Product (round trip)
-bool TestProductRoundTrip() {
-    TEST_START("Test Product Round Trip");
+// Test 16: Serialize and Deserialize ProductX (round trip)
+bool TestProductXRoundTrip() {
+    TEST_START("Test ProductX Round Trip");
     
-    Product original;
+    ProductX original;
     original.productId = optional<int>(202);
     original.productName = optional<StdString>(StdString("Smartphone"));
     original.price = optional<double>(699.50);
@@ -310,16 +310,16 @@ bool TestProductRoundTrip() {
     original.inStock = optional<bool>(false);
     
     StdString serialized = SerializationUtility::Serialize(original);
-    Product deserialized = SerializationUtility::Deserialize<Product>(serialized);
+    ProductX deserialized = SerializationUtility::Deserialize<ProductX>(serialized);
     
     ASSERT(deserialized.productId.has_value() && deserialized.productId.value() == original.productId.value(), 
-           "Round trip Product should have same productId");
+           "Round trip ProductX should have same productId");
     ASSERT(deserialized.productName.has_value() && deserialized.productName.value() == original.productName.value(), 
-           "Round trip Product should have same productName");
+           "Round trip ProductX should have same productName");
     ASSERT(deserialized.quantity.has_value() && deserialized.quantity.value() == original.quantity.value(), 
-           "Round trip Product should have same quantity");
+           "Round trip ProductX should have same quantity");
     ASSERT(deserialized.inStock.has_value() && deserialized.inStock.value() == original.inStock.value(), 
-           "Round trip Product should have same inStock");
+           "Round trip ProductX should have same inStock");
     
     testsPassed_serialization++;
     return true;
@@ -388,9 +388,9 @@ int RunAllSerializationTests() {
     if (!TestPersonRoundTrip()) testsFailed_serialization++;
     if (!TestSerializeAddress()) testsFailed_serialization++;
     if (!TestDeserializeAddress()) testsFailed_serialization++;
-    if (!TestSerializeProduct()) testsFailed_serialization++;
-    if (!TestDeserializeProduct()) testsFailed_serialization++;
-    if (!TestProductRoundTrip()) testsFailed_serialization++;
+    if (!TestSerializeProductX()) testsFailed_serialization++;
+    if (!TestDeserializeProductX()) testsFailed_serialization++;
+    if (!TestProductXRoundTrip()) testsFailed_serialization++;
     if (!TestSerializePersonPartial()) testsFailed_serialization++;
     if (!TestDeserializePersonPartial()) testsFailed_serialization++;
     

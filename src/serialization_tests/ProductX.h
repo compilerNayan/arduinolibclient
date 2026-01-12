@@ -5,7 +5,7 @@
 #include <ArduinoJson.h>
 
 /// @Serializable
-class Product {
+class ProductX {
     Public optional<int> productId;
     Public optional<StdString> productName;
     Public optional<double> price;
