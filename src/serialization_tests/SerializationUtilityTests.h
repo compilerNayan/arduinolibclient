@@ -530,7 +530,7 @@ bool TestSerializeSetInt() {
 bool TestSerializeUnorderedSetString() {
     TEST_START("Test Serialize Unordered Set of String");
     
-    unordered_Set<StdString> strings = {"red", "green", "blue"};
+    UnorderedSet<StdString> strings = {"red", "green", "blue"};
     StdString serialized = SerializationUtility::Serialize(strings);
     
     // Note: unordered_set order is undefined, so we check for presence
@@ -564,7 +564,7 @@ bool TestSerializeArrayInt() {
 bool TestSerializeForwardListInt() {
     TEST_START("Test Serialize Forward List of Int");
     
-    std::forward_List<int> numbers;
+    std::forward_list<int> numbers;
     numbers.push_front(30);
     numbers.push_front(20);
     numbers.push_front(10);
