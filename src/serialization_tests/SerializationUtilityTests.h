@@ -395,9 +395,10 @@ bool TestSerializeVectorProductX() {
     ASSERT(originalProducts.size() == 3, "Original vector should have 3 products");
     
     // Expected JSON output
+    // Note: ArduinoJson removes trailing zeros from decimals (699.50 becomes 699.5)
     StdString expectedJson = "["
         "{\"productId\":301,\"productName\":\"Laptop\",\"price\":999.99,\"quantity\":10,\"inStock\":true},"
-        "{\"productId\":302,\"productName\":\"Smartphone\",\"price\":699.50,\"quantity\":25,\"inStock\":true},"
+        "{\"productId\":302,\"productName\":\"Smartphone\",\"price\":699.5,\"quantity\":25,\"inStock\":true},"
         "{\"productId\":303,\"productName\":\"Tablet\",\"price\":499.99,\"quantity\":15,\"inStock\":false}"
     "]";
     
