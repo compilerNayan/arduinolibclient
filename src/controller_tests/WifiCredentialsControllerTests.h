@@ -22,45 +22,25 @@
 #include "controller/GetWifiCredentialsRequestDto.h"
 #include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
+#include "../TestUtils.h"
 
-// Print macros - compatible with both Arduino and non-Arduino
-#ifdef ARDUINO
-    // Arduino version using Serial.print/Serial.println
-    #define std_print(x) Serial.print(x)
-    #define std_println(x) Serial.println(x)
-#else
-    // Desktop version using std::cout
-    #define std_print(x) std::cout << x
-    #define std_println(x) std::cout << x << std::endl
-#endif
+// Test assertion macros (using common ASSERT macro from TestUtils.h)
+#define ASSERT_WIFI(condition, message) ASSERT(condition, message)
 
-// Test assertion macros
-#define ASSERT_WIFI(condition, message) \
-    do { \
-        if (!(condition)) { \
-            std_print("FAILED: "); \
-            std_println(message); \
-            return false; \
-        } \
-    } while(0)
-
-#define TEST_WIFI_START(test_name) \
-    std_print("Running: "); \
-    std_println(test_name);
+#define TEST_WIFI_START(test_name) TEST_START(test_name)
 
 // Global test counters
 static int testsPassed_wifi = 0;
 static int testsFailed_wifi = 0;
 
-// Helper function to print test result
-void PrintTestResult(const char* testName, bool passed) {
+// Helper function to print test result and update counters
+inline void PrintTestResult(const char* testName, bool passed) {
+    // Use common PrintTestResult from TestUtils.h
+    ::PrintTestResult(testName, passed);
+    // Update local counters
     if (passed) {
-        std_print("✓ PASS: ");
-        std_println(testName);
         testsPassed_wifi++;
     } else {
-        std_print("✗ FAIL: ");
-        std_println(testName);
         testsFailed_wifi++;
     }
 }

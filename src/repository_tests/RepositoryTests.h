@@ -22,17 +22,7 @@
 #include "Order.h"
 #include "Customer.h"
 #include "UserAccount.h"
-
-// Print macros - compatible with both Arduino and non-Arduino
-#ifdef ARDUINO
-    // Arduino version using Serial.print/Serial.println
-    #define std_print(x) Serial.print(x)
-    #define std_println(x) Serial.println(x)
-#else
-    // Non-Arduino version using std::cout
-    #define std_print(x) std::cout << x
-    #define std_println(x) std::cout << x << std::endl
-#endif
+#include "../TestUtils.h"
 
 /* @Autowired */
 ProductRepositoryPtr productRepository = Implementation<ProductRepository>::type::GetInstance();
@@ -45,18 +35,6 @@ CustomerRepositoryPtr customerRepository = Implementation<CustomerRepository>::t
 
 /* @Autowired */
 UserAccountRepositoryPtr userAccountRepository = Implementation<UserAccountRepository>::type::GetInstance();
-
-// Test helper function
-void PrintTestResult(const StdString& testName, bool passed) {
-    std_print("Test: ");
-    std_print(testName.c_str());
-    std_print(" - ");
-    if (passed) {
-        std_println("PASSED");
-    } else {
-        std_println("FAILED");
-    }
-}
 
 // Test ProductRepository
 void TestProductRepository() {

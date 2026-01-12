@@ -24,56 +24,7 @@
 
 #include "UserRepository.h"
 #include "User.h"
-
-// Print macros - compatible with both Arduino and non-Arduino
-#ifdef ARDUINO
-    // Arduino version using Serial.print/Serial.println
-    #define std_print(x) Serial.print(x)
-    #define std_println(x) Serial.println(x)
-#else
-    // Non-Arduino version using std::cout
-    #define std_print(x) std::cout << x
-    #define std_println(x) std::cout << x << std::endl
-#endif
-
-// Test helper macros - compatible with both Arduino and non-Arduino
-#ifdef ARDUINO
-    // Arduino version using std_print/std_println macros
-    #define ASSERT(condition, message) \
-        do { \
-            if (!(condition)) { \
-                std_print("❌ FAIL: "); \
-                std_println(message); \
-                return false; \
-            } else { \
-                std_print("✅ PASS: "); \
-                std_println(message); \
-            } \
-        } while(0)
-
-    #define TEST_START(testName) \
-        std_print("\n========== "); \
-        std_print(testName); \
-        std_println(" ==========");
-#else
-    // Non-Arduino version using std_print/std_println macros
-    #define ASSERT(condition, message) \
-        do { \
-            if (!(condition)) { \
-                std_print("❌ FAIL: "); \
-                std_println(message); \
-                return false; \
-            } else { \
-                std_print("✅ PASS: "); \
-                std_println(message); \
-            } \
-        } while(0)
-
-    #define TEST_START(testName) \
-        std_print("\n========== "); \
-        std_print(testName); \
-        std_println(" ==========");
-#endif
+#include "../TestUtils.h"
 
 // Helper class for file verification - different implementations for Arduino and non-Arduino
 #ifdef ARDUINO
