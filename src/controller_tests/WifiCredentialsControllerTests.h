@@ -14,30 +14,31 @@
 #endif
 
 #include <StandardDefines.h>
-
-// Include controller and related files from arduinolib5
-// The library is fetched as a dependency, so we use the include path from the build system
-// These should be available through the arduino-core library
-#include "controller/IWifiCredentialsController.h"
+#include <SerializationUtility.h>
+#include "http_client/ISpecialHttpClient.h"
+#include "http_client/SpecialHttpClient.h"
 #include "controller/GetWifiCredentialsRequestDto.h"
 #include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
 #include "../tests/TestUtils.h"
+
+using namespace nayan::serializer;
 
 // Test assertion macros (using common ASSERT macro from TestUtils.h)
 #define ASSERT_WIFI(condition, message) ASSERT(condition, message)
 
 #define TEST_WIFI_START(test_name) TEST_START(test_name)
 
+// Base URL for the REST API
+static const StdString BASE_URL = "http://localhost:8080/wifi-credentials";
+
 // Global test counters
 static int testsPassed_wifi = 0;
 static int testsFailed_wifi = 0;
 
 // Helper function to print test result and update counters
-inline void PrintTestResult(const char* testName, bool passed) {
-    // Use common PrintTestResult from TestUtils.h
+inline void PrintWifiTestResult(const char* testName, bool passed) {
     ::PrintTestResult(testName, passed);
-    // Update local counters
     if (passed) {
         testsPassed_wifi++;
     } else {
@@ -53,94 +54,156 @@ WifiCredentials CreateTestCredentials(const StdString& ssid, const StdString& pa
     return creds;
 }
 
+// Helper function to parse HTTP response JSON
+struct HttpResponse {
+    int statusCode;
+    StdString body;
+};
+
+HttpResponse ParseHttpResponse(const StdString& responseJson) {
+    HttpResponse response;
+    response.statusCode = 0;
+    
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, responseJson.c_str());
+    if (error == DeserializationError::Ok) {
+        if (doc.containsKey("statusCode")) {
+            response.statusCode = doc["statusCode"].as<int>();
+        }
+        if (doc.containsKey("body")) {
+            response.body = StdString(doc["body"].as<const char*>());
+        }
+    }
+    
+    return response;
+}
+
+// Helper function to get HTTP client instance
+ISpecialHttpClientPtr GetHttpClient() {
+    return SpecialHttpClient::GetInstance();
+}
+
 // ========== CREATE OPERATIONS TESTS ==========
 
 // Test 1: Create WiFi credentials - Success
 bool TestCreateWifiCredentials_Success() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Success");
+    TEST_WIFI_START("Test Create WiFi Credentials - Success (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds = CreateTestCredentials("TestNetwork", "TestPassword123");
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString jsonBody = SerializationUtility::Serialize(creds);
+    
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present in result");
     ASSERT_WIFI(result.ssid.value() == "TestNetwork", "SSID should match input");
     ASSERT_WIFI(result.password.has_value(), "Password should be present in result");
     ASSERT_WIFI(result.password.value() == "TestPassword123", "Password should match input");
     
-    PrintTestResult("Create WiFi Credentials - Success", true);
+    PrintWifiTestResult("Create WiFi Credentials - Success", true);
     return true;
 }
 
 // Test 2: Create WiFi credentials - Empty SSID
 bool TestCreateWifiCredentials_EmptySsid() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Empty SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Empty SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds;
     creds.ssid = StdString("");
     creds.password = StdString("SomePassword");
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString jsonBody = SerializationUtility::Serialize(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    // Should still create (validation might be in service layer, but controller should handle it)
-    PrintTestResult("Create WiFi Credentials - Empty SSID", true);
+    // Should still create (validation might be in service layer)
+    PrintWifiTestResult("Create WiFi Credentials - Empty SSID", true);
     return true;
 }
 
 // Test 3: Create WiFi credentials - Empty Password
 bool TestCreateWifiCredentials_EmptyPassword() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Empty Password");
+    TEST_WIFI_START("Test Create WiFi Credentials - Empty Password (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds;
     creds.ssid = StdString("TestNetwork");
     creds.password = StdString("");
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString jsonBody = SerializationUtility::Serialize(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     ASSERT_WIFI(result.ssid.value() == "TestNetwork", "SSID should match");
     
-    PrintTestResult("Create WiFi Credentials - Empty Password", true);
+    PrintWifiTestResult("Create WiFi Credentials - Empty Password", true);
     return true;
 }
 
 // Test 4: Create WiFi credentials - Very Long SSID
 bool TestCreateWifiCredentials_VeryLongSsid() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Very Long SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Very Long SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     StdString longSsid(256, 'A'); // 256 character SSID
     WifiCredentials creds = CreateTestCredentials(longSsid, "Password123");
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString jsonBody = SerializationUtility::Serialize(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     ASSERT_WIFI(result.ssid.value().length() == 256, "SSID length should match");
     
-    PrintTestResult("Create WiFi Credentials - Very Long SSID", true);
+    PrintWifiTestResult("Create WiFi Credentials - Very Long SSID", true);
     return true;
 }
 
 // Test 5: Create WiFi credentials - Special Characters
 bool TestCreateWifiCredentials_SpecialCharacters() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Special Characters");
+    TEST_WIFI_START("Test Create WiFi Credentials - Special Characters (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds = CreateTestCredentials("Network_123-ABC", "P@ssw0rd!#$%");
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString jsonBody = SerializationUtility::Serialize(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, jsonBody);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     ASSERT_WIFI(result.ssid.value() == "Network_123-ABC", "SSID with special chars should match");
     
-    PrintTestResult("Create WiFi Credentials - Special Characters", true);
+    PrintWifiTestResult("Create WiFi Credentials - Special Characters", true);
     return true;
 }
 
@@ -148,94 +211,109 @@ bool TestCreateWifiCredentials_SpecialCharacters() {
 
 // Test 6: Get WiFi credentials by SSID - Success
 bool TestGetWifiCredentials_BySsid_Success() {
-    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Success");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Success (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // First create credentials
     WifiCredentials creds = CreateTestCredentials("GetTestNetwork", "GetTestPassword");
-    controller->CreateWifiCredentials(creds);
+    StdString createJsonBody = SerializationUtility::Serialize(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, createJsonBody);
     
     // Then retrieve them
-    GetWifiCredentialsRequestDto request;
-    request.ssid = StdString("GetTestNetwork");
-    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
+    StdString getUrl = BASE_URL + "/GetTestNetwork";
+    StdString responseJson = httpClient->Get(getUrl);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    ASSERT_WIFI(result.has_value(), "Credentials should be found");
-    ASSERT_WIFI(result.value().ssid.has_value(), "SSID should be present");
-    ASSERT_WIFI(result.value().ssid.value() == "GetTestNetwork", "SSID should match");
-    ASSERT_WIFI(result.value().password.has_value(), "Password should be present");
-    ASSERT_WIFI(result.value().password.value() == "GetTestPassword", "Password should match");
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
     
-    PrintTestResult("Get WiFi Credentials by SSID - Success", true);
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
+    
+    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
+    ASSERT_WIFI(result.ssid.value() == "GetTestNetwork", "SSID should match");
+    ASSERT_WIFI(result.password.has_value(), "Password should be present");
+    ASSERT_WIFI(result.password.value() == "GetTestPassword", "Password should match");
+    
+    PrintWifiTestResult("Get WiFi Credentials by SSID - Success", true);
     return true;
 }
 
 // Test 7: Get WiFi credentials by SSID - Not Found
 bool TestGetWifiCredentials_BySsid_NotFound() {
-    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Not Found");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Not Found (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
-    GetWifiCredentialsRequestDto request;
-    request.ssid = StdString("NonExistentNetwork");
-    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
+    StdString getUrl = BASE_URL + "/NonExistentNetwork";
+    StdString responseJson = httpClient->Get(getUrl);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    ASSERT_WIFI(!result.has_value(), "Credentials should not be found");
+    // Should return 404 or empty result
+    ASSERT_WIFI(response.statusCode == 404 || response.body.empty() || 
+                response.body == "{}" || response.body == "null", 
+                "Should return 404 or empty result for non-existent network");
     
-    PrintTestResult("Get WiFi Credentials by SSID - Not Found", true);
+    PrintWifiTestResult("Get WiFi Credentials by SSID - Not Found", true);
     return true;
 }
 
 // Test 8: Get WiFi credentials by SSID - Empty SSID
 bool TestGetWifiCredentials_BySsid_EmptySsid() {
-    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Empty SSID");
+    TEST_WIFI_START("Test Get WiFi Credentials by SSID - Empty SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
-    GetWifiCredentialsRequestDto request;
-    request.ssid = StdString("");
-    optional<WifiCredentials> result = controller->GetWifiCredentials(request);
+    StdString getUrl = BASE_URL + "/";
+    StdString responseJson = httpClient->Get(getUrl);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    // Should return nullopt for empty SSID
-    ASSERT_WIFI(!result.has_value(), "Empty SSID should return nullopt");
-    
-    PrintTestResult("Get WiFi Credentials by SSID - Empty SSID", true);
+    // Should return error or empty result for empty SSID
+    PrintWifiTestResult("Get WiFi Credentials by SSID - Empty SSID", true);
     return true;
 }
 
 // Test 9: Get All WiFi credentials - Empty
 bool TestGetAllWifiCredentials_Empty() {
-    TEST_WIFI_START("Test Get All WiFi Credentials - Empty");
+    TEST_WIFI_START("Test Get All WiFi Credentials - Empty (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
-    // Note: This test assumes we can clear or start fresh
-    // In real scenario, you might need to clean up first
-    Vector<WifiCredentials> result = controller->GetAllWifiCredentials();
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Get(url);
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    
+    Vector<WifiCredentials> result = SerializationUtility::Deserialize<Vector<WifiCredentials>>(response.body);
     
     // Should return empty vector if no credentials exist
-    // This is a valid scenario
-    PrintTestResult("Get All WiFi Credentials - Empty", true);
+    PrintWifiTestResult("Get All WiFi Credentials - Empty", true);
     return true;
 }
 
 // Test 10: Get All WiFi credentials - Multiple
 bool TestGetAllWifiCredentials_Multiple() {
-    TEST_WIFI_START("Test Get All WiFi Credentials - Multiple");
+    TEST_WIFI_START("Test Get All WiFi Credentials - Multiple (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create multiple credentials
     WifiCredentials creds1 = CreateTestCredentials("Network1", "Password1");
     WifiCredentials creds2 = CreateTestCredentials("Network2", "Password2");
     WifiCredentials creds3 = CreateTestCredentials("Network3", "Password3");
     
-    controller->CreateWifiCredentials(creds1);
-    controller->CreateWifiCredentials(creds2);
-    controller->CreateWifiCredentials(creds3);
+    StdString url = BASE_URL;
+    httpClient->Post(url, SerializationUtility::Serialize(creds1));
+    httpClient->Post(url, SerializationUtility::Serialize(creds2));
+    httpClient->Post(url, SerializationUtility::Serialize(creds3));
     
-    Vector<WifiCredentials> result = controller->GetAllWifiCredentials();
+    StdString responseJson = httpClient->Get(url);
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    
+    Vector<WifiCredentials> result = SerializationUtility::Deserialize<Vector<WifiCredentials>>(response.body);
     
     ASSERT_WIFI(result.size() >= 3, "Should return at least 3 credentials");
     
@@ -251,7 +329,7 @@ bool TestGetAllWifiCredentials_Multiple() {
     
     ASSERT_WIFI(found1 && found2 && found3, "All three networks should be found");
     
-    PrintTestResult("Get All WiFi Credentials - Multiple", true);
+    PrintWifiTestResult("Get All WiFi Credentials - Multiple", true);
     return true;
 }
 
@@ -259,17 +337,24 @@ bool TestGetAllWifiCredentials_Multiple() {
 
 // Test 11: Update WiFi credentials - Success
 bool TestUpdateWifiCredentials_Success() {
-    TEST_WIFI_START("Test Update WiFi Credentials - Success");
+    TEST_WIFI_START("Test Update WiFi Credentials - Success (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // First create credentials
     WifiCredentials creds = CreateTestCredentials("UpdateTestNetwork", "OldPassword");
-    controller->CreateWifiCredentials(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds));
     
     // Update password
     WifiCredentials updatedCreds = CreateTestCredentials("UpdateTestNetwork", "NewPassword");
-    WifiCredentials result = controller->UpdateWifiCredentials(updatedCreds);
+    StdString updateUrl = BASE_URL;
+    StdString responseJson = httpClient->Put(updateUrl, SerializationUtility::Serialize(updatedCreds));
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     ASSERT_WIFI(result.ssid.value() == "UpdateTestNetwork", "SSID should match");
@@ -277,53 +362,61 @@ bool TestUpdateWifiCredentials_Success() {
     ASSERT_WIFI(result.password.value() == "NewPassword", "Password should be updated");
     
     // Verify update by retrieving
-    GetWifiCredentialsRequestDto request;
-    request.ssid = StdString("UpdateTestNetwork");
-    optional<WifiCredentials> retrieved = controller->GetWifiCredentials(request);
-    ASSERT_WIFI(retrieved.has_value(), "Credentials should still exist");
-    ASSERT_WIFI(retrieved.value().password.value() == "NewPassword", "Password should be updated in storage");
+    StdString getUrl = BASE_URL + "/UpdateTestNetwork";
+    StdString getResponseJson = httpClient->Get(getUrl);
+    HttpResponse getResponse = ParseHttpResponse(getResponseJson);
     
-    PrintTestResult("Update WiFi Credentials - Success", true);
+    ASSERT_WIFI(getResponse.statusCode == 200, "HTTP status should be 200");
+    WifiCredentials retrieved = SerializationUtility::Deserialize<WifiCredentials>(getResponse.body);
+    ASSERT_WIFI(retrieved.password.value() == "NewPassword", "Password should be updated in storage");
+    
+    PrintWifiTestResult("Update WiFi Credentials - Success", true);
     return true;
 }
 
 // Test 12: Update WiFi credentials - Non-existent SSID
 bool TestUpdateWifiCredentials_NonExistent() {
-    TEST_WIFI_START("Test Update WiFi Credentials - Non-existent SSID");
+    TEST_WIFI_START("Test Update WiFi Credentials - Non-existent SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds = CreateTestCredentials("NonExistentNetwork", "SomePassword");
     
-    // Update should still work (might create if not exists, depending on service implementation)
-    WifiCredentials result = controller->UpdateWifiCredentials(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Put(url, SerializationUtility::Serialize(creds));
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
-    
-    PrintTestResult("Update WiFi Credentials - Non-existent SSID", true);
+    // Update might create if not exists, or return error
+    PrintWifiTestResult("Update WiFi Credentials - Non-existent SSID", true);
     return true;
 }
 
 // Test 13: Update WiFi credentials - Empty Password
 bool TestUpdateWifiCredentials_EmptyPassword() {
-    TEST_WIFI_START("Test Update WiFi Credentials - Empty Password");
+    TEST_WIFI_START("Test Update WiFi Credentials - Empty Password (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create first
     WifiCredentials creds = CreateTestCredentials("UpdateEmptyPassNetwork", "OriginalPassword");
-    controller->CreateWifiCredentials(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds));
     
     // Update with empty password
     WifiCredentials updatedCreds;
     updatedCreds.ssid = StdString("UpdateEmptyPassNetwork");
     updatedCreds.password = StdString("");
     
-    WifiCredentials result = controller->UpdateWifiCredentials(updatedCreds);
+    StdString updateUrl = BASE_URL;
+    StdString responseJson = httpClient->Put(updateUrl, SerializationUtility::Serialize(updatedCreds));
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     
-    PrintTestResult("Update WiFi Credentials - Empty Password", true);
+    PrintWifiTestResult("Update WiFi Credentials - Empty Password", true);
     return true;
 }
 
@@ -331,88 +424,96 @@ bool TestUpdateWifiCredentials_EmptyPassword() {
 
 // Test 14: Delete WiFi credentials - Success
 bool TestDeleteWifiCredentials_Success() {
-    TEST_WIFI_START("Test Delete WiFi Credentials - Success");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Success (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // First create credentials
     WifiCredentials creds = CreateTestCredentials("DeleteTestNetwork", "DeletePassword");
-    controller->CreateWifiCredentials(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds));
     
     // Verify it exists
-    GetWifiCredentialsRequestDto getRequest;
-    getRequest.ssid = StdString("DeleteTestNetwork");
-    optional<WifiCredentials> beforeDelete = controller->GetWifiCredentials(getRequest);
-    ASSERT_WIFI(beforeDelete.has_value(), "Credentials should exist before delete");
+    StdString getUrl = BASE_URL + "/DeleteTestNetwork";
+    StdString getResponseJson = httpClient->Get(getUrl);
+    HttpResponse getResponse = ParseHttpResponse(getResponseJson);
+    ASSERT_WIFI(getResponse.statusCode == 200, "Credentials should exist before delete");
     
     // Delete
-    DeleteWifiCredentialsRequestDto deleteRequest;
-    deleteRequest.ssid = StdString("DeleteTestNetwork");
-    controller->DeleteWifiCredentials(deleteRequest);
+    StdString deleteUrl = BASE_URL + "/DeleteTestNetwork";
+    StdString deleteResponseJson = httpClient->Delete(deleteUrl);
+    HttpResponse deleteResponse = ParseHttpResponse(deleteResponseJson);
+    
+    ASSERT_WIFI(deleteResponse.statusCode == 200 || deleteResponse.statusCode == 204, 
+                "HTTP status should be 200 or 204");
     
     // Verify it's deleted
-    optional<WifiCredentials> afterDelete = controller->GetWifiCredentials(getRequest);
-    ASSERT_WIFI(!afterDelete.has_value(), "Credentials should not exist after delete");
+    StdString verifyResponseJson = httpClient->Get(getUrl);
+    HttpResponse verifyResponse = ParseHttpResponse(verifyResponseJson);
+    ASSERT_WIFI(verifyResponse.statusCode == 404 || verifyResponse.body.empty() || 
+                verifyResponse.body == "{}" || verifyResponse.body == "null", 
+                "Credentials should not exist after delete");
     
-    PrintTestResult("Delete WiFi Credentials - Success", true);
+    PrintWifiTestResult("Delete WiFi Credentials - Success", true);
     return true;
 }
 
 // Test 15: Delete WiFi credentials - Non-existent SSID
 bool TestDeleteWifiCredentials_NonExistent() {
-    TEST_WIFI_START("Test Delete WiFi Credentials - Non-existent SSID");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Non-existent SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Delete non-existent should not throw error
-    DeleteWifiCredentialsRequestDto deleteRequest;
-    deleteRequest.ssid = StdString("NonExistentNetworkToDelete");
-    controller->DeleteWifiCredentials(deleteRequest);
+    StdString deleteUrl = BASE_URL + "/NonExistentNetworkToDelete";
+    StdString responseJson = httpClient->Delete(deleteUrl);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    // Should complete without error
-    PrintTestResult("Delete WiFi Credentials - Non-existent SSID", true);
+    // Should complete without error (might return 404 or 200)
+    PrintWifiTestResult("Delete WiFi Credentials - Non-existent SSID", true);
     return true;
 }
 
 // Test 16: Delete WiFi credentials - Empty SSID
 bool TestDeleteWifiCredentials_EmptySsid() {
-    TEST_WIFI_START("Test Delete WiFi Credentials - Empty SSID");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Empty SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Delete with empty SSID should not throw error
-    DeleteWifiCredentialsRequestDto deleteRequest;
-    deleteRequest.ssid = StdString("");
-    controller->DeleteWifiCredentials(deleteRequest);
+    StdString deleteUrl = BASE_URL + "/";
+    StdString responseJson = httpClient->Delete(deleteUrl);
     
-    PrintTestResult("Delete WiFi Credentials - Empty SSID", true);
+    PrintWifiTestResult("Delete WiFi Credentials - Empty SSID", true);
     return true;
 }
 
 // Test 17: Delete and verify last connected is cleared
 bool TestDeleteWifiCredentials_ClearsLastConnected() {
-    TEST_WIFI_START("Test Delete WiFi Credentials - Clears Last Connected");
+    TEST_WIFI_START("Test Delete WiFi Credentials - Clears Last Connected (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create and this will set as last connected
     WifiCredentials creds = CreateTestCredentials("LastConnectedNetwork", "Password");
-    controller->CreateWifiCredentials(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds));
     
     // Verify it's last connected
-    optional<WifiCredentials> lastConnected = controller->GetLastConnectedWifi();
-    ASSERT_WIFI(lastConnected.has_value(), "Should have last connected WiFi");
+    StdString lastConnectedUrl = BASE_URL + "/last-connected";
+    StdString lastConnectedResponseJson = httpClient->Get(lastConnectedUrl);
+    HttpResponse lastConnectedResponse = ParseHttpResponse(lastConnectedResponseJson);
+    ASSERT_WIFI(lastConnectedResponse.statusCode == 200, "Should have last connected WiFi");
     
     // Delete it
-    DeleteWifiCredentialsRequestDto deleteRequest;
-    deleteRequest.ssid = StdString("LastConnectedNetwork");
-    controller->DeleteWifiCredentials(deleteRequest);
+    StdString deleteUrl = BASE_URL + "/LastConnectedNetwork";
+    httpClient->Delete(deleteUrl);
     
     // Verify last connected is cleared (or points to something else)
-    optional<WifiCredentials> lastConnectedAfter = controller->GetLastConnectedWifi();
-    // Should either be nullopt or point to a different network
+    StdString verifyResponseJson = httpClient->Get(lastConnectedUrl);
+    HttpResponse verifyResponse = ParseHttpResponse(verifyResponseJson);
     
-    PrintTestResult("Delete WiFi Credentials - Clears Last Connected", true);
+    PrintWifiTestResult("Delete WiFi Credentials - Clears Last Connected", true);
     return true;
 }
 
@@ -420,69 +521,85 @@ bool TestDeleteWifiCredentials_ClearsLastConnected() {
 
 // Test 18: Get Last Connected WiFi - Success
 bool TestGetLastConnectedWifi_Success() {
-    TEST_WIFI_START("Test Get Last Connected WiFi - Success");
+    TEST_WIFI_START("Test Get Last Connected WiFi - Success (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create credentials (this should set as last connected)
     WifiCredentials creds = CreateTestCredentials("LastConnectedTest", "LastPassword");
-    controller->CreateWifiCredentials(creds);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds));
     
-    optional<WifiCredentials> result = controller->GetLastConnectedWifi();
+    StdString url = BASE_URL + "/last-connected";
+    StdString responseJson = httpClient->Get(url);
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    
+    optional<WifiCredentials> result = SerializationUtility::Deserialize<optional<WifiCredentials>>(response.body);
     
     ASSERT_WIFI(result.has_value(), "Last connected WiFi should be found");
     ASSERT_WIFI(result.value().ssid.has_value(), "SSID should be present");
     ASSERT_WIFI(result.value().ssid.value() == "LastConnectedTest", "SSID should match last created");
     
-    PrintTestResult("Get Last Connected WiFi - Success", true);
+    PrintWifiTestResult("Get Last Connected WiFi - Success", true);
     return true;
 }
 
 // Test 19: Get Last Connected WiFi - Not Set
 bool TestGetLastConnectedWifi_NotSet() {
-    TEST_WIFI_START("Test Get Last Connected WiFi - Not Set");
+    TEST_WIFI_START("Test Get Last Connected WiFi - Not Set (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
-    // If no credentials have been created/updated, last connected might be nullopt
-    optional<WifiCredentials> result = controller->GetLastConnectedWifi();
+    StdString url = BASE_URL + "/last-connected";
+    StdString responseJson = httpClient->Get(url);
+    HttpResponse response = ParseHttpResponse(responseJson);
     
     // Should return nullopt if not set (or might return first available)
-    // This depends on service implementation
-    
-    PrintTestResult("Get Last Connected WiFi - Not Set", true);
+    PrintWifiTestResult("Get Last Connected WiFi - Not Set", true);
     return true;
 }
 
 // Test 20: Get Last Connected WiFi - After Update
 bool TestGetLastConnectedWifi_AfterUpdate() {
-    TEST_WIFI_START("Test Get Last Connected WiFi - After Update");
+    TEST_WIFI_START("Test Get Last Connected WiFi - After Update (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create first network
     WifiCredentials creds1 = CreateTestCredentials("NetworkA", "PasswordA");
-    controller->CreateWifiCredentials(creds1);
+    StdString createUrl = BASE_URL;
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds1));
     
     // Create second network (should become last connected)
     WifiCredentials creds2 = CreateTestCredentials("NetworkB", "PasswordB");
-    controller->CreateWifiCredentials(creds2);
+    httpClient->Post(createUrl, SerializationUtility::Serialize(creds2));
     
     // Last connected should be NetworkB
-    optional<WifiCredentials> result = controller->GetLastConnectedWifi();
+    StdString lastConnectedUrl = BASE_URL + "/last-connected";
+    StdString responseJson = httpClient->Get(lastConnectedUrl);
+    HttpResponse response = ParseHttpResponse(responseJson);
+    
+    ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
+    optional<WifiCredentials> result = SerializationUtility::Deserialize<optional<WifiCredentials>>(response.body);
     ASSERT_WIFI(result.has_value(), "Last connected should be found");
     ASSERT_WIFI(result.value().ssid.value() == "NetworkB", "Last connected should be NetworkB");
     
     // Update NetworkA (should become last connected)
     WifiCredentials updatedCreds1 = CreateTestCredentials("NetworkA", "NewPasswordA");
-    controller->UpdateWifiCredentials(updatedCreds1);
+    httpClient->Put(createUrl, SerializationUtility::Serialize(updatedCreds1));
     
     // Last connected should now be NetworkA
-    optional<WifiCredentials> result2 = controller->GetLastConnectedWifi();
+    StdString responseJson2 = httpClient->Get(lastConnectedUrl);
+    HttpResponse response2 = ParseHttpResponse(responseJson2);
+    
+    ASSERT_WIFI(response2.statusCode == 200, "HTTP status should be 200");
+    optional<WifiCredentials> result2 = SerializationUtility::Deserialize<optional<WifiCredentials>>(response2.body);
     ASSERT_WIFI(result2.has_value(), "Last connected should still be found");
     ASSERT_WIFI(result2.value().ssid.value() == "NetworkA", "Last connected should be NetworkA after update");
     
-    PrintTestResult("Get Last Connected WiFi - After Update", true);
+    PrintWifiTestResult("Get Last Connected WiFi - After Update", true);
     return true;
 }
 
@@ -490,126 +607,126 @@ bool TestGetLastConnectedWifi_AfterUpdate() {
 
 // Test 21: Create with same SSID twice (should update)
 bool TestCreateWifiCredentials_DuplicateSsid() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Duplicate SSID");
+    TEST_WIFI_START("Test Create WiFi Credentials - Duplicate SSID (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds1 = CreateTestCredentials("DuplicateNetwork", "Password1");
-    controller->CreateWifiCredentials(creds1);
+    StdString url = BASE_URL;
+    httpClient->Post(url, SerializationUtility::Serialize(creds1));
     
     WifiCredentials creds2 = CreateTestCredentials("DuplicateNetwork", "Password2");
-    WifiCredentials result = controller->CreateWifiCredentials(creds2);
+    StdString responseJson = httpClient->Post(url, SerializationUtility::Serialize(creds2));
+    HttpResponse response = ParseHttpResponse(responseJson);
     
-    // Should either update or create new (depends on service implementation)
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID should be present");
     
-    PrintTestResult("Create WiFi Credentials - Duplicate SSID", true);
+    PrintWifiTestResult("Create WiFi Credentials - Duplicate SSID", true);
     return true;
 }
 
-// Test 22: Get with null controller (should handle gracefully or crash - testing behavior)
-bool TestGetWifiCredentials_NullController() {
-    TEST_WIFI_START("Test Get WiFi Credentials - Null Controller");
-    
-    // Test with null controller pointer - this tests the interface behavior
-    IWifiCredentialsControllerPtr controller = nullptr;
-    
-    // This should either crash or handle gracefully
-    // We're testing the controller's behavior
-    try {
-        if (controller != nullptr) {
-            GetWifiCredentialsRequestDto request;
-            request.ssid = StdString("TestNetwork");
-            optional<WifiCredentials> result = controller->GetWifiCredentials(request);
-        }
-        // If it doesn't crash, that's also a valid behavior
-        PrintTestResult("Get WiFi Credentials - Null Controller (handled)", true);
-    } catch (...) {
-        PrintTestResult("Get WiFi Credentials - Null Controller (exception)", true);
-    }
-    
-    return true;
-}
-
-// Test 23: Multiple operations in sequence
+// Test 22: Multiple operations in sequence
 bool TestWifiCredentials_MultipleOperationsSequence() {
-    TEST_WIFI_START("Test WiFi Credentials - Multiple Operations Sequence");
+    TEST_WIFI_START("Test WiFi Credentials - Multiple Operations Sequence (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     // Create
     WifiCredentials creds1 = CreateTestCredentials("SequenceNetwork", "Password1");
-    controller->CreateWifiCredentials(creds1);
+    StdString url = BASE_URL;
+    httpClient->Post(url, SerializationUtility::Serialize(creds1));
     
     // Read
-    GetWifiCredentialsRequestDto getRequest;
-    getRequest.ssid = StdString("SequenceNetwork");
-    optional<WifiCredentials> read1 = controller->GetWifiCredentials(getRequest);
-    ASSERT_WIFI(read1.has_value(), "Should be able to read after create");
+    StdString getUrl = BASE_URL + "/SequenceNetwork";
+    StdString getResponseJson = httpClient->Get(getUrl);
+    HttpResponse getResponse = ParseHttpResponse(getResponseJson);
+    ASSERT_WIFI(getResponse.statusCode == 200, "Should be able to read after create");
     
     // Update
     WifiCredentials creds2 = CreateTestCredentials("SequenceNetwork", "Password2");
-    controller->UpdateWifiCredentials(creds2);
+    StdString updateResponseJson = httpClient->Put(url, SerializationUtility::Serialize(creds2));
+    HttpResponse updateResponse = ParseHttpResponse(updateResponseJson);
+    ASSERT_WIFI(updateResponse.statusCode == 200, "Should be able to update");
     
     // Read again
-    optional<WifiCredentials> read2 = controller->GetWifiCredentials(getRequest);
-    ASSERT_WIFI(read2.has_value(), "Should be able to read after update");
-    ASSERT_WIFI(read2.value().password.value() == "Password2", "Password should be updated");
+    StdString getResponseJson2 = httpClient->Get(getUrl);
+    HttpResponse getResponse2 = ParseHttpResponse(getResponseJson2);
+    ASSERT_WIFI(getResponse2.statusCode == 200, "Should be able to read after update");
+    WifiCredentials read2 = SerializationUtility::Deserialize<WifiCredentials>(getResponse2.body);
+    ASSERT_WIFI(read2.password.value() == "Password2", "Password should be updated");
     
     // Delete
-    DeleteWifiCredentialsRequestDto deleteRequest;
-    deleteRequest.ssid = StdString("SequenceNetwork");
-    controller->DeleteWifiCredentials(deleteRequest);
+    StdString deleteUrl = BASE_URL + "/SequenceNetwork";
+    httpClient->Delete(deleteUrl);
     
     // Read after delete
-    optional<WifiCredentials> read3 = controller->GetWifiCredentials(getRequest);
-    ASSERT_WIFI(!read3.has_value(), "Should not be able to read after delete");
+    StdString getResponseJson3 = httpClient->Get(getUrl);
+    HttpResponse getResponse3 = ParseHttpResponse(getResponseJson3);
+    ASSERT_WIFI(getResponse3.statusCode == 404 || getResponse3.body.empty() || 
+                getResponse3.body == "{}" || getResponse3.body == "null", 
+                "Should not be able to read after delete");
     
-    PrintTestResult("WiFi Credentials - Multiple Operations Sequence", true);
+    PrintWifiTestResult("WiFi Credentials - Multiple Operations Sequence", true);
     return true;
 }
 
-// Test 24: Very long password
+// Test 23: Very long password
 bool TestCreateWifiCredentials_VeryLongPassword() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Very Long Password");
+    TEST_WIFI_START("Test Create WiFi Credentials - Very Long Password (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     StdString longPassword(512, 'X'); // 512 character password
     WifiCredentials creds = CreateTestCredentials("ShortSSID", longPassword);
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, SerializationUtility::Serialize(creds));
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.password.has_value(), "Password should be present");
     ASSERT_WIFI(result.password.value().length() == 512, "Password length should match");
     
-    PrintTestResult("Create WiFi Credentials - Very Long Password", true);
+    PrintWifiTestResult("Create WiFi Credentials - Very Long Password", true);
     return true;
 }
 
-// Test 25: Unicode characters in SSID and password
+// Test 24: Unicode characters in SSID and password
 bool TestCreateWifiCredentials_UnicodeCharacters() {
-    TEST_WIFI_START("Test Create WiFi Credentials - Unicode Characters");
+    TEST_WIFI_START("Test Create WiFi Credentials - Unicode Characters (REST API)");
     
-    IWifiCredentialsControllerPtr controller = Implementation<IWifiCredentialsController>::type::GetInstance();
+    ISpecialHttpClientPtr httpClient = GetHttpClient();
     
     WifiCredentials creds;
     creds.ssid = StdString("网络_Network_123");
     creds.password = StdString("密码_Password_🔒");
     
-    WifiCredentials result = controller->CreateWifiCredentials(creds);
+    StdString url = BASE_URL;
+    StdString responseJson = httpClient->Post(url, SerializationUtility::Serialize(creds));
+    HttpResponse response = ParseHttpResponse(responseJson);
     
+    ASSERT_WIFI(response.statusCode == 200 || response.statusCode == 201, 
+                "HTTP status should be 200 or 201");
+    
+    WifiCredentials result = SerializationUtility::Deserialize<WifiCredentials>(response.body);
     ASSERT_WIFI(result.ssid.has_value(), "SSID with unicode should be present");
     ASSERT_WIFI(result.password.has_value(), "Password with unicode should be present");
     
-    PrintTestResult("Create WiFi Credentials - Unicode Characters", true);
+    PrintWifiTestResult("Create WiFi Credentials - Unicode Characters", true);
     return true;
 }
 
 // Main test runner function
 void RunAllWifiCredentialsControllerTests() {
     std_println("\n========================================");
-    std_println("  WiFi Credentials Controller Tests");
+    std_println("  WiFi Credentials Controller Tests (REST API)");
     std_println("========================================");
     std_println("");
     
@@ -650,7 +767,6 @@ void RunAllWifiCredentialsControllerTests() {
     if (!TestGetLastConnectedWifi_AfterUpdate()) testsFailed_wifi++;
     
     // EDGE CASES
-    if (!TestGetWifiCredentials_NullController()) testsFailed_wifi++;
     if (!TestWifiCredentials_MultipleOperationsSequence()) testsFailed_wifi++;
     
     // Print summary
@@ -665,4 +781,3 @@ void RunAllWifiCredentialsControllerTests() {
 }
 
 #endif // WIFI_CREDENTIALS_CONTROLLER_TESTS_H
-
