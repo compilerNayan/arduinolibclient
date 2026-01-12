@@ -5,7 +5,7 @@
 #include "../controller/UserRepositoryTests.h"
 #include "../repository_tests/RepositoryTests.h"
 #include "../serialization_tests/SerializationUtilityTests.h"
-//#include "../controller_tests/WifiCredentialsControllerTests.h"
+#include "../controller_tests/WifiCredentialsControllerTests.h"
 
 /**
  * Run all test suites
@@ -56,12 +56,12 @@ int RunAllTestSuites(int argc, char* argv[]) {
     }
     std_println("");
     
-    /*// Run WifiCredentialsControllerTests
+    // Run WifiCredentialsControllerTests
     std_println("----------------------------------------");
     std_println("  WifiCredentialsControllerTests");
     std_println("----------------------------------------");
     RunAllWifiCredentialsControllerTests();
-    std_println(""); */
+    std_println(""); 
     
     // Print final summary
     std_println("========================================");
