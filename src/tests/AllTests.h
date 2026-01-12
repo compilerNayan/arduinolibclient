@@ -2,10 +2,10 @@
 #define ALL_TESTS_H
 
 // Include all test files
-#include "controller/UserRepositoryTests.h"
-#include "repository_tests/RepositoryTests.h"
-#include "serialization_tests/SerializationUtilityTests.h"
-//#include "controller_tests/WifiCredentialsControllerTests.h"
+#include "../controller/UserRepositoryTests.h"
+#include "../repository_tests/RepositoryTests.h"
+#include "../serialization_tests/SerializationUtilityTests.h"
+//#include "../controller_tests/WifiCredentialsControllerTests.h"
 
 /**
  * Run all test suites

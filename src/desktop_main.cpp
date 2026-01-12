@@ -1,5 +1,5 @@
 #ifndef ARDUINO
-#include "AllTests.h"
+#include "tests/AllTests.h"
 #include "IHttpRequestManager.h"
 #include "controller/06-MyEntityRepository.h"
 
