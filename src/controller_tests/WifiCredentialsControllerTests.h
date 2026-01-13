@@ -66,10 +66,10 @@ HttpResponse ParseHttpResponse(const StdString& responseJson) {
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, responseJson.c_str());
     if (error == DeserializationError::Ok) {
-        if (doc.containsKey("statusCode")) {
+        if (doc["statusCode"].is<int>()) {
             response.statusCode = doc["statusCode"].as<int>();
         }
-        if (doc.containsKey("body")) {
+        if (doc["body"].is<const char*>()) {
             response.body = StdString(doc["body"].as<const char*>());
         }
     }
