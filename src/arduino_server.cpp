@@ -24,7 +24,7 @@ void setup() {
     RunAllTestSuites(1, empty_argv);
 
     // Connect to WiFi
-    std_println2("Connecting to WiFi");
+    std_println("Connecting to WiFi");
     WiFi.begin(ssid, password);
 
     // Wait for connection, print "." while connecting
@@ -34,9 +34,9 @@ void setup() {
     }
 
     // Print connected message when connected
-    std_println2("\nConnected!");
-    std_println2("IP Address: ");
-    std_println2(WiFi.localIP());
+    std_println("\nConnected!");
+    std_println("IP Address: ");
+    std_println(WiFi.localIP());
 
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     delay(7000);
