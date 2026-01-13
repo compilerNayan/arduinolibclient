@@ -5,29 +5,24 @@
 
 #include "tests/AllTests.h"
 #include "IHttpRequestManager.h"    
-#include "controller/06-MyEntityRepository.h"
 
 /* @Autowired */
 IHttpRequestManagerPtr requestManager;
-
-// std_println macro for Arduino
-#define std_println2(x) Serial.println(x)
-#define std_print2(x) Serial.print(x)
 
 // WiFi credentials
 const char* ssid = "Garfield";
 const char* password = "123Madhu$$";
 
-/// @Autowired
-MyEntityRepositoryPtr myEntityRepository;
-
 
 void setup() {
     Serial.begin(115200);
     delay(1000);
+
     // Run all test suites
     char* empty_argv[] = { (char*)"arduino_main" };
+
     RunAllTestSuites(1, empty_argv);
+
     // Connect to WiFi
     std_println2("Connecting to WiFi");
     WiFi.begin(ssid, password);
@@ -43,18 +38,7 @@ void setup() {
     std_println2("IP Address: ");
     std_println2(WiFi.localIP());
 
-    Var myEntity = MyEntity();
-    myEntity.id = 1;
-    myEntity.username = "test";
-    myEntity.password = "test";
-    myEntityRepository->Save(myEntity);
-
-    Var myEntity2 = myEntityRepository->FindById(1);
-    std_println2("myEntity2: ");
-    std_println2(myEntity2->Serialize().c_str());
-
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
-    //s2->Start(8080);
     delay(7000);
 
 }

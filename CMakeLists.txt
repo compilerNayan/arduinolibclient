@@ -28,7 +28,7 @@ FetchContent_MakeAvailable(arduino-core)
 
 # Add test executable only (ignore other cpp files)
 add_executable(user_repository_tests
-    src/desktop_main.cpp
+    src/rest_tests.cpp
 )
 
 # Add server executable
