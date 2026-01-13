@@ -16,8 +16,6 @@
 #include <StandardDefines.h>
 #include <SerializationUtility.h>
 #include "http_client/ISpecialHttpClient.h"
-#include "controller/GetWifiCredentialsRequestDto.h"
-#include "controller/DeleteWifiCredentialsRequestDto.h"
 #include "entity/WifiCredentials.h"
 #include "../tests/TestUtils.h"
 
