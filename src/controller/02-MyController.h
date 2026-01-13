@@ -10,7 +10,7 @@ class MyController final : public IMyController {
   public:
 
   /// @GetMapping("/mysomeget2ee")
-  RetDto myFunee(TestDto x) override{
+  RetDto myFunee(/* @RequestBody */ TestDto x) override{
     std_println(x.a.value());
     std_println(x.b.value());
     std_println(x.c.value().c_str());
@@ -18,7 +18,7 @@ class MyController final : public IMyController {
   }
 
   /// @PostMapping("/somePost2ee")
-  RetDto MyPostFunnee(TestDto x) override{
+  RetDto MyPostFunnee(/* @RequestBody */ TestDto x) override{
     std_println("MyPostFunnee called");
     std_println(x.a.value());
     std_println(x.b.value());
