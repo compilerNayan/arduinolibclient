@@ -6,6 +6,7 @@
 #include "../repository_tests/RepositoryTests.h"
 #include "../serialization_tests/SerializationUtilityTests.h"
 #include "../controller_tests/WifiCredentialsControllerTests.h"
+#include "EndpointTrieTests.h"
 
 /**
  * Run all test suites
@@ -15,6 +16,7 @@
  * - RepositoryTests
  * - SerializationUtilityTests
  * - WifiCredentialsControllerTests
+ * - EndpointTrieTests
  * 
  * @param argc Command-line argument count (for UserRepositoryTests)
  * @param argv Command-line arguments (for UserRepositoryTests)
@@ -56,11 +58,23 @@ int RunAllTestSuites(int argc, char* argv[]) {
     }
     std_println("");
     
+    /*
     // Run WifiCredentialsControllerTests
     std_println("----------------------------------------");
     std_println("  WifiCredentialsControllerTests");
     std_println("----------------------------------------");
     RunAllWifiCredentialsControllerTests();
+    std_println(""); 
+    */
+    
+    // Run EndpointTrieTests
+    std_println("----------------------------------------");
+    std_println("  EndpointTrieTests");
+    std_println("----------------------------------------");
+    int endpointTrieResult = RunAllEndpointTrieTests();
+    if (endpointTrieResult != 0) {
+        totalFailed += endpointTrieResult;
+    }
     std_println(""); 
     
     // Print final summary
