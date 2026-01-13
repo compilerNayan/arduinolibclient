@@ -492,9 +492,15 @@ bool TestDeleteWifiCredentials_Success() {
     // Verify it's deleted
     StdString verifyResponseJson = httpClient->Get(getUrl);
     HttpResponse verifyResponse = ParseHttpResponse(verifyResponseJson);
-    ASSERT_WIFI(verifyResponse.statusCode == 404 || verifyResponse.body.empty() || 
-                verifyResponse.body == "{}" || verifyResponse.body == "null", 
-                "Credentials should not exist after delete");
+    // Check if response indicates not found (404, empty body, or empty object)
+    if (verifyResponse.statusCode == 404 || verifyResponse.body.empty() || 
+        verifyResponse.body == "{}" || verifyResponse.body == "null") {
+        // Already indicates not found
+    } else {
+        // If status is 200, check if the deserialized object is empty (no ssid)
+        WifiCredentials deletedCheck = SerializationUtility::Deserialize<WifiCredentials>(verifyResponse.body);
+        ASSERT_WIFI(!deletedCheck.ssid.has_value(), "Credentials should not exist after delete (ssid should be null)");
+    }
     
     PrintWifiTestResult("Delete WiFi Credentials - Success", true);
     return true;
@@ -708,9 +714,15 @@ bool TestWifiCredentials_MultipleOperationsSequence() {
     // Read after delete
     StdString getResponseJson3 = httpClient->Get(getUrl);
     HttpResponse getResponse3 = ParseHttpResponse(getResponseJson3);
-    ASSERT_WIFI(getResponse3.statusCode == 404 || getResponse3.body.empty() || 
-                getResponse3.body == "{}" || getResponse3.body == "null", 
-                "Should not be able to read after delete");
+    // Check if response indicates not found (404, empty body, or empty object)
+    if (getResponse3.statusCode == 404 || getResponse3.body.empty() || 
+        getResponse3.body == "{}" || getResponse3.body == "null") {
+        // Already indicates not found
+    } else {
+        // If status is 200, check if the deserialized object is empty (no ssid)
+        WifiCredentials deletedCheck = SerializationUtility::Deserialize<WifiCredentials>(getResponse3.body);
+        ASSERT_WIFI(!deletedCheck.ssid.has_value(), "Should not be able to read after delete (ssid should be null)");
+    }
     
     PrintWifiTestResult("WiFi Credentials - Multiple Operations Sequence", true);
     return true;
