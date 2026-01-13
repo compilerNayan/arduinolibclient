@@ -283,6 +283,37 @@ bool TestPathWithTrailingSlash() {
     return true;
 }
 
+// Test 13b: Trailing slash prefers exact match over variable match
+bool TestTrailingSlashPrefersExactMatch() {
+    TEST_START("Test Trailing Slash Prefers Exact Match");
+    
+    EndpointTrie trie;
+    trie.Insert("/xyz");
+    trie.Insert("/xyz/{ssid}");
+    
+    // /xyz/ should match /xyz (exact match), not /xyz/{ssid}
+    EndpointMatchResult result = trie.Search("/xyz/");
+    ASSERT(result.found, "Should find match");
+    ASSERT(result.pattern == "/xyz", "Should match exact pattern /xyz, not /xyz/{ssid}");
+    ASSERT(result.variables.empty(), "No variables for exact match");
+    
+    // /xyz/something should match /xyz/{ssid} (variable match)
+    EndpointMatchResult result2 = trie.Search("/xyz/something");
+    ASSERT(result2.found, "Should find match");
+    ASSERT(result2.pattern == "/xyz/{ssid}", "Should match variable pattern /xyz/{ssid}");
+    ASSERT(result2.variables.size() == 1, "Should have one variable");
+    ASSERT(result2.variables["ssid"] == "something", "ssid should be 'something'");
+    
+    // /xyz should match /xyz (exact match)
+    EndpointMatchResult result3 = trie.Search("/xyz");
+    ASSERT(result3.found, "Should find match");
+    ASSERT(result3.pattern == "/xyz", "Should match exact pattern /xyz");
+    ASSERT(result3.variables.empty(), "No variables for exact match");
+    
+    testsPassed_endpoint_trie++;
+    return true;
+}
+
 // Test 14: Variable at the beginning
 bool TestVariableAtBeginning() {
     TEST_START("Test Variable At Beginning");
@@ -739,6 +770,7 @@ int RunAllEndpointTrieTests() {
     if (!TestRootPath()) testsFailed_endpoint_trie++;
     if (!TestEmptyPath()) testsFailed_endpoint_trie++;
     if (!TestPathWithTrailingSlash()) testsFailed_endpoint_trie++;
+    if (!TestTrailingSlashPrefersExactMatch()) testsFailed_endpoint_trie++;
     if (!TestVariableAtBeginning()) testsFailed_endpoint_trie++;
     if (!TestVariableAtEnd()) testsFailed_endpoint_trie++;
     if (!TestAllVariablesPath()) testsFailed_endpoint_trie++;
