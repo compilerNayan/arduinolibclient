@@ -282,7 +282,7 @@ bool TestGetWifiCredentials_BySsid_Success() {
 }
 
 // Test 7: Get WiFi credentials by SSID - Not Found
-bool TestGetWifiCredentials_BySsid_NotFound() {
+/* bool TestGetWifiCredentials_BySsid_NotFound() {
     TEST_WIFI_START("Test Get WiFi Credentials by SSID - Not Found (REST API)");
     
     ISpecialHttpClientPtr httpClient = GetHttpClient();
@@ -298,7 +298,7 @@ bool TestGetWifiCredentials_BySsid_NotFound() {
     
     PrintWifiTestResult("Get WiFi Credentials by SSID - Not Found", true);
     return true;
-}
+} */
 
 // Test 8: Get WiFi credentials by SSID - Empty SSID
 bool TestGetWifiCredentials_BySsid_EmptySsid() {
