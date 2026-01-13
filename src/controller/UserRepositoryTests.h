@@ -62,20 +62,20 @@ public:
     static void CleanupTestFiles() {
         IFileManagerPtr fileManager = Implementation<IFileManager>::type::GetInstance();
         
-        // Delete User_IDs.txt
-        StdString idsFile = StdString("User_IDs.txt");
+        // Delete User_IDs
+        StdString idsFile = StdString("User_IDs");
         CStdString idsFileRef = idsFile;
         fileManager->Delete(idsFileRef);
         
         // Delete known test user files (IDs 1-40, 999)
         for (int i = 1; i <= 40; i++) {
-            StdString filepath = StdString("User_id_") + StdString(std::to_string(i).c_str()) + StdString(".txt");
+            StdString filepath = StdString("User_id_") + StdString(std::to_string(i).c_str()) + StdString("");
             CStdString filepathRef = filepath;
             fileManager->Delete(filepathRef);
         }
         
         // Delete ID 999
-        StdString filepath999 = StdString("User_id_999.txt");
+        StdString filepath999 = StdString("User_id_999");
         CStdString filepath999Ref = filepath999;
         fileManager->Delete(filepath999Ref);
     }
@@ -117,8 +117,8 @@ public:
         try {
             for (const auto& entry : std::filesystem::directory_iterator(dbPath)) {
                 std::string filename = entry.path().filename().string();
-                // Delete test files (User_id_*.txt and User_IDs.txt)
-                if (filename.find("User_") == 0 || filename == "User_IDs.txt") {
+                // Delete test files (User_id_* and User_IDs)
+                if (filename.find("User_") == 0 || filename == "User_IDs") {
                     std::filesystem::remove(entry.path());
                 }
             }
@@ -167,7 +167,7 @@ bool TestSaveUser() {
     ASSERT(savedUser.name.has_value() && savedUser.name.value() == "John Doe", "Save should return user with name='John Doe'");
     
     // Verify file was created on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_1.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_1");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk after Save");
     
     // Verify file contents from disk
@@ -178,7 +178,7 @@ bool TestSaveUser() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -199,7 +199,7 @@ bool TestSaveAndFindById() {
     repository->Save(user);
     
     // Verify file exists on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_2.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_2");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk after Save");
     
     // Find the user by ID
@@ -213,8 +213,8 @@ bool TestSaveAndFindById() {
     
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
-        FileVerifier::DeleteFile(GetTestFilePath("User_id_2.txt"));
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_id_2"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -235,7 +235,7 @@ bool TestFindByIdNotFound() {
     ASSERT(!foundUser.has_value(), "FindById should return empty optional for non-existent ID");
     
     // Verify file doesn't exist on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_999.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_999");
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent ID");
     
     testsPassed_urp++;
@@ -262,7 +262,7 @@ bool TestUpdateUser() {
     ASSERT(updatedUser.name.has_value() && updatedUser.name.value() == "Updated Name", "Update should return user with updated name");
     
     // Verify file was updated on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_3.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_3");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk after update");
     
     std::string fileContents = FileVerifier::ReadFile(expectedFilePath);
@@ -278,7 +278,7 @@ bool TestUpdateUser() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -298,7 +298,8 @@ bool TestDeleteById() {
     repository->Save(user);
     
     // Verify file exists on disk before deletion
-    std::string expectedFilePath = GetTestFilePath("User_id_4.txt");
+    // Note: GetFilePath() returns path without  extension
+    std::string expectedFilePath = GetTestFilePath("User_id_4");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk before deletion");
     
     // Delete the user
@@ -315,7 +316,7 @@ bool TestDeleteById() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -335,7 +336,8 @@ bool TestDeleteEntity() {
     repository->Save(user);
     
     // Verify file exists on disk before deletion
-    std::string expectedFilePath = GetTestFilePath("User_id_5.txt");
+    // Note: GetFilePath() returns path without  extension
+    std::string expectedFilePath = GetTestFilePath("User_id_5");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk before deletion");
     
     // Delete the user by entity
@@ -347,7 +349,7 @@ bool TestDeleteEntity() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -367,7 +369,7 @@ bool TestExistsByIdTrue() {
     repository->Save(user);
     
     // Verify file exists on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_6.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_6");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk");
     
     // Check if user exists
@@ -379,7 +381,7 @@ bool TestExistsByIdTrue() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -400,9 +402,9 @@ bool TestExistsByIdFalse() {
     
 #ifndef ARDUINO
     // Verify file doesn't exist on disk
-    std::string expectedFilePath = "/Users/nkurude/db/User_id_999.txt";
+    std::string expectedFilePath = "/Users/nkurude/db/User_id_999";
 #else
-    std::string expectedFilePath = GetTestFilePath("User_id_999.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_999");
 #endif
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent user");
     
@@ -433,9 +435,9 @@ bool TestFindAll() {
     repository->Save(user3);
     
     // Verify files exist on disk
-    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_10.txt")), "File for user 10 should exist");
-    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_11.txt")), "File for user 11 should exist");
-    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_12.txt")), "File for user 12 should exist");
+    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_10")), "File for user 10 should exist");
+    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_11")), "File for user 11 should exist");
+    ASSERT(FileVerifier::FileExists(GetTestFilePath("User_id_12")), "File for user 12 should exist");
     
     // Find all users
     Vector<User> allUsers = repository->FindAll();
@@ -458,10 +460,10 @@ bool TestFindAll() {
     
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
-        FileVerifier::DeleteFile(GetTestFilePath("User_id_10.txt"));
-        FileVerifier::DeleteFile(GetTestFilePath("User_id_11.txt"));
-        FileVerifier::DeleteFile(GetTestFilePath("User_id_12.txt"));
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_id_10"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_id_11"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_id_12"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -484,16 +486,16 @@ bool TestSaveMultipleUsers() {
     
     // Verify all files exist on disk
     for (int i = 20; i < 25; i++) {
-        std::string expectedFilePath = GetTestFilePath("User_id_" + std::to_string(i) + ".txt");
+        std::string expectedFilePath = GetTestFilePath("User_id_" + std::to_string(i) + "");
         ASSERT(FileVerifier::FileExists(expectedFilePath), ("File should exist on disk for user id=" + std::to_string(i)).c_str());
     }
     
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         for (int i = 20; i < 25; i++) {
-            FileVerifier::DeleteFile(GetTestFilePath("User_id_" + std::to_string(i) + ".txt"));
+            FileVerifier::DeleteFile(GetTestFilePath("User_id_" + std::to_string(i) + ""));
         }
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -513,13 +515,13 @@ bool TestUpdateNonExistentUser() {
     User updatedUser = repository->Update(user);
     
     // Verify file was created on disk (Update should create if doesn't exist)
-    std::string expectedFilePath = GetTestFilePath("User_id_30.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_30");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "Update should create file on disk if user doesn't exist");
     
     // Verify ID was added to IDs file
-    std::string idsFilePath = GetTestFilePath("User_IDs.txt");
+    std::string idsFilePath = GetTestFilePath("User_IDs");
     std::string idsFileContents = FileVerifier::ReadFile(idsFilePath);
-    ASSERT(idsFileContents.find("30") != std::string::npos, "Update should add ID to User_IDs.txt file");
+    ASSERT(idsFileContents.find("30") != std::string::npos, "Update should add ID to User_IDs file");
     
     // Verify we can find the user by ID
     int id = 30;
@@ -531,7 +533,7 @@ bool TestUpdateNonExistentUser() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
@@ -552,7 +554,7 @@ bool TestDeleteByIdNonExistent() {
     ASSERT(true, "DeleteById should not crash on non-existent user");
     
     // Verify file doesn't exist on disk
-    std::string expectedFilePath = GetTestFilePath("User_id_999.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_999");
     ASSERT(!FileVerifier::FileExists(expectedFilePath), "File should not exist on disk for non-existent user");
     
     testsPassed_urp++;
@@ -572,7 +574,7 @@ bool TestFileContentsMatchEntity() {
     repository->Save(user);
     
     // Get file contents from disk
-    std::string expectedFilePath = GetTestFilePath("User_id_40.txt");
+    std::string expectedFilePath = GetTestFilePath("User_id_40");
     ASSERT(FileVerifier::FileExists(expectedFilePath), "File should exist on disk");
     
     std::string fileContents = FileVerifier::ReadFile(expectedFilePath);
@@ -587,7 +589,7 @@ bool TestFileContentsMatchEntity() {
     // Clean up if flag is set
     if (g_cleanupAfterTests) {
         FileVerifier::DeleteFile(expectedFilePath);
-        FileVerifier::DeleteFile(GetTestFilePath("User_IDs.txt"));
+        FileVerifier::DeleteFile(GetTestFilePath("User_IDs"));
     }
     
     testsPassed_urp++;
