@@ -778,7 +778,7 @@ bool TestCreateWifiCredentials_UnicodeCharacters() {
 }
 
 // Main test runner function
-void RunAllWifiCredentialsControllerTests() {
+int RunAllWifiCredentialsControllerTests() {
     std_println("\n========================================");
     std_println("  WiFi Credentials Controller Tests (REST API)");
     std_println("========================================");
@@ -832,6 +832,8 @@ void RunAllWifiCredentialsControllerTests() {
     std_println(std::to_string(testsFailed_wifi).c_str());
     std_println("========================================");
     std_println("");
+    
+    return testsFailed_wifi;
 }
 
 #endif // WIFI_CREDENTIALS_CONTROLLER_TESTS_H
