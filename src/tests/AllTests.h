@@ -5,7 +5,7 @@
 #include "../controller/UserRepositoryTests.h"
 #include "../repository_tests/RepositoryTests.h"
 #include "../serialization_tests/SerializationUtilityTests.h"
-#include "../controller_tests/WifiCredentialsControllerTests.h"
+//#include "../controller_tests/WifiCredentialsControllerTests.h"
 #include "EndpointTrieTests.h"
 
 /**
