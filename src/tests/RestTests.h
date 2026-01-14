@@ -20,6 +20,9 @@
  * @return 0 if all tests passed, non-zero if any tests failed
  */
 int RunAllRestTests(int argc, char* argv[]) {
+    // Suppress unused parameter warnings (reserved for future use)
+    (void)argc;
+    (void)argv;
     std_println("");
     std_println("========================================");
     std_println("  Running All REST API Test Suites");
