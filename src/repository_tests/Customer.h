@@ -3,11 +3,11 @@
 
 #include <StandardDefines.h>
 
-/// @Entity
+/* @Entity */
 class Customer {
 
-    /// @Id
-    /// @NotNull
+    /* @Id */
+    /* @NotNull */
     Public optional<int> id;
 
     Public optional<StdString> email;

@@ -3,13 +3,13 @@
 
 #include "01-IMyController.h"
 
-/// @RestController
-/// @RequestMapping("/myUrlTee")
+/* @RestController */
+/* @RequestMapping("/myUrlTee") */
 /* @Component */
 class MyController final : public IMyController {
   public:
 
-  /// @GetMapping("/mysomeget2ee")
+  /* @GetMapping("/mysomeget2ee") */
   RetDto myFunee(/* @RequestBody */ TestDto x) override{
     std_println(x.a.value());
     std_println(x.b.value());
@@ -17,7 +17,7 @@ class MyController final : public IMyController {
     return RetDto();
   }
 
-  /// @PostMapping("/somePost2ee")
+  /* @PostMapping("/somePost2ee") */
   RetDto MyPostFunnee(/* @RequestBody */ TestDto x) override{
     std_println("MyPostFunnee called");
     std_println(x.a.value());

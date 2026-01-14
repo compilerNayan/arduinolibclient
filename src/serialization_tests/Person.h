@@ -4,7 +4,7 @@
 #include <StandardDefines.h>
 #include <ArduinoJson.h>
 
-/// @Serializable
+/* @Serializable */
 class Person {
     Public optional<int> id;
     Public optional<StdString> name;

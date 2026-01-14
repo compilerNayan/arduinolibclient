@@ -4,7 +4,7 @@
 #include <StandardDefines.h>
 #include <ArduinoJson.h>
 
-/// @Serializable
+/* @Serializable */
 class Address {
     Public optional<StdString> street;
     Public optional<StdString> city;

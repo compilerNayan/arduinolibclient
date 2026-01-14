@@ -5,7 +5,7 @@
 #include "CpaRepository.h"
 #include "User.h"
 
-/// @Repository
+/* @Repository */
 DefineStandardPointers(UserRepository)
 class UserRepository : public CpaRepository<User, int> {
     Public Virtual ~UserRepository() = default;

@@ -3,7 +3,7 @@
 
 #include <StandardDefines.h>
 
-/// @Serializable
+/* @Serializable */
 class RetDto {
 public:
     optional<int> a;

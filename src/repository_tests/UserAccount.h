@@ -3,11 +3,11 @@
 
 #include <StandardDefines.h>
 
-/// @Entity
+/* @Entity */
 class UserAccount {
 
-    /// @Id
-    /// @NotNull
+    /* @Id */
+    /* @NotNull */
     Public optional<StdString> username;
 
     Public optional<StdString> password;

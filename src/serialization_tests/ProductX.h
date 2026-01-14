@@ -4,7 +4,7 @@
 #include <StandardDefines.h>
 #include <ArduinoJson.h>
 
-/// @Serializable
+/* @Serializable */
 class ProductX {
     Public optional<int> productId;
     Public optional<StdString> productName;
