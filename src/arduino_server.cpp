@@ -42,9 +42,11 @@ void setup() {
     /// @Autowired
     INetworkManagerPtr networkManager;
     networkManager->ConnectNetwork();
+    delay(7000);
 
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     delay(7000);
+    std_println("Listening now...");
 
 }
 
