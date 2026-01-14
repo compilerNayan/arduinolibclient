@@ -23,7 +23,7 @@
  *   "body": "..."
  * }
  */
-/// @Component
+/* @Component */
 class SpecialHttpClient : public ISpecialHttpClient {
     Private
         // Initialize curl globally (called once)
