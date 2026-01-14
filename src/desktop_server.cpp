@@ -2,7 +2,7 @@
 #include "tests/AllTests.h"
 #include "IHttpRequestManager.h"
 
-/// @Autowired
+/* @Autowired */
 IHttpRequestManagerPtr requestManager;
 
 // Main function - runs the HTTP server loop

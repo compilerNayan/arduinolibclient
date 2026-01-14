@@ -8,14 +8,14 @@
 
 void setup() {
     Serial.begin(115200);
-    /// @Autowired
+    /* @Autowired */
     ISpringBootAppPtr springBootApp;
 
     springBootApp->StartApp();
 }
 
 void loop() {
-    /// @Autowired
+    /* @Autowired */
     ISpringBootAppPtr springBootApp;
 
     springBootApp->ListenToRequest();
