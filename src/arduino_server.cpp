@@ -5,6 +5,7 @@
 
 #include "tests/AllTests.h"
 #include "IHttpRequestManager.h"    
+#include "INetworkManager.h"
 
 /* @Autowired */
 IHttpRequestManagerPtr requestManager;
@@ -18,7 +19,7 @@ void setup() {
     Serial.begin(115200);
     delay(1000);
 
-    // Run all test suites
+  /*  // Run all test suites
     char* empty_argv[] = { (char*)"arduino_main" };
 
     RunAllTestSuites(1, empty_argv);
@@ -36,7 +37,11 @@ void setup() {
     // Print connected message when connected
     std_println("\nConnected!");
     std_println("IP Address: ");
-    std_println(WiFi.localIP());
+    std_println(WiFi.localIP()); */
+
+    /// @Autowired
+    INetworkManagerPtr networkManager;
+    networkManager->ConnectNetwork();
 
     requestManager = Implementation<IHttpRequestManager>::type::GetInstance();
     delay(7000);
