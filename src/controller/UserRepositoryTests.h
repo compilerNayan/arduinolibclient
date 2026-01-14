@@ -13,6 +13,8 @@
     #include <vector>
     #include <fstream>
     #include <filesystem>
+    #include <functional>
+    #include <cstdint>
 #endif
 
 #define _Entity
@@ -135,14 +137,25 @@ static int testsPassed_urp = 0;
 static int testsFailed_urp = 0;
 static bool g_cleanupAfterTests = false;
 
+// Helper function to generate hash (same as CpaRepositoryImpl::GenerateHash)
+inline StdString GenerateHashForTest(CStdString input) {
+    std::hash<StdString> hasher;
+    size_t hashValue = hasher(StdString(input.c_str()));
+    uint32_t hash32 = static_cast<uint32_t>(hashValue);
+    return StdString(std::to_string(hash32).c_str());
+}
+
 // Helper function to get file path - platform-specific
+// Now uses hashing to match repository behavior
 inline std::string GetTestFilePath(const std::string& filename) {
     #ifdef ARDUINO
-        // Arduino: just return the filename (Preferences uses keys, not paths)
-        return "/" + filename;
+        // Arduino: just return the hashed filename (Preferences uses keys, not paths)
+        StdString hashed = GenerateHashForTest(CStdString(filename.c_str()));
+        return "/" + std::string(hashed.c_str());
     #else
-        // Non-Arduino: return full path
-        return "/Users/nkurude/db/" + filename;
+        // Non-Arduino: return full path with hashed filename
+        StdString hashed = GenerateHashForTest(CStdString(filename.c_str()));
+        return "/Users/nkurude/db/" + std::string(hashed.c_str());
     #endif
 }
 
