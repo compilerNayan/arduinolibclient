@@ -4,15 +4,20 @@
 
 #include "ISpringBootApp.h"
 
-/// @Autowired
-ISpringBootAppPtr springBootApp;
 
 
 void setup() {
+    Serial.begin(115200);
+    /// @Autowired
+    ISpringBootAppPtr springBootApp;
+
     springBootApp->StartApp();
 }
 
 void loop() {
+    /// @Autowired
+    ISpringBootAppPtr springBootApp;
+
     springBootApp->ListenToRequest();
 }
 
