@@ -26,8 +26,8 @@ using namespace nayan::serializer;
 
 #define TEST_WIFI_START(test_name) TEST_START(test_name)
 
-// Base URL for the REST API
-static const StdString BASE_URL = "http://localhost:8080/wifi-credentials";
+// Base URL for the REST API (will be set by RunAllWifiCredentialsControllerTests)
+static StdString BASE_URL;
 
 // Global test counters
 static int testsPassed_wifi = 0;
@@ -778,9 +778,16 @@ bool TestCreateWifiCredentials_UnicodeCharacters() {
 }
 
 // Main test runner function
-int RunAllWifiCredentialsControllerTests() {
+int RunAllWifiCredentialsControllerTests(const std::string& ip = "localhost", const std::string& port = "8080") {
+    // Set BASE_URL based on provided IP and port
+    BASE_URL = StdString("http://") + StdString(ip.c_str()) + StdString(":") + StdString(port.c_str()) + StdString("/wifi-credentials");
+    
     std_println("\n========================================");
     std_println("  WiFi Credentials Controller Tests (REST API)");
+    std_print("  Server: ");
+    std_print(ip.c_str());
+    std_print(":");
+    std_println(port.c_str());
     std_println("========================================");
     std_println("");
     

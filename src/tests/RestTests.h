@@ -15,18 +15,19 @@
  * 
  * Additional REST tests can be added here in the future.
  * 
- * @param argc Command-line argument count (currently unused, reserved for future use)
- * @param argv Command-line arguments (currently unused, reserved for future use)
+ * @param ip Server IP address (default: "localhost")
+ * @param port Server port (default: "8080")
  * @return 0 if all tests passed, non-zero if any tests failed
  */
-int RunAllRestTests(int argc, char* argv[]) {
-    // Suppress unused parameter warnings (reserved for future use)
-    (void)argc;
-    (void)argv;
+int RunAllRestTests(const std::string& ip, const std::string& port) {
     std_println("");
     std_println("========================================");
     std_println("  Running All REST API Test Suites");
     std_println("========================================");
+    std_print("  Server: ");
+    std_print(ip.c_str());
+    std_print(":");
+    std_println(port.c_str());
     std_println("");
     
     int totalFailed = 0;
@@ -35,7 +36,7 @@ int RunAllRestTests(int argc, char* argv[]) {
     std_println("----------------------------------------");
     std_println("  WifiCredentialsControllerTests");
     std_println("----------------------------------------");
-    RunAllWifiCredentialsControllerTests();
+    RunAllWifiCredentialsControllerTests(ip, port);
     std_println("");
     
     // Print final summary
