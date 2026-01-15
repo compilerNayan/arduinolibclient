@@ -29,7 +29,8 @@ using namespace nayan::serializer;
 #define TEST_RESPONSE_ENTITY_START(test_name) TEST_START(test_name)
 
 // Base URL for the REST API (will be set by RunAllResponseEntityControllerTests)
-static StdString BASE_URL;
+// Note: Using a unique name to avoid conflict with WifiCredentialsControllerTests
+static StdString BASE_URL_RESPONSE_ENTITY;
 
 // Global test counters
 static int testsPassed_response_entity = 0;
@@ -45,49 +46,8 @@ inline void PrintResponseEntityTestResult(const char* testName, bool passed) {
     }
 }
 
-// Helper function to parse HTTP response JSON
-struct HttpResponse {
-    int statusCode;
-    StdString body;
-    Map<StdString, StdString> headers;
-};
-
-HttpResponse ParseHttpResponse(const StdString& responseJson) {
-    HttpResponse response;
-    response.statusCode = 0;
-    
-    JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, responseJson.c_str());
-    if (error == DeserializationError::Ok) {
-        if (doc["statusCode"].is<int>()) {
-            response.statusCode = doc["statusCode"].as<int>();
-        }
-        if (doc["body"].is<const char*>()) {
-            response.body = StdString(doc["body"].as<const char*>());
-        } else if (doc["body"].is<JsonObject>()) {
-            // Body is a JSON object, serialize it back to string
-            JsonObject bodyObj = doc["body"].as<JsonObject>();
-            StdString bodyStr;
-            serializeJson(bodyObj, bodyStr);
-            response.body = bodyStr;
-        }
-        
-        // Parse headers if present
-        if (doc["headers"].is<JsonObject>()) {
-            JsonObject headersObj = doc["headers"].as<JsonObject>();
-            for (JsonPair kv : headersObj) {
-                response.headers[StdString(kv.key().c_str())] = StdString(kv.value().as<const char*>());
-            }
-        }
-    }
-    
-    return response;
-}
-
-// Helper function to get HTTP client instance
-ISpecialHttpClientPtr GetHttpClient() {
-    return Implementation<ISpecialHttpClient>::type::GetInstance();
-}
+// Note: Using HttpResponse, ParseHttpResponse, and GetHttpClient from WifiCredentialsControllerTests.h
+// They are shared helpers available when both test files are included
 
 // ========== GET STRING RESPONSE TESTS ==========
 
@@ -102,7 +62,7 @@ bool TestGetStringResponse() {
         return false;
     }
     
-    StdString url = BASE_URL + "/string";
+    StdString url = BASE_URL_RESPONSE_ENTITY + "/string";
     std_print("[DEBUG] URL: ");
     std_println(url.c_str());
     
@@ -147,7 +107,7 @@ bool TestGetIntResponse() {
         return false;
     }
     
-    StdString url = BASE_URL + "/int";
+    StdString url = BASE_URL_RESPONSE_ENTITY + "/int";
     std_print("[DEBUG] URL: ");
     std_println(url.c_str());
     
@@ -190,7 +150,7 @@ bool TestGetOrderResponse() {
         return false;
     }
     
-    StdString url = BASE_URL + "/order";
+    StdString url = BASE_URL_RESPONSE_ENTITY + "/order";
     std_print("[DEBUG] URL: ");
     std_println(url.c_str());
     
@@ -243,7 +203,7 @@ bool TestGetVoidResponse() {
         return false;
     }
     
-    StdString url = BASE_URL + "/void";
+    StdString url = BASE_URL_RESPONSE_ENTITY + "/void";
     std_print("[DEBUG] URL: ");
     std_println(url.c_str());
     
@@ -293,9 +253,9 @@ int RunAllResponseEntityControllerTests(const std::string& ip, const std::string
     testsFailed_response_entity = 0;
     
     // Set base URL
-    BASE_URL = "http://" + StdString(ip.c_str()) + ":" + StdString(port.c_str()) + "/response-entity";
+    BASE_URL_RESPONSE_ENTITY = "http://" + StdString(ip.c_str()) + ":" + StdString(port.c_str()) + "/response-entity";
     std_print("Base URL: ");
-    std_println(BASE_URL.c_str());
+    std_println(BASE_URL_RESPONSE_ENTITY.c_str());
     std_println("");
     
     // Run all tests
