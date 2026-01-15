@@ -2,21 +2,21 @@
 #include "tests/AllTests.h"
 #include "IHttpRequestManager.h"
 
-#include "ISpringBootApp.h"
+#include "ISpringBootCppApp.h"
 
 
 /* @Autowired */
-ISpringBootAppPtr springBootApp;
+ISpringBootCppAppPtr springBootCppApp;
 
 // Main function - runs the HTTP server loop
 int main(int argc, char* argv[]) {
 
     RunAllTestSuites(argc, argv);
 
-    springBootApp->StartApp();
+    springBootCppApp->StartApp();
 
     while(true) {
-        springBootApp->ListenToRequest();
+        springBootCppApp->ListenToRequest();
     }
 
     return 0;
