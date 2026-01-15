@@ -1,5 +1,5 @@
 #ifndef ARDUINO
-//#include "tests/AllTests.h"
+#include "tests/AllTests.h"
 //#include "IHttpRequestManager.h"
 
 #include "ISpringBootApp.h"
