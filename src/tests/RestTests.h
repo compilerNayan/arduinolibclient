@@ -7,6 +7,7 @@
 // Include all REST test files
 #include "../controller_tests/WifiCredentialsControllerTests.h"
 #include "../controller_tests/ResponseEntityControllerTests.h"
+#include "../controller_tests/ExceptionTestControllerTests.h"
 
 /**
  * Run all REST API test suites
@@ -47,6 +48,14 @@ int RunAllRestTests(const std::string& ip, const std::string& port) {
     std_println("----------------------------------------");
     int failed_response_entity = RunAllResponseEntityControllerTests(ip, port);
     totalFailed += failed_response_entity;
+    std_println("");
+    
+    // Run ExceptionTestControllerTests
+    std_println("----------------------------------------");
+    std_println("  ExceptionTestControllerTests");
+    std_println("----------------------------------------");
+    int failed_exception = RunAllExceptionTestControllerTests(ip, port);
+    totalFailed += failed_exception;
     std_println("");
     
     // Print final summary
