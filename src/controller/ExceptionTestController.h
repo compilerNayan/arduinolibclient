@@ -5,15 +5,9 @@
 #include "IExceptionTestController.h"
 #include "ResponseEntity.h"
 #include "HttpStatus.h"
+#include "CustomException.h"
 #include <stdexcept>
 #include <exception>
-
-// Custom exception class (not derived from std::exception)
-class CustomException {
-public:
-    StdString message;
-    CustomException(const StdString& msg) : message(msg) {}
-};
 
 /* @RestController */
 /* @RequestMapping("/exception-test") */
