@@ -39,21 +39,6 @@ public:
     ResponseEntity<StdString> ThrowCustomException() override {
         throw CustomException("This is a custom exception type");
     }
-
-    public: static IExceptionTestControllerPtr GetInstance() {
-        static IExceptionTestControllerPtr instance(new ExceptionTestController());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<IExceptionTestController> {
-    using type = ExceptionTestController;
-};
-
-template <>
-struct Implementation<IExceptionTestController*> {
-    using type = ExceptionTestController*;
 };
 
 #endif // EXCEPTIONTESTCONTROLLER_H
