@@ -2,21 +2,21 @@
 
 #include <Arduino.h>
 
-#include "ISpringBootApp.h"
+#include "IArduinoSpringBootApp.h"
 
 
 
 void setup() {
     Serial.begin(115200);
     /* @Autowired */
-    ISpringBootAppPtr springBootApp;
+    IArduinoSpringBootAppPtr springBootApp;
 
     springBootApp->StartApp();
 }
 
 void loop() {
     /* @Autowired */
-    ISpringBootAppPtr springBootApp;
+    IArduinoSpringBootAppPtr springBootApp;
 
     springBootApp->ListenToRequest();
 }
