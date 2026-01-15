@@ -6,6 +6,7 @@
 
 // Include all REST test files
 #include "../controller_tests/WifiCredentialsControllerTests.h"
+#include "../controller_tests/ResponseEntityControllerTests.h"
 
 /**
  * Run all REST API test suites
@@ -36,13 +37,24 @@ int RunAllRestTests(const std::string& ip, const std::string& port) {
     std_println("----------------------------------------");
     std_println("  WifiCredentialsControllerTests");
     std_println("----------------------------------------");
-    RunAllWifiCredentialsControllerTests(ip, port);
+    int failed_wifi = RunAllWifiCredentialsControllerTests(ip, port);
+    totalFailed += failed_wifi;
+    std_println("");
+    
+    // Run ResponseEntityControllerTests
+    std_println("----------------------------------------");
+    std_println("  ResponseEntityControllerTests");
+    std_println("----------------------------------------");
+    int failed_response_entity = RunAllResponseEntityControllerTests(ip, port);
+    totalFailed += failed_response_entity;
     std_println("");
     
     // Print final summary
     std_println("========================================");
     std_println("  REST API Test Suites Summary");
     std_println("========================================");
+    std_print("Total tests failed: ");
+    std_println(std::to_string(totalFailed).c_str());
     if (totalFailed == 0) {
         std_println("✅ All REST API test suites passed!");
     } else {
