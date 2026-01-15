@@ -39,21 +39,6 @@ public:
     ResponseEntity<Void> GetVoidResponse() override {
         return ResponseEntity<Void>(HttpStatus::NOT_FOUND);
     }
-
-    public: static IResponseEntityControllerPtr GetInstance() {
-        static IResponseEntityControllerPtr instance(new ResponseEntityController());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<IResponseEntityController> {
-    using type = ResponseEntityController;
-};
-
-template <>
-struct Implementation<IResponseEntityController*> {
-    using type = ResponseEntityController*;
 };
 
 #endif // RESPONSEENTITYCONTROLLER_H
