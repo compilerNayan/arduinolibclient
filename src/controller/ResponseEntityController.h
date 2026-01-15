@@ -16,13 +16,13 @@ public:
     /* @GetMapping("/string") */
     ResponseEntity<StdString> GetStringResponse() override {
         StdString message = "Created successfully";
-        return ResponseEntity<StdString>(HttpStatus::CREATED, message);
+        return ResponseEntity<StdString>::Created(message);
     }
 
     /* @GetMapping("/int") */
     ResponseEntity<Int> GetIntResponse() override {
         Int value = 42;
-        return ResponseEntity<Int>(HttpStatus::ACCEPTED, value);
+        return ResponseEntity<Int>::Accepted(value);
     }
 
     /* @GetMapping("/order") */
@@ -32,12 +32,12 @@ public:
         order.orderNumber = StdString("ORD-12345");
         order.customerId = 100;
         order.totalAmount = 99.99;
-        return ResponseEntity<Order>(HttpStatus::NON_AUTHORITATIVE_INFORMATION, order);
+        return ResponseEntity<Order>::Status(HttpStatus::NON_AUTHORITATIVE_INFORMATION, order);
     }
 
     /* @GetMapping("/void") */
     ResponseEntity<Void> GetVoidResponse() override {
-        return ResponseEntity<Void>(HttpStatus::NOT_FOUND);
+        return ResponseEntity<Void>::NotFound();
     }
 };
 
