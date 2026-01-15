@@ -11,7 +11,6 @@
 
 /* @RestController */
 /* @RequestMapping("/exception-test") */
-/* @Component */
 class ExceptionTestController final : public IExceptionTestController {
 public:
 

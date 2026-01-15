@@ -9,7 +9,6 @@
 
 /* @RestController */
 /* @RequestMapping("/response-entity") */
-/* @Component */
 class ResponseEntityController final : public IResponseEntityController {
 public:
 

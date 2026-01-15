@@ -5,7 +5,6 @@
 
 /* @RestController */
 /* @RequestMapping("/myUrlTee") */
-/* @Component */
 class MyController final : public IMyController {
   public:
 
