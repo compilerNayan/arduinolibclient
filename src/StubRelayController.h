@@ -11,7 +11,7 @@
 
 /* @Component */
 class StubRelayController : public IRelayController {
-    Private:
+    Private
         // Store pin states for testing purposes
         std::map<Int, SwitchState> pinStates;
 
