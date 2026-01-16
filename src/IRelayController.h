@@ -2,36 +2,30 @@
 #define IRELAYCONTROLLER_H
 
 #include <StandardDefines.h>
+#include "SwitchState.h"
 
 DefineStandardPointers(IRelayController)
 class IRelayController {
     Public Virtual ~IRelayController() = default;
 
     /**
-     * @brief Set a pin to HIGH state (turn relay ON)
+     * @brief Turn on the relay switch
      * @param pin The GPIO pin number to control
      */
-    Public Virtual Void SetHigh(Int pin) = 0;
+    Public Virtual Void TurnOn(Int pin) = 0;
 
     /**
-     * @brief Set a pin to LOW state (turn relay OFF)
+     * @brief Turn off the relay switch
      * @param pin The GPIO pin number to control
      */
-    Public Virtual Void SetLow(Int pin) = 0;
+    Public Virtual Void TurnOff(Int pin) = 0;
 
     /**
-     * @brief Write a state to a pin (HIGH or LOW)
-     * @param pin The GPIO pin number to control
-     * @param isHigh true for HIGH, false for LOW
-     */
-    Public Virtual Void Write(Int pin, Bool isHigh) = 0;
-
-    /**
-     * @brief Read the current state of a pin
+     * @brief Get the current state of the relay switch
      * @param pin The GPIO pin number to read
-     * @return true if pin is HIGH, false if LOW
+     * @return SwitchState::On if relay is on, SwitchState::Off if off
      */
-    Public Virtual Bool Read(Int pin) = 0;
+    Public Virtual SwitchState GetState(Int pin) = 0;
 };
 
 #endif // IRELAYCONTROLLER_H

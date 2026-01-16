@@ -4,39 +4,48 @@
 
 #include <StandardDefines.h>
 #include "IRelayController.h"
+#include "SwitchState.h"
+#include "ILogger.h"
+#include "Tag.h"
 #include <map>
-#include <iostream>
 
 /* @Component */
 class StubRelayController : public IRelayController {
     Private:
         // Store pin states for testing purposes
-        std::map<Int, Bool> pinStates;
+        std::map<Int, SwitchState> pinStates;
+
+    /* @Autowired */
+    Private ILoggerPtr logger;
 
     Public Virtual ~StubRelayController() = default;
 
-    Public Virtual Void SetHigh(Int pin) override {
-        pinStates[pin] = true;
-        std::cout << "[StubRelayController] Set pin " << pin << " to HIGH" << std::endl;
-    }
-
-    Public Virtual Void SetLow(Int pin) override {
-        pinStates[pin] = false;
-        std::cout << "[StubRelayController] Set pin " << pin << " to LOW" << std::endl;
-    }
-
-    Public Virtual Void Write(Int pin, Bool isHigh) override {
-        if (isHigh) {
-            SetHigh(pin);
-        } else {
-            SetLow(pin);
+    Public Virtual Void TurnOn(Int pin) override {
+        pinStates[pin] = SwitchState::On;
+        if (logger != nullptr) {
+            StdString message = "Turned on relay at pin " + std::to_string(pin);
+            StdString functionName = "TurnOn";
+            logger->Info(Tag::Untagged, message, functionName);
         }
     }
 
-    Public Virtual Bool Read(Int pin) override {
-        // Return stored state, default to LOW if not set
-        Bool state = (pinStates.find(pin) != pinStates.end()) ? pinStates[pin] : false;
-        std::cout << "[StubRelayController] Read pin " << pin << " state: " << (state ? "HIGH" : "LOW") << std::endl;
+    Public Virtual Void TurnOff(Int pin) override {
+        pinStates[pin] = SwitchState::Off;
+        if (logger != nullptr) {
+            StdString message = "Turned off relay at pin " + std::to_string(pin);
+            StdString functionName = "TurnOff";
+            logger->Info(Tag::Untagged, message, functionName);
+        }
+    }
+
+    Public Virtual SwitchState GetState(Int pin) override {
+        // Return stored state, default to Off if not set
+        SwitchState state = (pinStates.find(pin) != pinStates.end()) ? pinStates[pin] : SwitchState::Off;
+        if (logger != nullptr) {
+            StdString message = "Get state of pin " + std::to_string(pin) + ": " + (state == SwitchState::On ? "ON" : "OFF");
+            StdString functionName = "GetState";
+            logger->Info(Tag::Untagged, message, functionName);
+        }
         return state;
     }
 

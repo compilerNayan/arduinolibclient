@@ -4,47 +4,47 @@
 
 #include <StandardDefines.h>
 #include "IRelayController.h"
+#include "SwitchState.h"
 #include <Arduino.h>
-
-// Define print macros for Arduino
-#define std_print(x) Serial.print(x)
-#define std_println(x) Serial.println(x)
+#include "ILogger.h"
+#include "Tag.h"
 
 /* @Component */
 class RelayController : public IRelayController {
     Public Virtual ~RelayController() = default;
 
-    Public Virtual Void SetHigh(Int pin) override {
+    /* @Autowired */
+    Private ILoggerPtr logger;
+
+    Public Virtual Void TurnOn(Int pin) override {
         pinMode(pin, OUTPUT);
         digitalWrite(pin, HIGH);
-        std_print("[RelayController] Set pin ");
-        std_print(std::to_string(pin).c_str());
-        std_println(" to HIGH");
-    }
-
-    Public Virtual Void SetLow(Int pin) override {
-        pinMode(pin, OUTPUT);
-        digitalWrite(pin, LOW);
-        std_print("[RelayController] Set pin ");
-        std_print(std::to_string(pin).c_str());
-        std_println(" to LOW");
-    }
-
-    Public Virtual Void Write(Int pin, Bool isHigh) override {
-        if (isHigh) {
-            SetHigh(pin);
-        } else {
-            SetLow(pin);
+        if (logger != nullptr) {
+            StdString message = "Turned on relay at pin " + std::to_string(pin);
+            StdString functionName = "TurnOn";
+            logger->Info(Tag::Untagged, message, functionName);
         }
     }
 
-    Public Virtual Bool Read(Int pin) override {
+    Public Virtual Void TurnOff(Int pin) override {
+        pinMode(pin, OUTPUT);
+        digitalWrite(pin, LOW);
+        if (logger != nullptr) {
+            StdString message = "Turned off relay at pin " + std::to_string(pin);
+            StdString functionName = "TurnOff";
+            logger->Info(Tag::Untagged, message, functionName);
+        }
+    }
+
+    Public Virtual SwitchState GetState(Int pin) override {
         pinMode(pin, INPUT);
-        Bool state = digitalRead(pin) == HIGH;
-        std_print("[RelayController] Read pin ");
-        std_print(std::to_string(pin).c_str());
-        std_print(" state: ");
-        std_println(state ? "HIGH" : "LOW");
+        Bool isHigh = digitalRead(pin) == HIGH;
+        SwitchState state = isHigh ? SwitchState::On : SwitchState::Off;
+        if (logger != nullptr) {
+            StdString message = "Get state of pin " + std::to_string(pin) + ": " + (isHigh ? "ON" : "OFF");
+            StdString functionName = "GetState";
+            logger->Info(Tag::Untagged, message, functionName);
+        }
         return state;
     }
 
