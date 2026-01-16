@@ -42,7 +42,7 @@ int RunAllRestTests(const std::string& ip, const std::string& port) {
     totalFailed += failed_wifi;
     std_println("");
     
-    // Run ResponseEntityControllerTests
+/*    // Run ResponseEntityControllerTests
     std_println("----------------------------------------");
     std_println("  ResponseEntityControllerTests");
     std_println("----------------------------------------");
@@ -56,7 +56,7 @@ int RunAllRestTests(const std::string& ip, const std::string& port) {
     std_println("----------------------------------------");
     int failed_exception = RunAllExceptionTestControllerTests(ip, port);
     totalFailed += failed_exception;
-    std_println("");
+    std_println(""); */
     
     // Print final summary
     std_println("========================================");

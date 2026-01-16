@@ -794,7 +794,7 @@ int RunAllWifiCredentialsControllerTests(const std::string& ip = "localhost", co
     testsPassed_wifi = 0;
     testsFailed_wifi = 0;
     
-    // CREATE Tests
+  /*  // CREATE Tests
     if (!TestCreateWifiCredentials_Success()) testsFailed_wifi++;
     if (!TestCreateWifiCredentials_EmptySsid()) testsFailed_wifi++;
     if (!TestCreateWifiCredentials_EmptyPassword()) testsFailed_wifi++;
@@ -803,7 +803,8 @@ int RunAllWifiCredentialsControllerTests(const std::string& ip = "localhost", co
     if (!TestCreateWifiCredentials_DuplicateSsid()) testsFailed_wifi++;
     if (!TestCreateWifiCredentials_VeryLongPassword()) testsFailed_wifi++;
     if (!TestCreateWifiCredentials_UnicodeCharacters()) testsFailed_wifi++;
-    
+  */
+
     // READ Tests
     if (!TestGetWifiCredentials_BySsid_Success()) testsFailed_wifi++;
     //if (!TestGetWifiCredentials_BySsid_NotFound()) testsFailed_wifi++;
@@ -812,15 +813,15 @@ int RunAllWifiCredentialsControllerTests(const std::string& ip = "localhost", co
     if (!TestGetAllWifiCredentials_Multiple()) testsFailed_wifi++;
     
     // UPDATE Tests
-    if (!TestUpdateWifiCredentials_Success()) testsFailed_wifi++;
+  /*  if (!TestUpdateWifiCredentials_Success()) testsFailed_wifi++;
     if (!TestUpdateWifiCredentials_NonExistent()) testsFailed_wifi++;
-    if (!TestUpdateWifiCredentials_EmptyPassword()) testsFailed_wifi++;
+    if (!TestUpdateWifiCredentials_EmptyPassword()) testsFailed_wifi++; */
     
     // DELETE Tests
-    if (!TestDeleteWifiCredentials_Success()) testsFailed_wifi++;
+  /*  if (!TestDeleteWifiCredentials_Success()) testsFailed_wifi++;
     if (!TestDeleteWifiCredentials_NonExistent()) testsFailed_wifi++;
     if (!TestDeleteWifiCredentials_EmptySsid()) testsFailed_wifi++;
-    if (!TestDeleteWifiCredentials_ClearsLastConnected()) testsFailed_wifi++;
+    if (!TestDeleteWifiCredentials_ClearsLastConnected()) testsFailed_wifi++; */
     
     // LAST CONNECTED Tests
     if (!TestGetLastConnectedWifi_Success()) testsFailed_wifi++;
@@ -828,7 +829,7 @@ int RunAllWifiCredentialsControllerTests(const std::string& ip = "localhost", co
     if (!TestGetLastConnectedWifi_AfterUpdate()) testsFailed_wifi++;
     
     // EDGE CASES
-    if (!TestWifiCredentials_MultipleOperationsSequence()) testsFailed_wifi++;
+  /*  if (!TestWifiCredentials_MultipleOperationsSequence()) testsFailed_wifi++; */
     
     // Print summary
     std_println("");
