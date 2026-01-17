@@ -29,7 +29,12 @@ class SwitchDevice : public ISwitchDevice {
     /* @Autowired */
     Private SwitchRepositoryPtr switchRepository;
 
-    Public SwitchDevice() : id(22), pin(22), virtualState(SwitchState::Off), relayState(SwitchState::Off) {
+    /**
+     * @brief Constructor with id and pin parameters
+     * @param id The switch ID
+     * @param pin The GPIO pin number
+     */
+    Public SwitchDevice(CInt id, CInt pin) : id(id), pin(pin), virtualState(SwitchState::Off), relayState(SwitchState::Off) {
         // Initialize virtualState from repository
         optional<Switch> switchEntity = switchRepository->FindById(id);
         if (switchEntity.has_value() && switchEntity.value().GetVirtualState().has_value()) {
