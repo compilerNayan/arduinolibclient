@@ -82,7 +82,8 @@ class SwitchDevice : public ISwitchDevice {
         virtualState = (physicalState == SwitchState::On) ? SwitchState::Off : SwitchState::On;
         
         // Save virtual state to repository
-        switchRepository->Update(GetSwitchEntity());
+        Var switchEntity = GetSwitchEntity();
+        switchRepository->Update(switchEntity);
         
         logger->Info(Tag::Untagged, GetOperationLogMessage("off"));
         
