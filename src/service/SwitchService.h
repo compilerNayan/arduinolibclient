@@ -72,21 +72,6 @@ class SwitchService : public ISwitchService {
         
         return switchDtos;
     }
-
-    public: static ISwitchServicePtr GetInstance() {
-        static ISwitchServicePtr instance(new SwitchService());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<ISwitchService> {
-    using type = SwitchService;
-};
-
-template <>
-struct Implementation<ISwitchService*> {
-    using type = SwitchService*;
 };
 
 #endif // SWITCHSERVICE_H
