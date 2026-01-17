@@ -50,7 +50,7 @@ class SwitchDevice : public ISwitchDevice {
 
     Public Virtual ~SwitchDevice() = default;
 
-    Public Virtual Void TurnOn() override {
+    Public Virtual SwitchState TurnOn() override {
         // Read current physical state
         SwitchState physicalState = ReadPhysicalState();
         
@@ -66,9 +66,12 @@ class SwitchDevice : public ISwitchDevice {
         
         // Refresh relay state based on virtual and physical states
         RefreshRelayState();
+        
+        // Return the final relay state
+        return relayState;
     }
 
-    Public Virtual Void TurnOff() override {
+    Public Virtual SwitchState TurnOff() override {
         // Read current physical state
         SwitchState physicalState = ReadPhysicalState();
         
@@ -84,21 +87,28 @@ class SwitchDevice : public ISwitchDevice {
         
         // Refresh relay state based on virtual and physical states
         RefreshRelayState();
+        
+        // Return the final relay state
+        return relayState;
     }
 
-    Public Virtual Void Toggle() override {
+    Public Virtual SwitchState Toggle() override {
         // Get current actual state
         SwitchState currentState = GetState();
         
+        SwitchState finalState;
         if (currentState == SwitchState::On) {
             // Currently on, turn it off
-            TurnOff();
+            finalState = TurnOff();
         } else {
             // Currently off, turn it on
-            TurnOn();
+            finalState = TurnOn();
         }
         
         logger->Info(Tag::Untagged, GetOperationLogMessage("toggle"));
+        
+        // Return the final relay state
+        return finalState;
     }
 
     Public Virtual SwitchState GetState() override {

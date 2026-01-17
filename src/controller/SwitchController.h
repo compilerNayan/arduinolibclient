@@ -26,8 +26,8 @@ class SwitchController final : public ISwitchController {
             return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
         }
 
-        device->TurnOn();
-        SwitchDto dto(id, device->GetState());
+        SwitchState finalState = device->TurnOn();
+        SwitchDto dto(id, finalState);
         return ResponseEntity<SwitchDto>::Ok(dto);
     }
 
@@ -38,8 +38,8 @@ class SwitchController final : public ISwitchController {
             return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
         }
 
-        device->TurnOff();
-        SwitchDto dto(id, device->GetState());
+        SwitchState finalState = device->TurnOff();
+        SwitchDto dto(id, finalState);
         return ResponseEntity<SwitchDto>::Ok(dto);
     }
 
@@ -50,8 +50,8 @@ class SwitchController final : public ISwitchController {
             return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
         }
 
-        device->Toggle();
-        SwitchDto dto(id, device->GetState());
+        SwitchState finalState = device->Toggle();
+        SwitchDto dto(id, finalState);
         return ResponseEntity<SwitchDto>::Ok(dto);
     }
 

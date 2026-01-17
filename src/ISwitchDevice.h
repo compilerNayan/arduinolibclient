@@ -16,18 +16,21 @@ class ISwitchDevice {
 
     /**
      * @brief Turn on the switch
+     * @return The final relay state after turning on
      */
-    Public Virtual Void TurnOn() = 0;
+    Public Virtual SwitchState TurnOn() = 0;
 
     /**
      * @brief Turn off the switch
+     * @return The final relay state after turning off
      */
-    Public Virtual Void TurnOff() = 0;
+    Public Virtual SwitchState TurnOff() = 0;
 
     /**
      * @brief Toggle the switch state
+     * @return The final relay state after toggling
      */
-    Public Virtual Void Toggle() = 0;
+    Public Virtual SwitchState Toggle() = 0;
 
     /**
      * @brief Get the current actual state of the switch
