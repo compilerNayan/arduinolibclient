@@ -1,12 +1,12 @@
-#ifndef ISWITCH_H
-#define ISWITCH_H
+#ifndef ISWITCHDEVICE_H
+#define ISWITCHDEVICE_H
 
 #include <StandardDefines.h>
 #include "SwitchState.h"
 
-DefineStandardPointers(ISwitch)
-class ISwitch {
-    Public Virtual ~ISwitch() = default;
+DefineStandardPointers(ISwitchDevice)
+class ISwitchDevice {
+    Public Virtual ~ISwitchDevice() = default;
 
     /**
      * @brief Turn on the switch
@@ -36,5 +36,5 @@ class ISwitch {
     Public Virtual Void Refresh() = 0;
 };
 
-#endif // ISWITCH_H
+#endif // ISWITCHDEVICE_H
 

@@ -1,8 +1,8 @@
-#ifndef SWITCH_H
-#define SWITCH_H
+#ifndef SWITCHDEVICE_H
+#define SWITCHDEVICE_H
 
 #include <StandardDefines.h>
-#include "ISwitch.h"
+#include "ISwitchDevice.h"
 #include "SwitchState.h"
 #include "IPhysicalSwitchReader.h"
 #include "IRelayController.h"
@@ -10,7 +10,7 @@
 #include "Tag.h"
 
 /* @Component */
-class Switch : public ISwitch {
+class SwitchDevice : public ISwitchDevice {
     Private Int id;
     Private Int pin;
     Private SwitchState virtualState;
@@ -25,9 +25,9 @@ class Switch : public ISwitch {
     /* @Autowired */
     Private ILoggerPtr logger;
 
-    Public Switch() : id(22), pin(22), virtualState(SwitchState::Off), relayState(SwitchState::Off) {}
+    Public SwitchDevice() : id(22), pin(22), virtualState(SwitchState::Off), relayState(SwitchState::Off) {}
 
-    Public Virtual ~Switch() = default;
+    Public Virtual ~SwitchDevice() = default;
 
     Public Virtual Void TurnOn() override {
         // Turn relay ON
@@ -140,21 +140,21 @@ class Switch : public ISwitch {
         return physicalSwitchReader->ReadPhysicalState(pin);
     }
 
-    public: static ISwitchPtr GetInstance() {
-        static ISwitchPtr instance(new Switch());
+    public: static ISwitchDevicePtr GetInstance() {
+        static ISwitchDevicePtr instance(new SwitchDevice());
         return instance;
     }
 };
 
 template <>
-struct Implementation<ISwitch> {
-    using type = Switch;
+struct Implementation<ISwitchDevice> {
+    using type = SwitchDevice;
 };
 
 template <>
-struct Implementation<ISwitch*> {
-    using type = Switch*;
+struct Implementation<ISwitchDevice*> {
+    using type = SwitchDevice*;
 };
 
-#endif // SWITCH_H
+#endif // SWITCHDEVICE_H
 
