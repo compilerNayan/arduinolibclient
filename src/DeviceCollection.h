@@ -21,7 +21,7 @@ class DeviceCollection : public IDeviceCollection {
         
         // Create switch devices for each device detail
         for (const DeviceDetail& detail : deviceDetails) {
-            ISwitchDevicePtr switchDevice(new SwitchDevice(detail.id, detail.pin));
+            ISwitchDevicePtr switchDevice(new SwitchDevice(detail.id, detail.relayPin, detail.switchPin));
             devices[detail.id] = switchDevice;
         }
     }

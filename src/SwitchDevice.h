@@ -13,7 +13,8 @@
 
 class SwitchDevice : public ISwitchDevice {
     Private Int id;
-    Private Int pin;
+    Private Int relayPin;
+    Private Int switchPin;
     Private SwitchState virtualState;
     Private SwitchState relayState;
 
@@ -30,11 +31,12 @@ class SwitchDevice : public ISwitchDevice {
     Private SwitchRepositoryPtr switchRepository;
 
     /**
-     * @brief Constructor with id and pin parameters
+     * @brief Constructor with id, relayPin, and switchPin parameters
      * @param id The switch ID
-     * @param pin The GPIO pin number
+     * @param relayPin The relay GPIO pin number
+     * @param switchPin The physical switch GPIO pin number
      */
-    Public SwitchDevice(CInt id, CInt pin) : id(id), pin(pin), virtualState(SwitchState::Off), relayState(SwitchState::Off) {
+    Public SwitchDevice(CInt id, CInt relayPin, CInt switchPin) : id(id), relayPin(relayPin), switchPin(switchPin), virtualState(SwitchState::Off), relayState(SwitchState::Off) {
         // Initialize virtualState from repository
         optional<Switch> switchEntity = switchRepository->FindById(id);
         if (switchEntity.has_value() && switchEntity.value().GetVirtualState().has_value()) {
@@ -43,7 +45,7 @@ class SwitchDevice : public ISwitchDevice {
         }
     
         // Initialize relayState from relay controller
-        relayState = relayController->GetState(pin);       
+        relayState = relayController->GetState(relayPin);       
 
         RefreshRelayState();        
     }
@@ -121,7 +123,7 @@ class SwitchDevice : public ISwitchDevice {
         // Actual state is OFF if virtual and physical states differ
         SwitchState actualState = (virtualState == physicalState) ? SwitchState::On : SwitchState::Off;
         
-        logger->Info(Tag::Untagged, GetStateLogMessage(actualState, virtualState, physicalState, pin));
+        logger->Info(Tag::Untagged, GetStateLogMessage(actualState, virtualState, physicalState, switchPin));
         
         return actualState;
     }
@@ -144,7 +146,7 @@ class SwitchDevice : public ISwitchDevice {
     }
 
     Private SwitchState ReadPhysicalState() {
-        return physicalSwitchReader->ReadPhysicalState(pin);
+        return physicalSwitchReader->ReadPhysicalState(switchPin);
     }
 
     /**
@@ -225,7 +227,7 @@ class SwitchDevice : public ISwitchDevice {
         SwitchState actualState = (virtualState == physicalState) ? SwitchState::On : SwitchState::Off;
         
         // Set relay to match the actual state
-        relayController->SetState(pin, actualState);
+        relayController->SetState(relayPin, actualState);
         relayState = actualState;
     }
 
