@@ -44,21 +44,6 @@ class StubPhysicalSwitchReader : public IPhysicalSwitchReader {
         
         return state;
     }
-
-    public: static IPhysicalSwitchReaderPtr GetInstance() {
-        static IPhysicalSwitchReaderPtr instance(new StubPhysicalSwitchReader());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<IPhysicalSwitchReader> {
-    using type = StubPhysicalSwitchReader;
-};
-
-template <>
-struct Implementation<IPhysicalSwitchReader*> {
-    using type = StubPhysicalSwitchReader*;
 };
 
 #endif // STUBPHYSICALSWITCHREADER_H

@@ -39,21 +39,6 @@ class StubRelayController : public IRelayController {
         }
         return state;
     }
-
-    public: static IRelayControllerPtr GetInstance() {
-        static IRelayControllerPtr instance(new StubRelayController());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<IRelayController> {
-    using type = StubRelayController;
-};
-
-template <>
-struct Implementation<IRelayController*> {
-    using type = StubRelayController*;
 };
 
 #endif // STUBRELAYCONTROLLER_H
