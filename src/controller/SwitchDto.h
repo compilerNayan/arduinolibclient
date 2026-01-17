@@ -4,6 +4,7 @@
 #include <StandardDefines.h>
 #include "../SwitchState.h"
 
+/* @Serializable */
 class SwitchDto {
     Public Int id;
     Public SwitchState switchState;
