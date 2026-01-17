@@ -57,9 +57,7 @@ class SwitchDevice : public ISwitchDevice {
         // Save virtual state to repository
         switchRepository->Update(GetSwitchEntity());
         
-        StdString message = GetOperationLogMessage("on");
-        StdString functionName = "TurnOn";
-        logger->Info(Tag::Untagged, message, functionName);
+        logger->Info(Tag::Untagged, GetOperationLogMessage("on"));
         
         // Refresh relay state based on virtual and physical states
         RefreshRelayState();
@@ -77,9 +75,7 @@ class SwitchDevice : public ISwitchDevice {
         // Save virtual state to repository
         switchRepository->Update(GetSwitchEntity());
         
-        StdString message = GetOperationLogMessage("off");
-        StdString functionName = "TurnOff";
-        logger->Info(Tag::Untagged, message, functionName);
+        logger->Info(Tag::Untagged, GetOperationLogMessage("off"));
         
         // Refresh relay state based on virtual and physical states
         RefreshRelayState();
@@ -97,9 +93,7 @@ class SwitchDevice : public ISwitchDevice {
             TurnOn();
         }
         
-        StdString message = GetOperationLogMessage("toggle");
-        StdString functionName = "Toggle";
-        logger->Info(Tag::Untagged, message, functionName);
+        logger->Info(Tag::Untagged, GetOperationLogMessage("toggle"));
     }
 
     Public Virtual SwitchState GetState() override {
@@ -110,9 +104,7 @@ class SwitchDevice : public ISwitchDevice {
         // Actual state is OFF if virtual and physical states differ
         SwitchState actualState = (virtualState == physicalState) ? SwitchState::On : SwitchState::Off;
         
-        StdString message = GetStateLogMessage(actualState, virtualState, physicalState, pin);
-        StdString functionName = "GetState";
-        logger->Info(Tag::Untagged, message, functionName);
+        logger->Info(Tag::Untagged, GetStateLogMessage(actualState, virtualState, physicalState, pin));
         
         return actualState;
     }
@@ -126,9 +118,7 @@ class SwitchDevice : public ISwitchDevice {
             relayState = currentState;
             
             
-            StdString message = GetRefreshLogMessage(relayState, currentState);
-            StdString functionName = "Refresh";
-            logger->Info(Tag::Untagged, message, functionName);
+            logger->Info(Tag::Untagged, GetRefreshLogMessage(relayState, currentState));
         }
     }
 
