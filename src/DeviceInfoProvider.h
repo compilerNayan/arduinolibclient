@@ -12,10 +12,10 @@ class DeviceInfoProvider : public IDeviceInfoProvider {
     Public Virtual Vector<DeviceDetail> GetAllSwitchDetails() override {
         Vector<DeviceDetail> devices;
         
-        // Return 3 devices with id 1,2,3 and pin 101,102,103
-        devices.push_back(DeviceDetail(1, 101));
-        devices.push_back(DeviceDetail(2, 102));
-        devices.push_back(DeviceDetail(3, 103));
+        // Return 3 devices with id 1,2,3, relay pins 101,102,103, and switch pins 201,202,203
+        devices.push_back(DeviceDetail(1, 101, 201));
+        devices.push_back(DeviceDetail(2, 102, 202));
+        devices.push_back(DeviceDetail(3, 103, 203));
         
         return devices;
     }
