@@ -9,6 +9,12 @@ class ISwitchDevice {
     Public Virtual ~ISwitchDevice() = default;
 
     /**
+     * @brief Get the switch ID
+     * @return The switch ID
+     */
+    Public Virtual Int GetId() const = 0;
+
+    /**
      * @brief Turn on the switch
      */
     Public Virtual Void TurnOn() = 0;

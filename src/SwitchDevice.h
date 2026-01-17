@@ -109,6 +109,10 @@ class SwitchDevice : public ISwitchDevice {
         return actualState;
     }
 
+    Public Virtual Int GetId() const override {
+        return id;
+    }
+
     Public Virtual Void Refresh() override {
         // Get current actual state
         SwitchState currentState = GetState();
