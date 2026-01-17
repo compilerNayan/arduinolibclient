@@ -4,52 +4,79 @@
 #include <StandardDefines.h>
 #include "ISwitch.h"
 #include "SwitchState.h"
+#include "IPhysicalSwitchReader.h"
+#include "IRelayController.h"
 #include "ILogger.h"
 #include "Tag.h"
 
 /* @Component */
 class Switch : public ISwitch {
+    Private Int id;
+    Private Int pin;
     Private SwitchState virtualState;
-    Private SwitchState physicalState;
+    Private SwitchState relayState;
+
+    /* @Autowired */
+    Private IPhysicalSwitchReaderPtr physicalSwitchReader;
+
+    /* @Autowired */
+    Private IRelayControllerPtr relayController;
 
     /* @Autowired */
     Private ILoggerPtr logger;
 
-    Public Switch() : virtualState(SwitchState::Off), physicalState(SwitchState::Off) {}
+    Public Switch() : id(22), pin(22), virtualState(SwitchState::Off), relayState(SwitchState::Off) {}
 
     Public Virtual ~Switch() = default;
 
     Public Virtual Void TurnOn() override {
-        // To turn on: both states must be the same
-        // Set both to On to achieve actual state = On
-        virtualState = SwitchState::On;
-        physicalState = SwitchState::On;
+        // Turn relay ON
+        relayController->SetState(pin, SwitchState::On);
         
-        if (logger != nullptr) {
-            StdString message = "Turned on switch (virtual: ON, physical: ON)";
-            StdString functionName = "TurnOn";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+        // Save relay state
+        relayState = SwitchState::On;
+        
+        // Read current physical state
+        SwitchState physicalState = ReadPhysicalState();
+        
+        // To achieve final ON: virtual and physical must match
+        // If physical is ON, set virtual to ON (1+1=1)
+        // If physical is OFF, set virtual to OFF (0+0=1)
+        virtualState = physicalState;
+        
+        StdString message = "Turned on switch (virtual: " + 
+                           (virtualState == SwitchState::On ? "ON" : "OFF") + 
+                           ", physical: " + 
+                           (physicalState == SwitchState::On ? "ON" : "OFF") + 
+                           ", actual: " + 
+                           (GetState() == SwitchState::On ? "ON" : "OFF") + ")";
+        StdString functionName = "TurnOn";
+        logger->Info(Tag::Untagged, message, functionName);
     }
 
     Public Virtual Void TurnOff() override {
-        // To turn off: states must be different
-        // Toggle one of them to make them different
-        // We'll toggle the physical state
-        if (virtualState == SwitchState::On) {
-            physicalState = SwitchState::Off;
-        } else {
-            physicalState = SwitchState::On;
-        }
+        // Turn relay OFF
+        relayController->SetState(pin, SwitchState::Off);
         
-        if (logger != nullptr) {
-            StdString message = "Turned off switch (virtual: " + 
-                               (virtualState == SwitchState::On ? "ON" : "OFF") + 
-                               ", physical: " + 
-                               (physicalState == SwitchState::On ? "ON" : "OFF") + ")";
-            StdString functionName = "TurnOff";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+        // Save relay state
+        relayState = SwitchState::Off;
+        
+        // Read current physical state
+        SwitchState physicalState = ReadPhysicalState();
+        
+        // To achieve final OFF: virtual and physical must differ
+        // If physical is ON, set virtual to OFF (1+0=0)
+        // If physical is OFF, set virtual to ON (0+1=0)
+        virtualState = (physicalState == SwitchState::On) ? SwitchState::Off : SwitchState::On;
+        
+        StdString message = "Turned off switch (virtual: " + 
+                           (virtualState == SwitchState::On ? "ON" : "OFF") + 
+                           ", physical: " + 
+                           (physicalState == SwitchState::On ? "ON" : "OFF") + 
+                           ", actual: " + 
+                           (GetState() == SwitchState::On ? "ON" : "OFF") + ")";
+        StdString functionName = "TurnOff";
+        logger->Info(Tag::Untagged, message, functionName);
     }
 
     Public Virtual Void Toggle() override {
@@ -64,31 +91,53 @@ class Switch : public ISwitch {
             TurnOn();
         }
         
-        if (logger != nullptr) {
-            StdString message = "Toggled switch to " + 
-                               (GetState() == SwitchState::On ? "ON" : "OFF");
-            StdString functionName = "Toggle";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+        StdString message = "Toggled switch to " + 
+                           (GetState() == SwitchState::On ? "ON" : "OFF");
+        StdString functionName = "Toggle";
+        logger->Info(Tag::Untagged, message, functionName);
     }
 
     Public Virtual SwitchState GetState() override {
+        // Read physical state from pin
+        SwitchState physicalState = ReadPhysicalState();
+        
         // Actual state is ON if virtual and physical states match
         // Actual state is OFF if virtual and physical states differ
         SwitchState actualState = (virtualState == physicalState) ? SwitchState::On : SwitchState::Off;
         
-        if (logger != nullptr) {
-            StdString message = "Get switch state: " + 
-                               (actualState == SwitchState::On ? "ON" : "OFF") + 
-                               " (virtual: " + 
-                               (virtualState == SwitchState::On ? "ON" : "OFF") + 
-                               ", physical: " + 
-                               (physicalState == SwitchState::On ? "ON" : "OFF") + ")";
-            StdString functionName = "GetState";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+        StdString message = "Get switch state: " + 
+                           (actualState == SwitchState::On ? "ON" : "OFF") + 
+                           " (virtual: " + 
+                           (virtualState == SwitchState::On ? "ON" : "OFF") + 
+                           ", physical: " + 
+                           (physicalState == SwitchState::On ? "ON" : "OFF") + 
+                           ", pin: " + std::to_string(pin) + ")";
+        StdString functionName = "GetState";
+        logger->Info(Tag::Untagged, message, functionName);
         
         return actualState;
+    }
+
+    Public Virtual Void Refresh() override {
+        // Get current actual state
+        SwitchState currentState = GetState();
+        
+        // If actual state doesn't match relay state, update relay state
+        if (currentState != relayState) {
+            relayState = currentState;
+            
+            
+            StdString message = "Refreshed relay state to " + 
+                               (relayState == SwitchState::On ? "ON" : "OFF") + 
+                               " (was: " + 
+                               (currentState == SwitchState::On ? "ON" : "OFF") + ")";
+            StdString functionName = "Refresh";
+            logger->Info(Tag::Untagged, message, functionName);
+        }
+    }
+
+    Private SwitchState ReadPhysicalState() {
+        return physicalSwitchReader->ReadPhysicalState(pin);
     }
 
     public: static ISwitchPtr GetInstance() {

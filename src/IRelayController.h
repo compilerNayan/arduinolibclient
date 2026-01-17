@@ -9,16 +9,11 @@ class IRelayController {
     Public Virtual ~IRelayController() = default;
 
     /**
-     * @brief Turn on the relay switch
+     * @brief Set the state of the relay switch
      * @param pin The GPIO pin number to control
+     * @param state The desired state (SwitchState::On or SwitchState::Off)
      */
-    Public Virtual Void TurnOn(Int pin) = 0;
-
-    /**
-     * @brief Turn off the relay switch
-     * @param pin The GPIO pin number to control
-     */
-    Public Virtual Void TurnOff(Int pin) = 0;
+    Public Virtual Void SetState(Int pin, SwitchState state) = 0;
 
     /**
      * @brief Get the current state of the relay switch

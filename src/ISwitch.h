@@ -28,6 +28,12 @@ class ISwitch {
      * @return SwitchState::On if both virtual and physical states match, SwitchState::Off otherwise
      */
     Public Virtual SwitchState GetState() = 0;
+
+    /**
+     * @brief Refresh the relay state based on current actual state
+     * Updates relay state if it doesn't match the current actual state
+     */
+    Public Virtual Void Refresh() = 0;
 };
 
 #endif // ISWITCH_H

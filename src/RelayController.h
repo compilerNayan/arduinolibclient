@@ -16,24 +16,18 @@ class RelayController : public IRelayController {
     /* @Autowired */
     Private ILoggerPtr logger;
 
-    Public Virtual Void TurnOn(Int pin) override {
+    Public Virtual Void SetState(Int pin, SwitchState state) override {
         pinMode(pin, OUTPUT);
-        digitalWrite(pin, HIGH);
-        if (logger != nullptr) {
-            StdString message = "Turned on relay at pin " + std::to_string(pin);
-            StdString functionName = "TurnOn";
-            logger->Info(Tag::Untagged, message, functionName);
+        if (state == SwitchState::On) {
+            digitalWrite(pin, HIGH);
+        } else {
+            digitalWrite(pin, LOW);
         }
-    }
-
-    Public Virtual Void TurnOff(Int pin) override {
-        pinMode(pin, OUTPUT);
-        digitalWrite(pin, LOW);
-        if (logger != nullptr) {
-            StdString message = "Turned off relay at pin " + std::to_string(pin);
-            StdString functionName = "TurnOff";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+        
+        StdString message = "Set relay at pin " + std::to_string(pin) + " to " + 
+                           (state == SwitchState::On ? "ON" : "OFF");
+        StdString functionName = "SetState";
+        logger->Info(Tag::Untagged, message, functionName);
     }
 
     Public Virtual SwitchState GetState(Int pin) override {

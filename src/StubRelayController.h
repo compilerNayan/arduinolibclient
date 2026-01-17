@@ -20,22 +20,13 @@ class StubRelayController : public IRelayController {
 
     Public Virtual ~StubRelayController() = default;
 
-    Public Virtual Void TurnOn(Int pin) override {
-        pinStates[pin] = SwitchState::On;
-        if (logger != nullptr) {
-            StdString message = "Turned on relay at pin " + std::to_string(pin);
-            StdString functionName = "TurnOn";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
-    }
-
-    Public Virtual Void TurnOff(Int pin) override {
-        pinStates[pin] = SwitchState::Off;
-        if (logger != nullptr) {
-            StdString message = "Turned off relay at pin " + std::to_string(pin);
-            StdString functionName = "TurnOff";
-            logger->Info(Tag::Untagged, message, functionName);
-        }
+    Public Virtual Void SetState(Int pin, SwitchState state) override {
+        pinStates[pin] = state;
+        
+        StdString message = "Set relay at pin " + std::to_string(pin) + " to " + 
+                           (state == SwitchState::On ? "ON" : "OFF");
+        StdString functionName = "SetState";
+        logger->Info(Tag::Untagged, message, functionName);
     }
 
     Public Virtual SwitchState GetState(Int pin) override {
