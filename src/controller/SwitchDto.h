@@ -6,13 +6,13 @@
 
 /* @Serializable */
 class SwitchDto {
-    Public Int id;
-    Public SwitchState switchState;
+    Public optional<Int> id;
+    Public optional<SwitchState> switchState;
 
     /**
      * @brief Default constructor
      */
-    Public SwitchDto() : id(0), switchState(SwitchState::Off) {}
+    Public SwitchDto() : id(), switchState() {}
 
     /**
      * @brief Parameterized constructor
