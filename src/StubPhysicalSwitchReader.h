@@ -4,7 +4,6 @@
 
 #include <StandardDefines.h>
 #include "IPhysicalSwitchReader.h"
-#include "IRelayController.h"
 #include "SwitchState.h"
 #include "ILogger.h"
 #include "Tag.h"
@@ -12,34 +11,28 @@
 
 /* @Component */
 class StubPhysicalSwitchReader : public IPhysicalSwitchReader {
-    /* @Autowired */
-    Private IRelayControllerPtr relayController;
+    Private Map<Int, SwitchState> pinStates;
 
     /* @Autowired */
     Private ILoggerPtr logger;
 
-    Public StubPhysicalSwitchReader() = default;
+    Public StubPhysicalSwitchReader() {
+        // Initialize pins 100 to 110 to OFF
+        for (Int pin = 100; pin <= 110; pin++) {
+            pinStates[pin] = SwitchState::Off;
+        }
+    }
 
     Public Virtual ~StubPhysicalSwitchReader() = default;
 
     Public Virtual SwitchState ReadPhysicalState(Int pin) override {
-        if (relayController == nullptr) {
-            if (logger != nullptr) {
-                StdString message = "RelayController is null, cannot read physical state from pin " + std::to_string(pin);
-                StdString functionName = "ReadPhysicalState";
-                logger->Error(Tag::Untagged, message, functionName);
-            }
-            return SwitchState::Off;
-        }
-
-        // Use RelayController to read the state from the pin
-        SwitchState state = relayController->GetState(pin);
+        // Return stored state, default to Off if not set
+        SwitchState state = (pinStates.find(pin) != pinStates.end()) ? pinStates[pin] : SwitchState::Off;
         
         if (logger != nullptr) {
             StdString message = "Read physical state from pin " + std::to_string(pin) + ": " + 
                                (state == SwitchState::On ? "ON" : "OFF");
-            StdString functionName = "ReadPhysicalState";
-            logger->Info(Tag::Untagged, message, functionName);
+            logger->Info(Tag::Untagged, message);
         }
         
         return state;
