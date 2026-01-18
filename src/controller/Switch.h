@@ -11,28 +11,7 @@ class Switch {
     /* @NotNull */
     Public optional<int> id;
 
-    Public optional<StdString> virtualState;
-
-    /**
-     * @brief Convert SwitchState enum to string representation
-     * @param state The switch state to convert
-     * @return "ON" if state is On, "OFF" if state is Off
-     */
-    Private Static inline StdString StateToString(SwitchState state) {
-        return (state == SwitchState::On) ? "ON" : "OFF";
-    }
-
-    /**
-     * @brief Convert string representation to SwitchState enum
-     * @param stateStr The string state ("ON" or "OFF")
-     * @return SwitchState::On if "ON", SwitchState::Off if "OFF" or empty
-     */
-    Private Static inline SwitchState StringToState(CStdString stateStr) {
-        if (stateStr == "ON") {
-            return SwitchState::On;
-        }
-        return SwitchState::Off;
-    }
+    Public optional<SwitchState> virtualState;
 
     /**
      * @brief Default constructor
@@ -45,7 +24,7 @@ class Switch {
      * @param virtualState The virtual state of the switch
      */
     Public Switch(optional<int> id, optional<SwitchState> virtualState) 
-        : id(id), virtualState(virtualState.has_value() ? optional<StdString>(StateToString(virtualState.value())) : optional<StdString>()) {}
+        : id(id), virtualState(virtualState) {}
 
     /**
      * @brief Get the switch ID
@@ -65,25 +44,18 @@ class Switch {
 
     /**
      * @brief Get the virtual state
-     * @return The virtual state of the switch as enum
+     * @return The virtual state of the switch
      */
     Public optional<SwitchState> GetVirtualState() const {
-        if (!virtualState.has_value()) {
-            return optional<SwitchState>();
-        }
-        return optional<SwitchState>(StringToState(virtualState.value()));
+        return virtualState;
     }
 
     /**
      * @brief Set the virtual state
-     * @param virtualState The virtual state to set as enum
+     * @param virtualState The virtual state to set
      */
     Public Void SetVirtualState(optional<SwitchState> virtualState) {
-        if (virtualState.has_value()) {
-            this->virtualState = optional<StdString>(StateToString(virtualState.value()));
-        } else {
-            this->virtualState = optional<StdString>();
-        }
+        this->virtualState = virtualState;
     }
 };
 
