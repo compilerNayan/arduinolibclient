@@ -4,6 +4,7 @@
 #include <StandardDefines.h>
 
 // Switch state enum
+/* Serializable */
 DefineStandardTypes(SwitchState)
 enum class SwitchState {
     Off,    // Switch is off
