@@ -7,16 +7,7 @@
 /* @Serializable */
 class SwitchDto {
     Public optional<Int> id;
-    Public optional<StdString> switchState;
-
-    /**
-     * @brief Convert SwitchState enum to string representation
-     * @param state The switch state to convert
-     * @return "ON" if state is On, "OFF" if state is Off
-     */
-    Private Static inline StdString StateToString(SwitchState state) {
-        return (state == SwitchState::On) ? "ON" : "OFF";
-    }
+    Public optional<SwitchState> switchState;
 
     /**
      * @brief Default constructor
@@ -26,9 +17,9 @@ class SwitchDto {
     /**
      * @brief Parameterized constructor
      * @param id The switch ID
-     * @param switchState The switch state enum
+     * @param switchState The switch state
      */
-    Public SwitchDto(Int id, SwitchState switchState) : id(id), switchState(StateToString(switchState)) {}
+    Public SwitchDto(Int id, SwitchState switchState) : id(id), switchState(switchState) {}
 };
 
 #endif // SWITCHDTO_H
