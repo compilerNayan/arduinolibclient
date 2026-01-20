@@ -75,6 +75,46 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     )
 endif()
 
+# Generate device macros from device_config.ini
+find_program(PYTHON_EXECUTABLE python3 python REQUIRED)
+set(DEVICE_CONFIG_INI "${CMAKE_CURRENT_SOURCE_DIR}/device_config.ini")
+set(DEVICE_MACRO_SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/scripts/generate_device_macros.py")
+
+if(EXISTS "${DEVICE_CONFIG_INI}" AND EXISTS "${DEVICE_MACRO_SCRIPT}")
+    execute_process(
+        COMMAND ${PYTHON_EXECUTABLE} "${DEVICE_MACRO_SCRIPT}" cmake
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        OUTPUT_VARIABLE DEVICE_MACRO_FLAGS
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+    
+    if(DEVICE_MACRO_FLAGS)
+        # Parse the flags and add them as compile definitions
+        # The script outputs space-separated -D flags like "-DMACRO1=value1 -DMACRO2=value2"
+        string(REPLACE " " ";" MACRO_LIST "${DEVICE_MACRO_FLAGS}")
+        foreach(FLAG ${MACRO_LIST})
+            if(FLAG MATCHES "^-D(.+)$")
+                # Extract macro definition (e.g., SWITCH_1_RELAY_PIN_INDEX=101)
+                string(REGEX REPLACE "^-D" "" MACRO_DEF "${FLAG}")
+                # Split into name and value
+                string(FIND "${MACRO_DEF}" "=" EQUAL_POS)
+                if(NOT EQUAL_POS EQUAL -1)
+                    math(EXPR EQUAL_POS "${EQUAL_POS}")
+                    string(SUBSTRING "${MACRO_DEF}" 0 ${EQUAL_POS} MACRO_NAME)
+                    math(EXPR VALUE_START "${EQUAL_POS} + 1")
+                    string(SUBSTRING "${MACRO_DEF}" ${VALUE_START} -1 MACRO_VALUE)
+                    target_compile_definitions(user_repository_tests PRIVATE ${MACRO_NAME}=${MACRO_VALUE})
+                    target_compile_definitions(desktop_server PRIVATE ${MACRO_NAME}=${MACRO_VALUE})
+                endif()
+            endif()
+        endforeach()
+        message(STATUS "Device macros generated from device_config.ini")
+    endif()
+else()
+    message(STATUS "device_config.ini not found, skipping device macro generation")
+endif()
+
 # Print build information
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "C++ standard: ${CMAKE_CXX_STANDARD}")
