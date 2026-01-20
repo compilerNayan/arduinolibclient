@@ -41,21 +41,6 @@ class RelayController : public IRelayController {
         }
         return state;
     }
-
-    public: static IRelayControllerPtr GetInstance() {
-        static IRelayControllerPtr instance(new RelayController());
-        return instance;
-    }
-};
-
-template <>
-struct Implementation<IRelayController> {
-    using type = RelayController;
-};
-
-template <>
-struct Implementation<IRelayController*> {
-    using type = RelayController*;
 };
 
 #endif // RELAYCONTROLLER_H
