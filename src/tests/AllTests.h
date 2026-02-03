@@ -9,6 +9,7 @@
 #include "EndpointTrieTests.h"
 #ifndef ARDUINO
 #include "../thread_tests/ThreadPoolTests.h"
+#include "../thread_tests/ThreadPoolMathExampleTests.h"
 #endif
 
 /**
@@ -86,6 +87,13 @@ int RunAllTestSuites(int argc, char* argv[]) {
     std_println("  ThreadPoolTests");
     std_println("----------------------------------------");
     RunAllThreadPoolTests();
+    std_println("");
+
+    // Run ThreadPool Math example tests
+    std_println("----------------------------------------");
+    std_println("  ThreadPoolMathExampleTests");
+    std_println("----------------------------------------");
+    RunAllThreadPoolMathExampleTests();
     std_println("");
 #endif
 
