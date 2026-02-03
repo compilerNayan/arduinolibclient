@@ -7,6 +7,9 @@
 #include "../serialization_tests/SerializationUtilityTests.h"
 //#include "../controller_tests/WifiCredentialsControllerTests.h"
 #include "EndpointTrieTests.h"
+#ifndef ARDUINO
+#include "../thread_tests/ThreadPoolTests.h"
+#endif
 
 /**
  * Run all test suites
@@ -75,8 +78,17 @@ int RunAllTestSuites(int argc, char* argv[]) {
     if (endpointTrieResult != 0) {
         totalFailed += endpointTrieResult;
     }
-    std_println(""); 
-    
+    std_println("");
+
+#ifndef ARDUINO
+    // Run ThreadPoolTests (desktop only)
+    std_println("----------------------------------------");
+    std_println("  ThreadPoolTests");
+    std_println("----------------------------------------");
+    RunAllThreadPoolTests();
+    std_println("");
+#endif
+
     // Print final summary
     std_println("========================================");
     std_println("  All Test Suites Summary");
