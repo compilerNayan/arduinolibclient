@@ -12,7 +12,7 @@
 // ============================================================================
 
 /* @Autowired */
-IThreadPoolPtr threadPool = Implementation<IThreadPool>::type::GetInstance();
+IThreadPoolPtr threadPool;
 
 // ============================================================================
 // Example: class with a method to run on the thread pool
