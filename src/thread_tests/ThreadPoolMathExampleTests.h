@@ -3,11 +3,7 @@
 
 #include "../tests/TestUtils.h"
 #include <IThreadPool.h>
-#ifdef ARDUINO
-#include <ArduinoThreadPool.h>
-#else
-#include <ThreadPool.h>
-#endif
+// Implementation (ArduinoThreadPool or ThreadPool) is included by IThreadPool.h
 
 // ============================================================================
 // Autowired thread pool (implementation resolved via Implementation<IThreadPool>)
