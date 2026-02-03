@@ -1,17 +1,25 @@
 #ifndef THREAD_POOL_TESTS_H
 #define THREAD_POOL_TESTS_H
 
-#ifndef ARDUINO
-
 #include "../tests/TestUtils.h"
 #include <IThreadPool.h>
-#include <ThreadPool.h>
-#include <atomic>
+#ifndef ARDUINO
 #include <chrono>
 #include <thread>
+#endif
+#include <atomic>
+
+#ifdef ARDUINO
+#include <Arduino.h>
+#define THREAD_TEST_SLEEP_MS(ms) delay(ms)
+#define THREAD_TEST_YIELD() yield()
+#else
+#define THREAD_TEST_SLEEP_MS(ms) std::this_thread::sleep_for(std::chrono::milliseconds(ms))
+#define THREAD_TEST_YIELD() std::this_thread::yield()
+#endif
 
 // ============================================================================
-// ThreadPool tests (desktop implementation only)
+// ThreadPool tests (desktop and Arduino/ESP32)
 // ============================================================================
 
 static void TestThreadPool_GetPoolSize() {
@@ -69,11 +77,11 @@ static void TestThreadPool_ShutdownNow() {
     std::atomic<int> runCount{0};
     for (int i = 0; i < 20; ++i) {
         pool.Submit([&runCount]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            THREAD_TEST_SLEEP_MS(50);
             runCount++;
         });
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    THREAD_TEST_SLEEP_MS(10);
     pool.ShutdownNow();
     Bool completed = pool.WaitForCompletion(500);
     PrintTestResult("WaitForCompletion completes after ShutdownNow", completed);
@@ -89,11 +97,11 @@ static void TestThreadPool_GetPendingCount() {
     std::atomic<bool> slowDone{false};
     pool.Submit([&slowStarted, &slowDone]() {
         slowStarted = true;
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        THREAD_TEST_SLEEP_MS(100);
         slowDone = true;
     });
     while (!slowStarted.load()) {
-        std::this_thread::yield();
+        THREAD_TEST_YIELD();
     }
     pool.Submit([]() {});
     pool.Submit([]() {});
@@ -106,7 +114,7 @@ static void TestThreadPool_GetPendingCount() {
 static void TestThreadPool_WaitForCompletionTimeout() {
     std_println("\n=== TestThreadPool_WaitForCompletionTimeout ===");
     ThreadPool pool(1);
-    pool.Submit([]() { std::this_thread::sleep_for(std::chrono::milliseconds(200)); });
+    pool.Submit([]() { THREAD_TEST_SLEEP_MS(200); });
     Bool completedShort = pool.WaitForCompletion(10);
     PrintTestResult("WaitForCompletion(10ms) returns false when task still running", !completedShort);
     Bool completedLong = pool.WaitForCompletion(500);
@@ -127,7 +135,11 @@ static void TestThreadPool_ExceptionInTask() {
     std_println("\n=== TestThreadPool_ExceptionInTask ===");
     ThreadPool pool(2);
     std::atomic<bool> secondRan{false};
+#ifdef ARDUINO
+    pool.Submit([]() { (void)0; }); /* skip throw on Arduino if exceptions disabled */
+#else
     pool.Submit([]() { throw std::runtime_error("task error"); });
+#endif
     pool.Submit([&secondRan]() { secondRan = true; });
     Bool completed = pool.WaitForCompletion(0);
     PrintTestResult("WaitForCompletion succeeds despite exception", completed);
@@ -154,7 +166,5 @@ void RunAllThreadPoolTests() {
     std_println("ThreadPool Tests Completed");
     std_println("========================================\n");
 }
-
-#endif // ARDUINO
 
 #endif // THREAD_POOL_TESTS_H

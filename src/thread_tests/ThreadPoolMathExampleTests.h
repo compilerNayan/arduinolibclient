@@ -1,11 +1,13 @@
 #ifndef THREAD_POOL_MATH_EXAMPLE_TESTS_H
 #define THREAD_POOL_MATH_EXAMPLE_TESTS_H
 
-#ifndef ARDUINO
-
 #include "../tests/TestUtils.h"
 #include <IThreadPool.h>
+#ifdef ARDUINO
+#include <ArduinoThreadPool.h>
+#else
 #include <ThreadPool.h>
+#endif
 
 // ============================================================================
 // Autowired thread pool (implementation resolved via Implementation<IThreadPool>)
@@ -95,7 +97,5 @@ void RunAllThreadPoolMathExampleTests() {
     std_println("ThreadPool Math Example Tests Completed");
     std_println("========================================\n");
 }
-
-#endif // ARDUINO
 
 #endif // THREAD_POOL_MATH_EXAMPLE_TESTS_H

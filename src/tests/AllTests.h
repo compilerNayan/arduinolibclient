@@ -7,10 +7,8 @@
 #include "../serialization_tests/SerializationUtilityTests.h"
 //#include "../controller_tests/WifiCredentialsControllerTests.h"
 #include "EndpointTrieTests.h"
-#ifndef ARDUINO
 #include "../thread_tests/ThreadPoolTests.h"
 #include "../thread_tests/ThreadPoolMathExampleTests.h"
-#endif
 
 /**
  * Run all test suites
@@ -81,8 +79,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
     }
     std_println("");
 
-#ifndef ARDUINO
-    // Run ThreadPoolTests (desktop only)
+    // Run ThreadPoolTests (desktop and Arduino)
     std_println("----------------------------------------");
     std_println("  ThreadPoolTests");
     std_println("----------------------------------------");
@@ -95,7 +92,6 @@ int RunAllTestSuites(int argc, char* argv[]) {
     std_println("----------------------------------------");
     RunAllThreadPoolMathExampleTests();
     std_println("");
-#endif
 
     // Print final summary
     std_println("========================================");
