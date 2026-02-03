@@ -12,16 +12,16 @@ void setup() {
     RunAllTestSuites(0, nullptr);
 
     /* @Autowired */
-    IArduinoSpringBootAppPtr springBootApp;
+   // IArduinoSpringBootAppPtr springBootApp;
 
-    springBootApp->StartApp();
+    //springBootApp->StartApp();
 }
 
 void loop() {
-    /* @Autowired */
-    IArduinoSpringBootAppPtr springBootApp;
+    ///* @Autowired */
+    //IArduinoSpringBootAppPtr springBootApp;
 
-    springBootApp->ListenToRequest();
+    //springBootApp->ListenToRequest();
 }
 
 #endif // ARDUINO
