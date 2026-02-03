@@ -3,11 +3,14 @@
 #include <Arduino.h>
 
 #include "IArduinoSpringBootApp.h"
-
-
+#include "tests/AllTests.h"
 
 void setup() {
     Serial.begin(115200);
+
+    // Run all test suites (ThreadPoolTests, ThreadPoolMathExampleTests, etc.)
+    RunAllTestSuites(0, nullptr);
+
     /* @Autowired */
     IArduinoSpringBootAppPtr springBootApp;
 
