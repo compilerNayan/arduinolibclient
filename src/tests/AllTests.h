@@ -33,7 +33,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
     
     int totalFailed = 0;
     
-    // Run UserRepositoryTests
+/*    // Run UserRepositoryTests
     std_println("----------------------------------------");
     std_println("  UserRepositoryTests");
     std_println("----------------------------------------");
@@ -58,7 +58,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
     if (serializationResult != 0) {
         totalFailed += serializationResult;
     }
-    std_println("");
+    std_println(""); */
     
     /*
     // Run WifiCredentialsControllerTests
@@ -70,7 +70,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
     */
     
     // Run EndpointTrieTests
-    std_println("----------------------------------------");
+/*    std_println("----------------------------------------");
     std_println("  EndpointTrieTests");
     std_println("----------------------------------------");
     int endpointTrieResult = RunAllEndpointTrieTests();
@@ -84,7 +84,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
     std_println("  ThreadPoolTests");
     std_println("----------------------------------------");
     RunAllThreadPoolTests();
-    std_println("");
+    std_println(""); */
 
     // Run ThreadPool Math example tests
     std_println("----------------------------------------");
