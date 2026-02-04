@@ -32,7 +32,9 @@ int RunAllTestSuites(int argc, char* argv[]) {
     std_println("");
     
     int totalFailed = 0;
-    
+
+#ifndef ARDUINO
+    // Desktop-only suites (filesystem / desktop deps)
     // Run UserRepositoryTests
     std_println("----------------------------------------");
     std_println("  UserRepositoryTests");
@@ -42,14 +44,14 @@ int RunAllTestSuites(int argc, char* argv[]) {
         totalFailed += userRepoResult;
     }
     std_println("");
-    
+
     // Run RepositoryTests
     std_println("----------------------------------------");
     std_println("  RepositoryTests");
     std_println("----------------------------------------");
     RunAllRepositoryTests();
     std_println("");
-    
+
     // Run SerializationUtilityTests
     std_println("----------------------------------------");
     std_println("  SerializationUtilityTests");
@@ -59,16 +61,7 @@ int RunAllTestSuites(int argc, char* argv[]) {
         totalFailed += serializationResult;
     }
     std_println("");
-    
-    /*
-    // Run WifiCredentialsControllerTests
-    std_println("----------------------------------------");
-    std_println("  WifiCredentialsControllerTests");
-    std_println("----------------------------------------");
-    RunAllWifiCredentialsControllerTests();
-    std_println(""); 
-    */
-    
+
     // Run EndpointTrieTests
     std_println("----------------------------------------");
     std_println("  EndpointTrieTests");
@@ -78,19 +71,20 @@ int RunAllTestSuites(int argc, char* argv[]) {
         totalFailed += endpointTrieResult;
     }
     std_println("");
+#endif // ARDUINO
 
-    // Run ThreadPoolTests (desktop and Arduino)
+    // ThreadPoolTests (desktop and Arduino)
     std_println("----------------------------------------");
     std_println("  ThreadPoolTests");
     std_println("----------------------------------------");
-    //RunAllThreadPoolTests();
+    RunAllThreadPoolTests();
     std_println("");
 
-    // Run ThreadPool Math example tests
+    // ThreadPool Math example tests
     std_println("----------------------------------------");
     std_println("  ThreadPoolMathExampleTests");
     std_println("----------------------------------------");
-    //RunAllThreadPoolMathExampleTests();
+    RunAllThreadPoolMathExampleTests();
     std_println("");
 
     // Print final summary
