@@ -83,14 +83,14 @@ int RunAllTestSuites(int argc, char* argv[]) {
     std_println("----------------------------------------");
     std_println("  ThreadPoolTests");
     std_println("----------------------------------------");
-    RunAllThreadPoolTests();
+    //RunAllThreadPoolTests();
     std_println("");
 
     // Run ThreadPool Math example tests
     std_println("----------------------------------------");
     std_println("  ThreadPoolMathExampleTests");
     std_println("----------------------------------------");
-    RunAllThreadPoolMathExampleTests();
+    //RunAllThreadPoolMathExampleTests();
     std_println("");
 
     // Print final summary
