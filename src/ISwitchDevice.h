@@ -3,6 +3,7 @@
 
 #include <StandardDefines.h>
 #include "SwitchState.h"
+#include "controller/SwitchResponseDto.h"
 
 DefineStandardPointers(ISwitchDevice)
 class ISwitchDevice {
@@ -55,6 +56,12 @@ class ISwitchDevice {
      * @return The stored virtual state of the switch
      */
     Public Virtual SwitchState GetVirtualState() const = 0;
+
+    /**
+     * @brief Get switch details as a DTO (id, virtualState, physicalSwitchState, relayState)
+     * @return SwitchResponseDto built from GetId(), GetVirtualState(), GetPhysicalSwitchState(), GetRelayState()
+     */
+    Public Virtual SwitchResponseDto GetSwitchDetails() = 0;
 
     /**
      * @brief Refresh the relay state based on current actual state

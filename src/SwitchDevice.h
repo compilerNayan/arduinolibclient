@@ -10,6 +10,7 @@
 #include "Tag.h"
 #include "controller/SwitchRepository.h"
 #include "controller/Switch.h"
+#include "controller/SwitchResponseDto.h"
 
 class SwitchDevice : public ISwitchDevice {
     Private Int id;
@@ -142,6 +143,15 @@ class SwitchDevice : public ISwitchDevice {
 
     Public Virtual SwitchState GetVirtualState() const override {
         return virtualState;
+    }
+
+    Public Virtual SwitchResponseDto GetSwitchDetails() override {
+        return SwitchResponseDto(
+            GetId(),
+            GetVirtualState(),
+            GetPhysicalSwitchState(),
+            GetRelayState()
+        );
     }
 
     Public Virtual Void Refresh() override {
