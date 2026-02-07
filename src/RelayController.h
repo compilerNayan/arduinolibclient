@@ -9,6 +9,10 @@
 #include "ILogger.h"
 #include "Tag.h"
 
+/**
+ * Relay board is ACTIVE-LOW: GPIO LOW = relay ON (LED on, click), GPIO HIGH = relay OFF (LED off).
+ * We invert logic so SwitchState::On -> write LOW, SwitchState::Off -> write HIGH.
+ */
 /* @Component */
 class RelayController : public IRelayController {
     Public Virtual ~RelayController() = default;
@@ -17,31 +21,32 @@ class RelayController : public IRelayController {
     Private ILoggerPtr logger;
 
     Public Virtual Void SetState(Int pin, SwitchState state) override {
-        pinMode(pin, OUTPUT);
-        if (state == SwitchState::On) {
-            logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to HIGH");
-            pinMode(pin, OUTPUT);
-            digitalWrite(pin, HIGH);
-        } else {
-            logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to LOW");
-            pinMode(pin, OUTPUT);
-            digitalWrite(pin, LOW);
+        if (logger != nullptr) {
+            logger->Info(Tag::Untagged, "[RelayController] SetState called: pin=" + std::to_string(pin) +
+                " requested=" + (state == SwitchState::On ? "ON" : "OFF"));
         }
-        
-        StdString message = "Set relay at pin " + std::to_string(pin) + " to " + 
-                           (state == SwitchState::On ? "ON" : "OFF");
-        StdString functionName = "SetState";
-        logger->Info(Tag::Untagged, message, functionName);
+
+        pinMode(pin, OUTPUT);
+
+        // Active-low: On -> LOW (relay energizes), Off -> HIGH (relay off)
+        int gpioValue = (state == SwitchState::On) ? LOW : HIGH;
+        digitalWrite(pin, gpioValue);
+
+        if (logger != nullptr) {
+            logger->Info(Tag::Untagged, "[RelayController] SetState done: pin=" + std::to_string(pin) +
+                " relay=" + (state == SwitchState::On ? "ON" : "OFF") +
+                " GPIO=" + (gpioValue == HIGH ? "HIGH" : "LOW"));
+        }
     }
 
     Public Virtual SwitchState GetState(Int pin) override {
-        pinMode(pin, INPUT);
-        Bool isHigh = digitalRead(pin) == HIGH;
-        SwitchState state = isHigh ? SwitchState::On : SwitchState::Off;
+        pinMode(pin, OUTPUT);  // keep as OUTPUT so relay isn't floating; read back last value
+        int raw = digitalRead(pin);
+        // Active-low: GPIO LOW = relay ON, GPIO HIGH = relay OFF
+        SwitchState state = (raw == LOW) ? SwitchState::On : SwitchState::Off;
         if (logger != nullptr) {
-            StdString message = "Get state of pin " + std::to_string(pin) + ": " + (isHigh ? "ON" : "OFF");
-            StdString functionName = "GetState";
-            logger->Info(Tag::Untagged, message, functionName);
+            logger->Info(Tag::Untagged, "[RelayController] GetState: pin=" + std::to_string(pin) +
+                " GPIO=" + (raw == HIGH ? "HIGH" : "LOW") + " relay=" + (state == SwitchState::On ? "ON" : "OFF"));
         }
         return state;
     }
