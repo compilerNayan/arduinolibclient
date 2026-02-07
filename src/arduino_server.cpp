@@ -3,25 +3,25 @@
 #include <Arduino.h>
 
 #include "IArduinoSpringBootApp.h"
-#include "tests/AllTests.h"
+//#include "tests/AllTests.h"
 
 void setup() {
     Serial.begin(115200);
 
     // Run all test suites (ThreadPoolTests, ThreadPoolMathExampleTests, etc.)
-    RunAllTestSuites(0, nullptr);
+    //RunAllTestSuites(0, nullptr);
 
     /* @Autowired */
-   // IArduinoSpringBootAppPtr springBootApp;
+    IArduinoSpringBootAppPtr springBootApp;
 
-    //springBootApp->StartApp();
+    springBootApp->StartApp();
 }
 
 void loop() {
-    ///* @Autowired */
-    //IArduinoSpringBootAppPtr springBootApp;
+    /* @Autowired */
+    IArduinoSpringBootAppPtr springBootApp;
 
-    //springBootApp->ListenToRequest();
+    springBootApp->ListenToRequest();
 }
 
 #endif // ARDUINO
