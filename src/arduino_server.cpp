@@ -4,6 +4,7 @@
 
 #include "IArduinoSpringBootApp.h"
 //#include "tests/AllTests.h"
+#include "service/ISwitchService.h"
 
 void setup() {
     Serial.begin(115200);
@@ -22,6 +23,10 @@ void loop() {
     IArduinoSpringBootAppPtr springBootApp;
 
     springBootApp->ListenToRequest();
+
+    /* @Autowired */
+    ISwitchServicePtr switchService;
+    switchService->RefreshAllSwitches();
 }
 
 #endif // ARDUINO

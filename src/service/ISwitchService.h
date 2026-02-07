@@ -42,6 +42,11 @@ class ISwitchService {
      * @return Vector of SwitchResponseDto (id, virtualState, physicalSwitchState, relayState) for each switch
      */
     Public Virtual Vector<SwitchResponseDto> GetAllSwitchState() = 0;
+
+    /**
+     * @brief Refresh all switches: update each switch's relay to match its current actual state (ISwitchDevice::Refresh)
+     */
+    Public Virtual Void RefreshAllSwitches() = 0;
 };
 
 #endif // ISWITCHSERVICE_H

@@ -62,6 +62,15 @@ class SwitchService : public ISwitchService {
         }
         return result;
     }
+
+    Public Virtual Void RefreshAllSwitches() override {
+        for (Int i = 1; i <= 4; i++) {
+            ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(i);
+            if (device != nullptr) {
+                device->Refresh();
+            }
+        }
+    }
 };
 
 #endif // SWITCHSERVICE_H
