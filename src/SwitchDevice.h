@@ -132,6 +132,18 @@ class SwitchDevice : public ISwitchDevice {
         return id;
     }
 
+    Public Virtual SwitchState GetRelayState() const override {
+        return relayState;
+    }
+
+    Public Virtual SwitchState GetPhysicalSwitchState() override {
+        return ReadPhysicalState();
+    }
+
+    Public Virtual SwitchState GetVirtualState() const override {
+        return virtualState;
+    }
+
     Public Virtual Void Refresh() override {
         // Get current actual state
         SwitchState currentState = GetState();

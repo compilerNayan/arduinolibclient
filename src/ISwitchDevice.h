@@ -39,6 +39,24 @@ class ISwitchDevice {
     Public Virtual SwitchState GetState() = 0;
 
     /**
+     * @brief Get the current relay state
+     * @return The current state of the relay (On/Off)
+     */
+    Public Virtual SwitchState GetRelayState() const = 0;
+
+    /**
+     * @brief Get the current physical switch state (from sensor/pin)
+     * @return The state read from the physical switch input
+     */
+    Public Virtual SwitchState GetPhysicalSwitchState() = 0;
+
+    /**
+     * @brief Get the current virtual (desired) state
+     * @return The stored virtual state of the switch
+     */
+    Public Virtual SwitchState GetVirtualState() const = 0;
+
+    /**
      * @brief Refresh the relay state based on current actual state
      * Updates relay state if it doesn't match the current actual state
      */
