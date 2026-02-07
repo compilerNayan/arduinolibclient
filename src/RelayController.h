@@ -19,8 +19,10 @@ class RelayController : public IRelayController {
     Public Virtual Void SetState(Int pin, SwitchState state) override {
         pinMode(pin, OUTPUT);
         if (state == SwitchState::On) {
+            logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to HIGH");
             digitalWrite(pin, HIGH);
         } else {
+            logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to LOW");
             digitalWrite(pin, LOW);
         }
         
