@@ -54,65 +54,37 @@ class SwitchDevice : public ISwitchDevice {
     Public Virtual ~SwitchDevice() = default;
 
     Public Virtual SwitchState TurnOn() override {
-        // Read current physical state
         SwitchState physicalState = ReadPhysicalState();
-        
-        // To achieve final ON: virtual and physical must match
-        // If physical is ON, set virtual to ON (1+1=1)
-        // If physical is OFF, set virtual to OFF (0+0=1)
+        // To achieve actual ON: virtual and physical must match (so set virtual = physical)
         virtualState = physicalState;
-        
-        // Save virtual state to repository
+
         Var switchEntity = GetSwitchEntity();
         switchRepository->Update(switchEntity);
-        
-        logger->Info(Tag::Untagged, GetOperationLogMessage("on"));
-        
-        // Refresh relay state based on virtual and physical states
+
         RefreshRelayState();
-        
-        // Return the final relay state
+        logger->Info(Tag::Untagged, GetOperationLogMessage("on"));
+
         return relayState;
     }
 
     Public Virtual SwitchState TurnOff() override {
-        // Read current physical state
         SwitchState physicalState = ReadPhysicalState();
-        
-        // To achieve final OFF: virtual and physical must differ
-        // If physical is ON, set virtual to OFF (1+0=0)
-        // If physical is OFF, set virtual to ON (0+1=0)
+        // To achieve actual OFF: virtual and physical must differ
         virtualState = (physicalState == SwitchState::On) ? SwitchState::Off : SwitchState::On;
-        
-        // Save virtual state to repository
+
         Var switchEntity = GetSwitchEntity();
         switchRepository->Update(switchEntity);
-        
-        logger->Info(Tag::Untagged, GetOperationLogMessage("off"));
-        
-        // Refresh relay state based on virtual and physical states
+
         RefreshRelayState();
-        
-        // Return the final relay state
+        logger->Info(Tag::Untagged, GetOperationLogMessage("off"));
+
         return relayState;
     }
 
     Public Virtual SwitchState Toggle() override {
-        // Get current actual state
         SwitchState currentState = GetState();
-        
-        SwitchState finalState;
-        if (currentState == SwitchState::On) {
-            // Currently on, turn it off
-            finalState = TurnOff();
-        } else {
-            // Currently off, turn it on
-            finalState = TurnOn();
-        }
-        
+        SwitchState finalState = (currentState == SwitchState::On) ? TurnOff() : TurnOn();
         logger->Info(Tag::Untagged, GetOperationLogMessage("toggle"));
-        
-        // Return the final relay state
         return finalState;
     }
 
@@ -182,26 +154,21 @@ class SwitchDevice : public ISwitchDevice {
 
     /**
      * @brief Generate log message for switch operations (on, off, toggle)
-     * @param operation The operation type: "on", "off", or "toggle"
-     * @return Formatted log message string
+     * Actual = ON when virtual and physical match (both ON or both OFF); actual = OFF when they differ.
+     * Relay is driven to actual state, so "actual: ON" means relay is ON.
      */
     Private inline StdString GetOperationLogMessage(CStdString operation) {
-        // Read current physical state
         SwitchState physicalState = ReadPhysicalState();
-        
-        // Calculate actual state from virtual and physical states
         SwitchState actualState = (virtualState == physicalState) ? SwitchState::On : SwitchState::Off;
-        
+
         if (operation == "toggle") {
-            return "Toggled switch to " + StateToString(actualState);
+            return "Toggled switch to " + StateToString(actualState) + ", relay: " + StateToString(relayState);
         } else {
             StdString operationText = (operation == "on") ? "Turned on" : "Turned off";
-            return operationText + " switch (virtual: " + 
-                   StateToString(virtualState) + 
-                   ", physical: " + 
-                   StateToString(physicalState) + 
-                   ", actual: " + 
-                   StateToString(actualState) + ")";
+            return operationText + " switch (virtual: " + StateToString(virtualState) +
+                   ", physical: " + StateToString(physicalState) +
+                   ", actual: " + StateToString(actualState) +
+                   ", relay: " + StateToString(relayState) + ")";
         }
     }
 
