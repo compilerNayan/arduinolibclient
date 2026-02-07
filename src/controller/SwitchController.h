@@ -3,7 +3,7 @@
 
 #include <StandardDefines.h>
 #include "ISwitchController.h"
-#include "SwitchDto.h"
+#include "SwitchResponseDto.h"
 #include "ResponseEntity.h"
 #include "HttpStatus.h"
 #include "../service/ISwitchService.h"
@@ -19,53 +19,45 @@ class SwitchController final : public ISwitchController {
     Public Virtual ~SwitchController() = default;
 
     /* @PutMapping("/{id}/on") */
-    Public Virtual ResponseEntity<SwitchDto> TurnOnSwitch(/* @PathVariable("id") */ Int id) override {
-        optional<SwitchState> finalState = switchService->TurnOnSwitch(id);
-        if (!finalState.has_value()) {
-            return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
+    Public Virtual ResponseEntity<SwitchResponseDto> TurnOnSwitch(/* @PathVariable("id") */ Int id) override {
+        optional<SwitchResponseDto> result = switchService->TurnOnSwitch(id);
+        if (!result.has_value()) {
+            return ResponseEntity<SwitchResponseDto>::NotFound(SwitchResponseDto());
         }
-
-        SwitchDto dto(id, finalState.value());
-        return ResponseEntity<SwitchDto>::Ok(dto);
+        return ResponseEntity<SwitchResponseDto>::Ok(result.value());
     }
 
     /* @PutMapping("/{id}/off") */
-    Public Virtual ResponseEntity<SwitchDto> TurnOffSwitch(/* @PathVariable("id") */ Int id) override {
-        optional<SwitchState> finalState = switchService->TurnOffSwitch(id);
-        if (!finalState.has_value()) {
-            return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
+    Public Virtual ResponseEntity<SwitchResponseDto> TurnOffSwitch(/* @PathVariable("id") */ Int id) override {
+        optional<SwitchResponseDto> result = switchService->TurnOffSwitch(id);
+        if (!result.has_value()) {
+            return ResponseEntity<SwitchResponseDto>::NotFound(SwitchResponseDto());
         }
-
-        SwitchDto dto(id, finalState.value());
-        return ResponseEntity<SwitchDto>::Ok(dto);
+        return ResponseEntity<SwitchResponseDto>::Ok(result.value());
     }
 
     /* @PutMapping("/{id}/toggle") */
-    Public Virtual ResponseEntity<SwitchDto> ToggleSwitch(/* @PathVariable("id") */ Int id) override {
-        optional<SwitchState> finalState = switchService->ToggleSwitch(id);
-        if (!finalState.has_value()) {
-            return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
+    Public Virtual ResponseEntity<SwitchResponseDto> ToggleSwitch(/* @PathVariable("id") */ Int id) override {
+        optional<SwitchResponseDto> result = switchService->ToggleSwitch(id);
+        if (!result.has_value()) {
+            return ResponseEntity<SwitchResponseDto>::NotFound(SwitchResponseDto());
         }
-
-        SwitchDto dto(id, finalState.value());
-        return ResponseEntity<SwitchDto>::Ok(dto);
+        return ResponseEntity<SwitchResponseDto>::Ok(result.value());
     }
 
     /* @GetMapping("/{id}") */
-    Public Virtual ResponseEntity<SwitchDto> GetSwitchStateById(/* @PathVariable("id") */ Int id) override {
-        optional<SwitchState> state = switchService->GetSwitchStateById(id);
-        if (!state.has_value()) {
-            return ResponseEntity<SwitchDto>::NotFound(SwitchDto());
+    Public Virtual ResponseEntity<SwitchResponseDto> GetSwitchStateById(/* @PathVariable("id") */ Int id) override {
+        optional<SwitchResponseDto> result = switchService->GetSwitchStateById(id);
+        if (!result.has_value()) {
+            return ResponseEntity<SwitchResponseDto>::NotFound(SwitchResponseDto());
         }
-
-        SwitchDto dto(id, state.value());
-        return ResponseEntity<SwitchDto>::Ok(dto);
+        return ResponseEntity<SwitchResponseDto>::Ok(result.value());
     }
 
     /* @GetMapping */
-    Public Virtual ResponseEntity<Vector<SwitchDto>> GetAllSwitchState() override {
-        Vector<SwitchDto> switchDtos = switchService->GetAllSwitchState();
-        return ResponseEntity<Vector<SwitchDto>>::Ok(switchDtos);
+    Public Virtual ResponseEntity<Vector<SwitchResponseDto>> GetAllSwitchState() override {
+        Vector<SwitchResponseDto> list = switchService->GetAllSwitchState();
+        return ResponseEntity<Vector<SwitchResponseDto>>::Ok(list);
     }
 };
 

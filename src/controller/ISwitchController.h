@@ -7,7 +7,7 @@
 template<typename T>
 class ResponseEntity;
 
-class SwitchDto;
+class SwitchResponseDto;
 
 DefineStandardPointers(ISwitchController)
 class ISwitchController {
@@ -16,36 +16,36 @@ class ISwitchController {
     /**
      * @brief Turn on a switch by ID
      * @param id The switch ID
-     * @return ResponseEntity<SwitchDto> with the updated switch state, or 404 if not found
+     * @return ResponseEntity<SwitchResponseDto> with switch details, or 404 if not found
      */
-    Public Virtual ResponseEntity<SwitchDto> TurnOnSwitch(Int id) = 0;
+    Public Virtual ResponseEntity<SwitchResponseDto> TurnOnSwitch(Int id) = 0;
 
     /**
      * @brief Turn off a switch by ID
      * @param id The switch ID
-     * @return ResponseEntity<SwitchDto> with the updated switch state, or 404 if not found
+     * @return ResponseEntity<SwitchResponseDto>, or 404 if not found
      */
-    Public Virtual ResponseEntity<SwitchDto> TurnOffSwitch(Int id) = 0;
+    Public Virtual ResponseEntity<SwitchResponseDto> TurnOffSwitch(Int id) = 0;
 
     /**
      * @brief Toggle a switch by ID
      * @param id The switch ID
-     * @return ResponseEntity<SwitchDto> with the updated switch state, or 404 if not found
+     * @return ResponseEntity<SwitchResponseDto>, or 404 if not found
      */
-    Public Virtual ResponseEntity<SwitchDto> ToggleSwitch(Int id) = 0;
+    Public Virtual ResponseEntity<SwitchResponseDto> ToggleSwitch(Int id) = 0;
 
     /**
-     * @brief Get switch state by ID
+     * @brief Get switch details by ID
      * @param id The switch ID
-     * @return ResponseEntity<SwitchDto> with the switch state, or 404 if not found
+     * @return ResponseEntity<SwitchResponseDto>, or 404 if not found
      */
-    Public Virtual ResponseEntity<SwitchDto> GetSwitchStateById(Int id) = 0;
+    Public Virtual ResponseEntity<SwitchResponseDto> GetSwitchStateById(Int id) = 0;
 
     /**
-     * @brief Get all switch states
-     * @return ResponseEntity<Vector<SwitchDto>> with all switch states
+     * @brief Get all switch details
+     * @return ResponseEntity<Vector<SwitchResponseDto>> with all switch details
      */
-    Public Virtual ResponseEntity<Vector<SwitchDto>> GetAllSwitchState() = 0;
+    Public Virtual ResponseEntity<Vector<SwitchResponseDto>> GetAllSwitchState() = 0;
 };
 
 #include "SwitchController.h"
