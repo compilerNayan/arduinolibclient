@@ -133,7 +133,7 @@ class SwitchDevice : public ISwitchDevice {
         // If actual state doesn't match relay state, update relay state
         if (currentState != relayState) {
             relayState = currentState;
-            
+            RefreshRelayState();
             
             logger->Info(Tag::Untagged, GetRefreshLogMessage(relayState, currentState));
         }
