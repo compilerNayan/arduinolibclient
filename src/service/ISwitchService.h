@@ -3,7 +3,7 @@
 
 #include <StandardDefines.h>
 #include "../SwitchState.h"
-#include "../controller/SwitchDto.h"
+#include "../controller/SwitchResponseDto.h"
 
 DefineStandardPointers(ISwitchService)
 class ISwitchService {
@@ -12,36 +12,36 @@ class ISwitchService {
     /**
      * @brief Turn on a switch by ID
      * @param id The switch ID
-     * @return The final switch state after turning on, or empty optional if not found
+     * @return SwitchResponseDto (id, virtualState, physicalSwitchState, relayState), or empty optional if not found
      */
-    Public Virtual optional<SwitchState> TurnOnSwitch(Int id) = 0;
+    Public Virtual optional<SwitchResponseDto> TurnOnSwitch(Int id) = 0;
 
     /**
      * @brief Turn off a switch by ID
      * @param id The switch ID
-     * @return The final switch state after turning off, or empty optional if not found
+     * @return SwitchResponseDto, or empty optional if not found
      */
-    Public Virtual optional<SwitchState> TurnOffSwitch(Int id) = 0;
+    Public Virtual optional<SwitchResponseDto> TurnOffSwitch(Int id) = 0;
 
     /**
      * @brief Toggle a switch by ID
      * @param id The switch ID
-     * @return The final switch state after toggling, or empty optional if not found
+     * @return SwitchResponseDto, or empty optional if not found
      */
-    Public Virtual optional<SwitchState> ToggleSwitch(Int id) = 0;
+    Public Virtual optional<SwitchResponseDto> ToggleSwitch(Int id) = 0;
 
     /**
-     * @brief Get switch state by ID
+     * @brief Get switch details by ID
      * @param id The switch ID
-     * @return The switch state, or empty optional if not found
+     * @return SwitchResponseDto, or empty optional if not found
      */
-    Public Virtual optional<SwitchState> GetSwitchStateById(Int id) = 0;
+    Public Virtual optional<SwitchResponseDto> GetSwitchStateById(Int id) = 0;
 
     /**
-     * @brief Get all switch states
-     * @return Vector of SwitchDto objects containing id and state for each switch
+     * @brief Get all switch details
+     * @return Vector of SwitchResponseDto (id, virtualState, physicalSwitchState, relayState) for each switch
      */
-    Public Virtual Vector<SwitchDto> GetAllSwitchState() = 0;
+    Public Virtual Vector<SwitchResponseDto> GetAllSwitchState() = 0;
 };
 
 #endif // ISWITCHSERVICE_H

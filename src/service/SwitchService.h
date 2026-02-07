@@ -5,7 +5,7 @@
 #include "ISwitchService.h"
 #include "../IDeviceCollection.h"
 #include "../ISwitchDevice.h"
-#include "../controller/SwitchDto.h"
+#include "../controller/SwitchResponseDto.h"
 #include "../SwitchState.h"
 
 /* @Service */
@@ -17,60 +17,50 @@ class SwitchService : public ISwitchService {
 
     Public Virtual ~SwitchService() = default;
 
-    Public Virtual optional<SwitchState> TurnOnSwitch(Int id) override {
+    Public Virtual optional<SwitchResponseDto> TurnOnSwitch(Int id) override {
         ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(id);
         if (device == nullptr) {
-            return optional<SwitchState>();
+            return optional<SwitchResponseDto>();
         }
-
-        SwitchState finalState = device->TurnOn();
-        return optional<SwitchState>(finalState);
+        device->TurnOn();
+        return optional<SwitchResponseDto>(device->GetSwitchDetails());
     }
 
-    Public Virtual optional<SwitchState> TurnOffSwitch(Int id) override {
+    Public Virtual optional<SwitchResponseDto> TurnOffSwitch(Int id) override {
         ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(id);
         if (device == nullptr) {
-            return optional<SwitchState>();
+            return optional<SwitchResponseDto>();
         }
-
-        SwitchState finalState = device->TurnOff();
-        return optional<SwitchState>(finalState);
+        device->TurnOff();
+        return optional<SwitchResponseDto>(device->GetSwitchDetails());
     }
 
-    Public Virtual optional<SwitchState> ToggleSwitch(Int id) override {
+    Public Virtual optional<SwitchResponseDto> ToggleSwitch(Int id) override {
         ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(id);
         if (device == nullptr) {
-            return optional<SwitchState>();
+            return optional<SwitchResponseDto>();
         }
-
-        SwitchState finalState = device->Toggle();
-        return optional<SwitchState>(finalState);
+        device->Toggle();
+        return optional<SwitchResponseDto>(device->GetSwitchDetails());
     }
 
-    Public Virtual optional<SwitchState> GetSwitchStateById(Int id) override {
+    Public Virtual optional<SwitchResponseDto> GetSwitchStateById(Int id) override {
         ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(id);
         if (device == nullptr) {
-            return optional<SwitchState>();
+            return optional<SwitchResponseDto>();
         }
-
-        SwitchState state = device->GetState();
-        return optional<SwitchState>(state);
+        return optional<SwitchResponseDto>(device->GetSwitchDetails());
     }
 
-    Public Virtual Vector<SwitchDto> GetAllSwitchState() override {
-        Vector<SwitchDto> switchDtos;
-        
-        // Get all devices from the collection
-        // Iterate through known IDs (1, 2, 3 from DeviceInfoProvider)
+    Public Virtual Vector<SwitchResponseDto> GetAllSwitchState() override {
+        Vector<SwitchResponseDto> result;
         for (Int i = 1; i <= 3; i++) {
             ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(i);
             if (device != nullptr) {
-                SwitchDto dto(device->GetId(), device->GetState());
-                switchDtos.push_back(dto);
+                result.push_back(device->GetSwitchDetails());
             }
         }
-        
-        return switchDtos;
+        return result;
     }
 };
 
