@@ -20,9 +20,11 @@ class RelayController : public IRelayController {
         pinMode(pin, OUTPUT);
         if (state == SwitchState::On) {
             logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to HIGH");
+            pinMode(pin, OUTPUT);
             digitalWrite(pin, HIGH);
         } else {
             logger->Info(Tag::Untagged, "Nayan: Setting relay on pin " + std::to_string(pin) + " to LOW");
+            pinMode(pin, OUTPUT);
             digitalWrite(pin, LOW);
         }
         
