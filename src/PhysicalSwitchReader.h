@@ -9,6 +9,11 @@
 #include "Tag.h"
 #include <Arduino.h>
 
+// ZMPT101B-style voltage detection: two analog samples ~10 ms apart (half 50 Hz cycle).
+// If difference >= threshold, AC voltage present (On); else Off.
+static const Int kVoltageThreshold = 50;
+static const UInt kHalfCycleMs = 10;
+
 /* @Component */
 class PhysicalSwitchReader : public IPhysicalSwitchReader {
     /* @Autowired */
@@ -19,19 +24,21 @@ class PhysicalSwitchReader : public IPhysicalSwitchReader {
     Public Virtual ~PhysicalSwitchReader() = default;
 
     Public Virtual SwitchState ReadPhysicalState(Int pin) override {
-        // Set pin mode to INPUT
         pinMode(pin, INPUT);
-        
-        // Read the physical state directly from the GPIO pin
-        Bool isHigh = digitalRead(pin) == HIGH;
-        SwitchState state = isHigh ? SwitchState::On : SwitchState::Off;
-        
+
+        Int v1 = analogRead(pin);
+        delay(kHalfCycleMs);
+        Int v2 = analogRead(pin);
+        Int diff = (v1 > v2) ? (v1 - v2) : (v2 - v1);
+        Bool hasVoltage = (diff >= kVoltageThreshold);
+        SwitchState state = hasVoltage ? SwitchState::On : SwitchState::Off;
+
         if (logger != nullptr) {
-            StdString message = "Read physical state from pin " + std::to_string(pin) + ": " + 
+            StdString message = "Read physical state from pin " + std::to_string(pin) + ": " +
                                (state == SwitchState::On ? "ON" : "OFF");
             logger->Info(Tag::Untagged, message);
         }
-        
+
         return state;
     }
 };
