@@ -15,16 +15,16 @@ endif()
 # Fetch libraries from GitHub
 include(FetchContent)
 
-# Fetch arduino-core (includes springbootplusplus-web and springbootplusplus-data)
+# Fetch arduino_core (includes springbootplusplus-web and springbootplusplus-data)
 FetchContent_Declare(
-    arduino-core
-    GIT_REPOSITORY https://github.com/compilerNayan/arduinolib5.git
+    arduino_core
+    GIT_REPOSITORY https://github.com/compilerNayan/arduino_core.git
     GIT_TAG        main  # or use a specific tag/commit like "v1.0.0"
 )
 
 # Fetch and use the library's CMakeLists.txt
 # This will automatically fetch and include arduinolib2 and arduinolib3
-FetchContent_MakeAvailable(arduino-core)
+FetchContent_MakeAvailable(arduino_core)
 
 # Add test executable only (ignore other cpp files)
 add_executable(user_repository_tests
@@ -52,12 +52,12 @@ find_package(CURL REQUIRED)
 
 # Link the library (arduinolib4 includes both springbootplusplus-web and springbootplusplus-data)
 target_link_libraries(user_repository_tests PRIVATE 
-    arduino-core
+    arduino_core
     CURL::libcurl
 )
 
 target_link_libraries(desktop_server PRIVATE 
-    arduino-core
+    arduino_core
     CURL::libcurl
 )
 
