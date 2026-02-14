@@ -12,7 +12,7 @@ class IDeviceInfoProvider {
      * @brief Get all switch details
      * @return Vector of DeviceDetail objects containing id and pin for each switch
      */
-    Public Virtual Vector<DeviceDetail> GetAllSwitchDetails() = 0;
+    Public Virtual StdVector<DeviceDetail> GetAllSwitchDetails() = 0;
 };
 
 #endif // IDEVICEINFOPROVIDER_H

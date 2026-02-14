@@ -11,7 +11,7 @@
 
 /* @Component */
 class StubPhysicalSwitchReader : public IPhysicalSwitchReader {
-    Private Map<Int, SwitchState> pinStates;
+    Private StdMap<Int, SwitchState> pinStates;
 
     /* @Autowired */
     Private ILoggerPtr logger;

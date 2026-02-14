@@ -12,7 +12,7 @@ class OrderRepository : public CpaRepository<Order, int> {
     
     // Custom FindBy methods
     Public Virtual optional<Order> FindByOrderNumber(StdString orderNumber) = 0;
-    Public Virtual Vector<Order> FindByCustomerId(int customerId) = 0;
+    Public Virtual StdVector<Order> FindByCustomerId(int customerId) = 0;
 };
 
 #endif // _ORDER_REPOSITORY_H_

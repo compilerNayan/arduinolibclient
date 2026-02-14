@@ -327,7 +327,7 @@ bool TestGetAllWifiCredentials_Empty() {
     
     ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
     
-    Vector<WifiCredentials> result = SerializationUtility::Deserialize<Vector<WifiCredentials>>(response.body);
+    StdVector<WifiCredentials> result = SerializationUtility::Deserialize<StdVector<WifiCredentials>>(response.body);
     
     // Should return empty vector if no credentials exist
     PrintWifiTestResult("Get All WiFi Credentials - Empty", true);
@@ -355,7 +355,7 @@ bool TestGetAllWifiCredentials_Multiple() {
     
     ASSERT_WIFI(response.statusCode == 200, "HTTP status should be 200");
     
-    Vector<WifiCredentials> result = SerializationUtility::Deserialize<Vector<WifiCredentials>>(response.body);
+    StdVector<WifiCredentials> result = SerializationUtility::Deserialize<StdVector<WifiCredentials>>(response.body);
     
     ASSERT_WIFI(result.size() >= 3, "Should return at least 3 credentials");
     

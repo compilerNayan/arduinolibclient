@@ -648,7 +648,7 @@ bool TestSerializeVectorProductX() {
     TEST_START("Test Serialize Vector of ProductX");
     
     // Create a vector with 3 ProductX objects
-    Vector<ProductX> originalProducts;
+    StdVector<ProductX> originalProducts;
     
     ProductX product1;
     product1.productId = optional<int>(301);
@@ -710,11 +710,11 @@ bool TestSerializeVectorProductX() {
 bool TestSerializeVectorInt() {
     TEST_START("Test Serialize Vector of Int");
     
-    Vector<int> numbers = {10, 20, 30, 40, 50};
+    StdVector<int> numbers = {10, 20, 30, 40, 50};
     StdString serialized = SerializationUtility::Serialize(numbers);
     
     StdString expectedJson = "[10,20,30,40,50]";
-    ASSERT(serialized == expectedJson, "Serialized Vector<int> should match expected JSON");
+    ASSERT(serialized == expectedJson, "Serialized StdVector<int> should match expected JSON");
     
     testsPassed_serialization++;
     return true;
@@ -724,7 +724,7 @@ bool TestSerializeVectorInt() {
 bool TestSerializeListString() {
     TEST_START("Test Serialize List of String");
     
-    List<StdString> strings;
+    StdList<StdString> strings;
     strings.push_back("apple");
     strings.push_back("banana");
     strings.push_back("cherry");
@@ -732,7 +732,7 @@ bool TestSerializeListString() {
     StdString serialized = SerializationUtility::Serialize(strings);
     
     StdString expectedJson = "[\"apple\",\"banana\",\"cherry\"]";
-    ASSERT(serialized == expectedJson, "Serialized List<string> should match expected JSON");
+    ASSERT(serialized == expectedJson, "Serialized StdList<string> should match expected JSON");
     
     testsPassed_serialization++;
     return true;
@@ -839,7 +839,7 @@ bool TestSerializeForwardListInt() {
     
     // forward_list is singly-linked, so order is reversed from push_front
     StdString expectedJson = "[10,20,30]";
-    ASSERT(serialized == expectedJson, "Serialized forward_List<int> should match expected JSON");
+    ASSERT(serialized == expectedJson, "Serialized forward_StdList<int> should match expected JSON");
     
     testsPassed_serialization++;
     return true;
@@ -849,7 +849,7 @@ bool TestSerializeForwardListInt() {
 bool TestSerializeMapStringInt() {
     TEST_START("Test Serialize Map String to Int");
     
-    Map<StdString, int> scores;
+    StdMap<StdString, int> scores;
     scores["Alice"] = 95;
     scores["Bob"] = 87;
     scores["Charlie"] = 92;
@@ -873,7 +873,7 @@ bool TestSerializeMapStringInt() {
 bool TestSerializeMapIntProductX() {
     TEST_START("Test Serialize Map Int to ProductX");
     
-    Map<int, ProductX> productMap;
+    StdMap<int, ProductX> productMap;
     
     ProductX p1;
     p1.productId = optional<int>(501);
@@ -904,11 +904,11 @@ bool TestSerializeMapIntProductX() {
     return true;
 }
 
-// Test 29: Serialize UnorderedMap<string, string>
+// Test 29: Serialize UnorderedStdMap<string, string>
 bool TestSerializeUnorderedMapStringString() {
     TEST_START("Test Serialize Unordered Map String to String");
     
-    UnorderedMap<StdString, StdString> config;
+    UnorderedStdMap<StdString, StdString> config;
     config["host"] = "localhost";
     config["port"] = "8080";
     config["protocol"] = "http";
@@ -932,11 +932,11 @@ bool TestSerializeUnorderedMapStringString() {
 bool TestSerializeVectorBool() {
     TEST_START("Test Serialize Vector of Bool");
     
-    Vector<bool> flags = {true, false, true, true, false};
+    StdVector<bool> flags = {true, false, true, true, false};
     StdString serialized = SerializationUtility::Serialize(flags);
     
     StdString expectedJson = "[true,false,true,true,false]";
-    ASSERT(serialized == expectedJson, "Serialized Vector<bool> should match expected JSON");
+    ASSERT(serialized == expectedJson, "Serialized StdVector<bool> should match expected JSON");
     
     testsPassed_serialization++;
     return true;
@@ -946,7 +946,7 @@ bool TestSerializeVectorBool() {
 bool TestSerializeVectorDouble() {
     TEST_START("Test Serialize Vector of Double");
     
-    Vector<double> values = {3.14, 2.71, 1.41, 0.57};
+    StdVector<double> values = {3.14, 2.71, 1.41, 0.57};
     StdString serialized = SerializationUtility::Serialize(values);
     
     // Note: ArduinoJson may format decimals differently
@@ -964,7 +964,7 @@ bool TestSerializeVectorDouble() {
 bool TestSerializeEmptyVector() {
     TEST_START("Test Serialize Empty Vector");
     
-    Vector<int> empty;
+    StdVector<int> empty;
     StdString serialized = SerializationUtility::Serialize(empty);
     
     StdString expectedJson = "[]";
@@ -978,7 +978,7 @@ bool TestSerializeEmptyVector() {
 bool TestSerializeEmptyMap() {
     TEST_START("Test Serialize Empty Map");
     
-    Map<StdString, int> emptyMap;
+    StdMap<StdString, int> emptyMap;
     StdString serialized = SerializationUtility::Serialize(emptyMap);
     
     StdString expectedJson = "{}";
@@ -994,7 +994,7 @@ bool TestSerializeEmptyMap() {
 bool TestSerializeListPerson() {
     TEST_START("Test Serialize List of Person");
     
-    List<Person> people;
+    StdList<Person> people;
     
     Person p1;
     p1.id = optional<int>(1001);
@@ -1070,7 +1070,7 @@ bool TestSerializeDequeAddress() {
 bool TestSerializeVectorProductXMultiple() {
     TEST_START("Test Serialize Vector of ProductX Multiple");
     
-    Vector<ProductX> products;
+    StdVector<ProductX> products;
     
     ProductX p1;
     p1.productId = optional<int>(601);
@@ -1102,7 +1102,7 @@ bool TestSerializeVectorProductXMultiple() {
 bool TestSerializeListPersonMultiple() {
     TEST_START("Test Serialize List of Person Multiple");
     
-    List<Person> people;
+    StdList<Person> people;
     
     Person p1;
     p1.id = optional<int>(2001);
@@ -1175,7 +1175,7 @@ bool TestSerializeArrayAddress() {
 bool TestSerializeMapStringPerson() {
     TEST_START("Test Serialize Map String to Person");
     
-    Map<StdString, Person> personMap;
+    StdMap<StdString, Person> personMap;
     
     Person p1;
     p1.id = optional<int>(3001);
@@ -1209,7 +1209,7 @@ bool TestSerializeMapStringPerson() {
 bool TestSerializeMapIntAddress() {
     TEST_START("Test Serialize Map Int to Address");
     
-    Map<int, Address> addressMap;
+    StdMap<int, Address> addressMap;
     
     Address a1;
     a1.street = optional<StdString>(StdString("600 Maple St"));
@@ -1239,11 +1239,11 @@ bool TestSerializeMapIntAddress() {
     return true;
 }
 
-// Test 41: Serialize UnorderedMap<string, ProductX>
+// Test 41: Serialize UnorderedStdMap<string, ProductX>
 bool TestSerializeUnorderedMapStringProductX() {
     TEST_START("Test Serialize Unordered Map String to ProductX");
     
-    UnorderedMap<StdString, ProductX> productMap;
+    UnorderedStdMap<StdString, ProductX> productMap;
     
     ProductX p1;
     p1.productId = optional<int>(701);
@@ -1277,7 +1277,7 @@ bool TestSerializeUnorderedMapStringProductX() {
 bool TestSerializeVectorPersonPartial() {
     TEST_START("Test Serialize Vector of Person with Partial Fields");
     
-    Vector<Person> people;
+    StdVector<Person> people;
     
     Person p1;
     p1.id = optional<int>(4001);
@@ -1306,7 +1306,7 @@ bool TestSerializeVectorPersonPartial() {
 bool TestSerializeLargeVectorProductX() {
     TEST_START("Test Serialize Large Vector of ProductX");
     
-    Vector<ProductX> products;
+    StdVector<ProductX> products;
     
     // Create 10 products
     for (int i = 1; i <= 10; i++) {
@@ -1330,13 +1330,13 @@ bool TestSerializeLargeVectorProductX() {
     return true;
 }
 
-// Test 44: Serialize map<string, Vector<Address>>
+// Test 44: Serialize map<string, StdVector<Address>>
 bool TestSerializeMapStringVectorAddress() {
     TEST_START("Test Serialize Map String to Vector of Address");
     
-    Map<StdString, Vector<Address>> addressMap;
+    StdMap<StdString, StdVector<Address>> addressMap;
     
-    Vector<Address> homeAddresses;
+    StdVector<Address> homeAddresses;
     Address a1;
     a1.street = optional<StdString>(StdString("100 Home St"));
     a1.city = optional<StdString>(StdString("Miami"));
@@ -1346,7 +1346,7 @@ bool TestSerializeMapStringVectorAddress() {
     homeAddresses.push_back(a1);
     addressMap["home"] = homeAddresses;
     
-    Vector<Address> workAddresses;
+    StdVector<Address> workAddresses;
     Address a2;
     a2.street = optional<StdString>(StdString("200 Work Ave"));
     a2.city = optional<StdString>(StdString("Tampa"));
@@ -1372,7 +1372,7 @@ bool TestSerializeMapStringVectorAddress() {
 bool TestSerializeVectorPersonEmptyFields() {
     TEST_START("Test Serialize Vector of Person with Empty Fields");
     
-    Vector<Person> people;
+    StdVector<Person> people;
     
     Person p1;
     // All fields are empty/not set
@@ -1392,13 +1392,13 @@ bool TestSerializeVectorPersonEmptyFields() {
     return true;
 }
 
-// Test 46: Serialize map<int, List<ProductX>>
+// Test 46: Serialize map<int, StdList<ProductX>>
 bool TestSerializeMapIntListProductX() {
     TEST_START("Test Serialize Map Int to List of ProductX");
     
-    Map<int, List<ProductX>> categoryMap;
+    StdMap<int, StdList<ProductX>> categoryMap;
     
-    List<ProductX> electronics;
+    StdList<ProductX> electronics;
     ProductX p1;
     p1.productId = optional<int>(9001);
     p1.productName = optional<StdString>(StdString("TV"));
@@ -1416,7 +1416,7 @@ bool TestSerializeMapIntListProductX() {
     electronics.push_back(p2);
     categoryMap[1] = electronics;
     
-    List<ProductX> furniture;
+    StdList<ProductX> furniture;
     ProductX p3;
     p3.productId = optional<int>(9003);
     p3.productName = optional<StdString>(StdString("Chair"));
@@ -1524,11 +1524,11 @@ bool TestSerializeDequePersonDifferentAges() {
     return true;
 }
 
-// Test 49: Serialize UnorderedMap<int, Person>
+// Test 49: Serialize UnorderedStdMap<int, Person>
 bool TestSerializeUnorderedMapIntPerson() {
     TEST_START("Test Serialize Unordered Map Int to Person");
     
-    UnorderedMap<int, Person> personMap;
+    UnorderedStdMap<int, Person> personMap;
     
     Person p1;
     p1.id = optional<int>(6001);
@@ -1562,7 +1562,7 @@ bool TestSerializeUnorderedMapIntPerson() {
 bool TestSerializeVectorProductXVaryingStock() {
     TEST_START("Test Serialize Vector of ProductX with Varying Stock");
     
-    Vector<ProductX> products;
+    StdVector<ProductX> products;
     
     // In stock products
     for (int i = 1; i <= 3; i++) {
@@ -1610,8 +1610,8 @@ bool TestDeserializeVectorProductX() {
         "{\"productId\":404,\"productName\":\"Speaker\",\"price\":149.50,\"quantity\":30,\"inStock\":true}"
     "]";
     
-    // Deserialize the JSON string to Vector<ProductX>
-    Vector<ProductX> deserializedProducts = SerializationUtility::Deserialize<Vector<ProductX>>(jsonString);
+    // Deserialize the JSON string to StdVector<ProductX>
+    StdVector<ProductX> deserializedProducts = SerializationUtility::Deserialize<StdVector<ProductX>>(jsonString);
     
     // Verify the vector has 4 products
     ASSERT(deserializedProducts.size() == 4, "Deserialized vector should have 4 products");
@@ -1670,12 +1670,12 @@ bool TestDeserializeVectorProductX() {
 
 // ========== Deserialization Tests for Sequential Containers ==========
 
-// Test: Deserialize Vector<int>
+// Test: Deserialize StdVector<int>
 bool TestDeserializeVectorInt() {
     TEST_START("Test Deserialize Vector of Int");
     
     StdString jsonString = "[10,20,30,40,50]";
-    Vector<int> deserialized = SerializationUtility::Deserialize<Vector<int>>(jsonString);
+    StdVector<int> deserialized = SerializationUtility::Deserialize<StdVector<int>>(jsonString);
     
     ASSERT(deserialized.size() == 5, "Deserialized vector should have 5 elements");
     ASSERT(deserialized[0] == 10, "First element should be 10");
@@ -1688,12 +1688,12 @@ bool TestDeserializeVectorInt() {
     return true;
 }
 
-// Test: Deserialize List<string>
+// Test: Deserialize StdList<string>
 bool TestDeserializeListString() {
     TEST_START("Test Deserialize List of String");
     
     StdString jsonString = "[\"apple\",\"banana\",\"cherry\"]";
-    List<StdString> deserialized = SerializationUtility::Deserialize<List<StdString>>(jsonString);
+    StdList<StdString> deserialized = SerializationUtility::Deserialize<StdList<StdString>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized list should have 3 elements");
     auto it = deserialized.begin();
@@ -1775,12 +1775,12 @@ bool TestDeserializeArrayInt() {
     return true;
 }
 
-// Test: Deserialize Vector<bool>
+// Test: Deserialize StdVector<bool>
 bool TestDeserializeVectorBool() {
     TEST_START("Test Deserialize Vector of Bool");
     
     StdString jsonString = "[true,false,true,true,false]";
-    Vector<bool> deserialized = SerializationUtility::Deserialize<Vector<bool>>(jsonString);
+    StdVector<bool> deserialized = SerializationUtility::Deserialize<StdVector<bool>>(jsonString);
     
     ASSERT(deserialized.size() == 5, "Deserialized vector should have 5 elements");
     ASSERT(deserialized[0] == true, "First element should be true");
@@ -1798,7 +1798,7 @@ bool TestDeserializeEmptyVector() {
     TEST_START("Test Deserialize Empty Vector");
     
     StdString jsonString = "[]";
-    Vector<int> deserialized = SerializationUtility::Deserialize<Vector<int>>(jsonString);
+    StdVector<int> deserialized = SerializationUtility::Deserialize<StdVector<int>>(jsonString);
     
     ASSERT(deserialized.size() == 0, "Deserialized vector should be empty");
     
@@ -1806,7 +1806,7 @@ bool TestDeserializeEmptyVector() {
     return true;
 }
 
-// Test: Deserialize List<Person>
+// Test: Deserialize StdList<Person>
 bool TestDeserializeListPerson() {
     TEST_START("Test Deserialize List of Person");
     
@@ -1815,7 +1815,7 @@ bool TestDeserializeListPerson() {
         "{\"id\":102,\"name\":\"Bob\",\"age\":25,\"isActive\":false,\"salary\":45000.0}"
     "]";
     
-    List<Person> deserialized = SerializationUtility::Deserialize<List<Person>>(jsonString);
+    StdList<Person> deserialized = SerializationUtility::Deserialize<StdList<Person>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized list should have 2 persons");
     
@@ -1877,12 +1877,12 @@ bool TestDeserializeArrayAddress() {
 
 // ========== Deserialization Tests for Associative Containers ==========
 
-// Test: Deserialize Map<string, int>
+// Test: Deserialize StdMap<string, int>
 bool TestDeserializeMapStringInt() {
     TEST_START("Test Deserialize Map String to Int");
     
     StdString jsonString = "{\"apple\":10,\"banana\":20,\"cherry\":30}";
-    Map<StdString, int> deserialized = SerializationUtility::Deserialize<Map<StdString, int>>(jsonString);
+    StdMap<StdString, int> deserialized = SerializationUtility::Deserialize<StdMap<StdString, int>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized map should have 3 entries");
     ASSERT(deserialized["apple"] == 10, "apple should map to 10");
@@ -1893,7 +1893,7 @@ bool TestDeserializeMapStringInt() {
     return true;
 }
 
-// Test: Deserialize Map<int, ProductX>
+// Test: Deserialize StdMap<int, ProductX>
 bool TestDeserializeMapIntProductX() {
     TEST_START("Test Deserialize Map Int to ProductX");
     
@@ -1903,8 +1903,8 @@ bool TestDeserializeMapIntProductX() {
     "}";
     
     // Note: JSON keys must be strings, so we'll use string keys and convert
-    // For this test, we'll use Map<string, ProductX> instead
-    Map<StdString, ProductX> deserialized = SerializationUtility::Deserialize<Map<StdString, ProductX>>(jsonString);
+    // For this test, we'll use StdMap<string, ProductX> instead
+    StdMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<StdMap<StdString, ProductX>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized map should have 2 entries");
     ASSERT(deserialized.find("1001") != deserialized.end(), "Map should contain key 1001");
@@ -1918,7 +1918,7 @@ bool TestDeserializeMapIntProductX() {
     return true;
 }
 
-// Test: Deserialize Map<string, Person>
+// Test: Deserialize StdMap<string, Person>
 bool TestDeserializeMapStringPerson() {
     TEST_START("Test Deserialize Map String to Person");
     
@@ -1927,7 +1927,7 @@ bool TestDeserializeMapStringPerson() {
         "\"bob\":{\"id\":202,\"name\":\"Bob Jones\",\"age\":35,\"isActive\":true,\"salary\":60000.0}"
     "}";
     
-    Map<StdString, Person> deserialized = SerializationUtility::Deserialize<Map<StdString, Person>>(jsonString);
+    StdMap<StdString, Person> deserialized = SerializationUtility::Deserialize<StdMap<StdString, Person>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized map should have 2 entries");
     ASSERT(deserialized.find("alice") != deserialized.end(), "Map should contain key alice");
@@ -1945,12 +1945,12 @@ bool TestDeserializeMapStringPerson() {
     return true;
 }
 
-// Test: Deserialize UnorderedMap<string, string>
+// Test: Deserialize UnorderedStdMap<string, string>
 bool TestDeserializeUnorderedMapStringString() {
     TEST_START("Test Deserialize UnorderedMap String to String");
     
     StdString jsonString = "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3\":\"value3\"}";
-    UnorderedMap<StdString, StdString> deserialized = SerializationUtility::Deserialize<UnorderedMap<StdString, StdString>>(jsonString);
+    UnorderedStdMap<StdString, StdString> deserialized = SerializationUtility::Deserialize<UnorderedStdMap<StdString, StdString>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized unordered_map should have 3 entries");
     ASSERT(deserialized["key1"] == "value1", "key1 should map to value1");
@@ -1961,7 +1961,7 @@ bool TestDeserializeUnorderedMapStringString() {
     return true;
 }
 
-// Test: Deserialize UnorderedMap<string, ProductX>
+// Test: Deserialize UnorderedStdMap<string, ProductX>
 bool TestDeserializeUnorderedMapStringProductX() {
     TEST_START("Test Deserialize UnorderedMap String to ProductX");
     
@@ -1970,7 +1970,7 @@ bool TestDeserializeUnorderedMapStringProductX() {
         "\"prod2\":{\"productId\":502,\"productName\":\"Watch\",\"price\":199.99,\"quantity\":25,\"inStock\":true}"
     "}";
     
-    UnorderedMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<UnorderedMap<StdString, ProductX>>(jsonString);
+    UnorderedStdMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<UnorderedStdMap<StdString, ProductX>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized unordered_map should have 2 entries");
     ASSERT(deserialized.find("prod1") != deserialized.end(), "Map should contain key prod1");
@@ -1988,7 +1988,7 @@ bool TestDeserializeEmptyMap() {
     TEST_START("Test Deserialize Empty Map");
     
     StdString jsonString = "{}";
-    Map<StdString, int> deserialized = SerializationUtility::Deserialize<Map<StdString, int>>(jsonString);
+    StdMap<StdString, int> deserialized = SerializationUtility::Deserialize<StdMap<StdString, int>>(jsonString);
     
     ASSERT(deserialized.size() == 0, "Deserialized map should be empty");
     

@@ -14,14 +14,14 @@
 class TestFileManager  {
 private:
     // In-memory file storage
-    Map<StdString, StdString> files;
+    StdMap<StdString, StdString> files;
     
     // Track operations for verification
-    Vector<StdString> createOperations;
-    Vector<StdString> readOperations;
-    Vector<StdString> updateOperations;
-    Vector<StdString> deleteOperations;
-    Vector<StdString> appendOperations;
+    StdVector<StdString> createOperations;
+    StdVector<StdString> readOperations;
+    StdVector<StdString> updateOperations;
+    StdVector<StdString> deleteOperations;
+    StdVector<StdString> appendOperations;
 
 public:
     TestFileManager() = default;
@@ -111,19 +111,19 @@ public:
         return files.size();
     }
 
-    Vector<StdString> GetCreateOperations() const {
+    StdVector<StdString> GetCreateOperations() const {
         return createOperations;
     }
 
-    Vector<StdString> GetReadOperations() const {
+    StdVector<StdString> GetReadOperations() const {
         return readOperations;
     }
 
-    Vector<StdString> GetUpdateOperations() const {
+    StdVector<StdString> GetUpdateOperations() const {
         return updateOperations;
     }
 
-    Vector<StdString> GetDeleteOperations() const {
+    StdVector<StdString> GetDeleteOperations() const {
         return deleteOperations;
     }
 };

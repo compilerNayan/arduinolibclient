@@ -46,7 +46,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
         // Callback function to write response headers
         static size_t HeaderCallback(char* buffer, size_t size, size_t nitems, void* userp) {
             size_t totalSize = size * nitems;
-            Map<StdString, StdString>* headers = static_cast<Map<StdString, StdString>*>(userp);
+            StdMap<StdString, StdString>* headers = static_cast<StdMap<StdString, StdString>*>(userp);
             
             StdString headerLine(buffer, totalSize);
             // Remove trailing \r\n
@@ -83,7 +83,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
             const StdString& method,
             const StdString& url,
             const optional<StdString>& jsonBody,
-            const optional<Map<StdString, StdString>>& customHeaders
+            const optional<StdMap<StdString, StdString>>& customHeaders
         ) {
             #ifndef ARDUINO
             std::cout << "[HTTP_CLIENT] Starting " << method << " request to: " << url << std::endl;
@@ -109,7 +109,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
             #endif
 
             StdString responseBody;
-            Map<StdString, StdString> responseHeaders;
+            StdMap<StdString, StdString> responseHeaders;
             long statusCode = 0;
 
             // Set URL
@@ -209,7 +209,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
         // Helper to create JSON response
         StdString CreateResponse(
             long statusCode,
-            const Map<StdString, StdString>& headers,
+            const StdMap<StdString, StdString>& headers,
             const StdString& body
         ) {
             // Use ArduinoJson to build response JSON
@@ -246,7 +246,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
 
         Public Virtual StdString Get(
             CStdString& url,
-            const optional<Map<StdString, StdString>>& headers = std::nullopt
+            const optional<StdMap<StdString, StdString>>& headers = std::nullopt
         ) override {
             return PerformRequest("GET", StdString(url), std::nullopt, headers);
         }
@@ -254,7 +254,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
         Public Virtual StdString Post(
             CStdString& url,
             CStdString& jsonBody,
-            const optional<Map<StdString, StdString>>& headers = std::nullopt
+            const optional<StdMap<StdString, StdString>>& headers = std::nullopt
         ) override {
             return PerformRequest("POST", StdString(url), optional<StdString>(StdString(jsonBody)), headers);
         }
@@ -262,14 +262,14 @@ class SpecialHttpClient : public ISpecialHttpClient {
         Public Virtual StdString Put(
             CStdString& url,
             CStdString& jsonBody,
-            const optional<Map<StdString, StdString>>& headers = std::nullopt
+            const optional<StdMap<StdString, StdString>>& headers = std::nullopt
         ) override {
             return PerformRequest("PUT", StdString(url), optional<StdString>(StdString(jsonBody)), headers);
         }
 
         Public Virtual StdString Delete(
             CStdString& url,
-            const optional<Map<StdString, StdString>>& headers = std::nullopt
+            const optional<StdMap<StdString, StdString>>& headers = std::nullopt
         ) override {
             return PerformRequest("DELETE", StdString(url), std::nullopt, headers);
         }
@@ -277,7 +277,7 @@ class SpecialHttpClient : public ISpecialHttpClient {
         Public Virtual StdString Patch(
             CStdString& url,
             CStdString& jsonBody,
-            const optional<Map<StdString, StdString>>& headers = std::nullopt
+            const optional<StdMap<StdString, StdString>>& headers = std::nullopt
         ) override {
             return PerformRequest("PATCH", StdString(url), optional<StdString>(StdString(jsonBody)), headers);
         }

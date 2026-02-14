@@ -55,9 +55,9 @@ class SwitchController final : public ISwitchController {
     }
 
     /* @GetMapping */
-    Public Virtual ResponseEntity<Vector<SwitchResponseDto>> GetAllSwitchState() override {
-        Vector<SwitchResponseDto> list = switchService->GetAllSwitchState();
-        return ResponseEntity<Vector<SwitchResponseDto>>::Ok(list);
+    Public Virtual ResponseEntity<StdVector<SwitchResponseDto>> GetAllSwitchState() override {
+        StdVector<SwitchResponseDto> list = switchService->GetAllSwitchState();
+        return ResponseEntity<StdVector<SwitchResponseDto>>::Ok(list);
     }
 };
 

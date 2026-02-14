@@ -43,9 +43,9 @@ class ISwitchController {
 
     /**
      * @brief Get all switch details
-     * @return ResponseEntity<Vector<SwitchResponseDto>> with all switch details
+     * @return ResponseEntity<StdVector<SwitchResponseDto>> with all switch details
      */
-    Public Virtual ResponseEntity<Vector<SwitchResponseDto>> GetAllSwitchState() = 0;
+    Public Virtual ResponseEntity<StdVector<SwitchResponseDto>> GetAllSwitchState() = 0;
 };
 
 #include "SwitchController.h"

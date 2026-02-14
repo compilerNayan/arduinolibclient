@@ -52,8 +52,8 @@ class SwitchService : public ISwitchService {
         return optional<SwitchResponseDto>(device->GetSwitchDetails());
     }
 
-    Public Virtual Vector<SwitchResponseDto> GetAllSwitchState() override {
-        Vector<SwitchResponseDto> result;
+    Public Virtual StdVector<SwitchResponseDto> GetAllSwitchState() override {
+        StdVector<SwitchResponseDto> result;
         for (Int i = 1; i <= 3; i++) {
             ISwitchDevicePtr device = deviceCollection->GetSwitchDeviceById(i);
             if (device != nullptr) {

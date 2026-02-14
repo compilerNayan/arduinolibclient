@@ -10,14 +10,14 @@
 
 /* @Component */
 class DeviceCollection : public IDeviceCollection {
-    Private Map<Int, ISwitchDevicePtr> devices;
+    Private StdMap<Int, ISwitchDevicePtr> devices;
 
     /* @Autowired */
     Private IDeviceInfoProviderPtr deviceInfoProvider;
 
     Public DeviceCollection() {
         // Initialize devices from DeviceInfoProvider
-        Vector<DeviceDetail> deviceDetails = deviceInfoProvider->GetAllSwitchDetails();
+        StdVector<DeviceDetail> deviceDetails = deviceInfoProvider->GetAllSwitchDetails();
         
         // Create switch devices for each device detail
         for (const DeviceDetail& detail : deviceDetails) {

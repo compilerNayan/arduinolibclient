@@ -22,7 +22,7 @@ class ISpecialHttpClient {
      */
     Public Virtual StdString Get(
         CStdString& url,
-        const optional<Map<StdString, StdString>>& headers = std::nullopt
+        const optional<StdMap<StdString, StdString>>& headers = std::nullopt
     ) = 0;
 
     /**
@@ -36,7 +36,7 @@ class ISpecialHttpClient {
     Public Virtual StdString Post(
         CStdString& url,
         CStdString& jsonBody,
-        const optional<Map<StdString, StdString>>& headers = std::nullopt
+        const optional<StdMap<StdString, StdString>>& headers = std::nullopt
     ) = 0;
 
     /**
@@ -50,7 +50,7 @@ class ISpecialHttpClient {
     Public Virtual StdString Put(
         CStdString& url,
         CStdString& jsonBody,
-        const optional<Map<StdString, StdString>>& headers = std::nullopt
+        const optional<StdMap<StdString, StdString>>& headers = std::nullopt
     ) = 0;
 
     /**
@@ -62,7 +62,7 @@ class ISpecialHttpClient {
      */
     Public Virtual StdString Delete(
         CStdString& url,
-        const optional<Map<StdString, StdString>>& headers = std::nullopt
+        const optional<StdMap<StdString, StdString>>& headers = std::nullopt
     ) = 0;
 
     /**
@@ -76,7 +76,7 @@ class ISpecialHttpClient {
     Public Virtual StdString Patch(
         CStdString& url,
         CStdString& jsonBody,
-        const optional<Map<StdString, StdString>>& headers = std::nullopt
+        const optional<StdMap<StdString, StdString>>& headers = std::nullopt
     ) = 0;
 };
 

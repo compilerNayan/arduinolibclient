@@ -12,7 +12,7 @@ class CustomerRepository : public CpaRepository<Customer, int> {
     
     // Custom FindBy methods
     Public Virtual optional<Customer> FindByEmail(StdString email) = 0;
-    Public Virtual Vector<Customer> FindByLastName(StdString lastName) = 0;
+    Public Virtual StdVector<Customer> FindByLastName(StdString lastName) = 0;
     Public Virtual optional<Customer> FindByPhone(StdString phone) = 0;
 };
 

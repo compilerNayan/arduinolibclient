@@ -85,19 +85,19 @@ void TestProductRepository() {
     productRepository->Save(product4);
     
     // Test 6: FindByCategory - should return multiple products
-    Vector<Product> electronics = productRepository->FindByCategory("Electronics");
+    StdVector<Product> electronics = productRepository->FindByCategory("Electronics");
     PrintTestResult("FindByCategory - Multiple results", electronics.size() == 3);
     
     // Test 7: FindByCategory - Single result
-    Vector<Product> furniture = productRepository->FindByCategory("Furniture");
+    StdVector<Product> furniture = productRepository->FindByCategory("Furniture");
     PrintTestResult("FindByCategory - Single result", furniture.size() == 1 && furniture[0].name.value() == "Desk Chair");
     
     // Test 8: FindByCategory - No results
-    Vector<Product> empty = productRepository->FindByCategory("NonExistent");
+    StdVector<Product> empty = productRepository->FindByCategory("NonExistent");
     PrintTestResult("FindByCategory - No results", empty.size() == 0);
     
     // Test 9: FindAll
-    Vector<Product> allProducts = productRepository->FindAll();
+    StdVector<Product> allProducts = productRepository->FindAll();
     PrintTestResult("FindAll - All products", allProducts.size() >= 4);
     
     // Test 10: Update product
@@ -165,19 +165,19 @@ void TestOrderRepository() {
     orderRepository->Save(order4);
     
     // Test 5: FindByCustomerId - Multiple orders
-    Vector<Order> customerOrders = orderRepository->FindByCustomerId(100);
+    StdVector<Order> customerOrders = orderRepository->FindByCustomerId(100);
     PrintTestResult("FindByCustomerId - Multiple orders", customerOrders.size() == 3);
     
     // Test 6: FindByCustomerId - Single order
-    Vector<Order> customer200Orders = orderRepository->FindByCustomerId(200);
+    StdVector<Order> customer200Orders = orderRepository->FindByCustomerId(200);
     PrintTestResult("FindByCustomerId - Single order", customer200Orders.size() == 1);
     
     // Test 7: FindByCustomerId - No orders
-    Vector<Order> noOrders = orderRepository->FindByCustomerId(999);
+    StdVector<Order> noOrders = orderRepository->FindByCustomerId(999);
     PrintTestResult("FindByCustomerId - No orders", noOrders.size() == 0);
     
     // Test 8: FindAll
-    Vector<Order> allOrders = orderRepository->FindAll();
+    StdVector<Order> allOrders = orderRepository->FindAll();
     PrintTestResult("FindAll - All orders", allOrders.size() >= 4);
 }
 
@@ -230,15 +230,15 @@ void TestCustomerRepository() {
     customerRepository->Save(customer4);
     
     // Test 5: FindByLastName - Multiple customers
-    Vector<Customer> does = customerRepository->FindByLastName("Doe");
+    StdVector<Customer> does = customerRepository->FindByLastName("Doe");
     PrintTestResult("FindByLastName - Multiple customers", does.size() == 3);
     
     // Test 6: FindByLastName - Single customer
-    Vector<Customer> smiths = customerRepository->FindByLastName("Smith");
+    StdVector<Customer> smiths = customerRepository->FindByLastName("Smith");
     PrintTestResult("FindByLastName - Single customer", smiths.size() == 1 && smiths[0].firstName.value() == "Alice");
     
     // Test 7: FindByLastName - No customers
-    Vector<Customer> noCustomers = customerRepository->FindByLastName("NonExistent");
+    StdVector<Customer> noCustomers = customerRepository->FindByLastName("NonExistent");
     PrintTestResult("FindByLastName - No customers", noCustomers.size() == 0);
     
     // Test 8: FindByPhone
@@ -250,7 +250,7 @@ void TestCustomerRepository() {
     PrintTestResult("FindByPhone - Not found", !phoneNotFound.has_value());
     
     // Test 10: FindAll
-    Vector<Customer> allCustomers = customerRepository->FindAll();
+    StdVector<Customer> allCustomers = customerRepository->FindAll();
     PrintTestResult("FindAll - All customers", allCustomers.size() >= 4);
     
     // Test 11: Update customer
@@ -309,7 +309,7 @@ void TestUserAccountRepository() {
     PrintTestResult("FindByName - Different account", janeAccount.has_value() && janeAccount.value().username.value() == "jane_smith");
     
     // Test 7: FindAll
-    Vector<UserAccount> allAccounts = userAccountRepository->FindAll();
+    StdVector<UserAccount> allAccounts = userAccountRepository->FindAll();
     PrintTestResult("FindAll - All accounts", allAccounts.size() >= 3);
     
     // Test 8: Update account

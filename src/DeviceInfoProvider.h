@@ -9,8 +9,8 @@
 class DeviceInfoProvider : public IDeviceInfoProvider {
     Public Virtual ~DeviceInfoProvider() = default;
 
-    Public Virtual Vector<DeviceDetail> GetAllSwitchDetails() override {
-        Vector<DeviceDetail> devices;
+    Public Virtual StdVector<DeviceDetail> GetAllSwitchDetails() override {
+        StdVector<DeviceDetail> devices;
         
         // Add devices based on defined macros (SWITCH_1 to SWITCH_100)
         // For each switch, if both SWITCH_N_RELAY_PIN_INDEX and SWITCH_N_PHYSICAL_DEVICE_PIN_INDEX are defined, add the device
