@@ -742,7 +742,7 @@ bool TestSerializeListString() {
 bool TestSerializeDequeProductX() {
     TEST_START("Test Serialize Deque of ProductX");
     
-    Deque<ProductX> products;
+    StdDeque<ProductX> products;
     
     ProductX p1;
     p1.productId = optional<int>(401);
@@ -766,7 +766,7 @@ bool TestSerializeDequeProductX() {
         "{\"productId\":401,\"productName\":\"Mouse\",\"price\":29.99,\"quantity\":100,\"inStock\":true},"
         "{\"productId\":402,\"productName\":\"Keyboard\",\"price\":79.99,\"quantity\":50,\"inStock\":true}"
     "]";
-    ASSERT(serialized == expectedJson, "Serialized Deque<ProductX> should match expected JSON");
+    ASSERT(serialized == expectedJson, "Serialized StdDeque<ProductX> should match expected JSON");
     
     testsPassed_serialization++;
     return true;
@@ -776,7 +776,7 @@ bool TestSerializeDequeProductX() {
 bool TestSerializeSetInt() {
     TEST_START("Test Serialize Set of Int");
     
-    Set<int> numbers = {5, 3, 8, 1, 9};
+    StdSet<int> numbers = {5, 3, 8, 1, 9};
     StdString serialized = SerializationUtility::Serialize(numbers);
     
     // Note: set maintains order (implementation-defined, but typically sorted)
@@ -796,7 +796,7 @@ bool TestSerializeSetInt() {
 bool TestSerializeUnorderedSetString() {
     TEST_START("Test Serialize Unordered Set of String");
     
-    UnorderedSet<StdString> strings = {"red", "green", "blue"};
+    StdUnorderedSet<StdString> strings = {"red", "green", "blue"};
     StdString serialized = SerializationUtility::Serialize(strings);
     
     // Note: unordered_set order is undefined, so we check for presence
@@ -816,7 +816,7 @@ bool TestSerializeUnorderedSetString() {
 bool TestSerializeArrayInt() {
     TEST_START("Test Serialize Array of Int");
     
-    Array<int, 4> numbers = {1, 2, 3, 4};
+    StdArray<int, 4> numbers = {1, 2, 3, 4};
     StdString serialized = SerializationUtility::Serialize(numbers);
     
     StdString expectedJson = "[1,2,3,4]";
@@ -904,11 +904,11 @@ bool TestSerializeMapIntProductX() {
     return true;
 }
 
-// Test 29: Serialize UnorderedStdMap<string, string>
+// Test 29: Serialize StdUnorderedMap<string, string>
 bool TestSerializeUnorderedMapStringString() {
     TEST_START("Test Serialize Unordered Map String to String");
     
-    UnorderedStdMap<StdString, StdString> config;
+    StdUnorderedMap<StdString, StdString> config;
     config["host"] = "localhost";
     config["port"] = "8080";
     config["protocol"] = "http";
@@ -1036,7 +1036,7 @@ bool TestSerializeListPerson() {
 bool TestSerializeDequeAddress() {
     TEST_START("Test Serialize Deque of Address");
     
-    Deque<Address> addresses;
+    StdDeque<Address> addresses;
     
     Address a1;
     a1.street = optional<StdString>(StdString("100 Main St"));
@@ -1134,7 +1134,7 @@ bool TestSerializeListPersonMultiple() {
 bool TestSerializeArrayAddress() {
     TEST_START("Test Serialize Array of Address");
     
-    Array<Address, 3> addresses;
+    StdArray<Address, 3> addresses;
     
     Address a1;
     a1.street = optional<StdString>(StdString("300 Oak St"));
@@ -1239,11 +1239,11 @@ bool TestSerializeMapIntAddress() {
     return true;
 }
 
-// Test 41: Serialize UnorderedStdMap<string, ProductX>
+// Test 41: Serialize StdUnorderedMap<string, ProductX>
 bool TestSerializeUnorderedMapStringProductX() {
     TEST_START("Test Serialize Unordered Map String to ProductX");
     
-    UnorderedStdMap<StdString, ProductX> productMap;
+    StdUnorderedMap<StdString, ProductX> productMap;
     
     ProductX p1;
     p1.productId = optional<int>(701);
@@ -1443,7 +1443,7 @@ bool TestSerializeMapIntListProductX() {
 bool TestSerializeDequeAddressMixedPrimary() {
     TEST_START("Test Serialize Deque of Address with Mixed Primary Flags");
     
-    Deque<Address> addresses;
+    StdDeque<Address> addresses;
     
     Address a1;
     a1.street = optional<StdString>(StdString("800 First St"));
@@ -1485,7 +1485,7 @@ bool TestSerializeDequeAddressMixedPrimary() {
 bool TestSerializeDequePersonDifferentAges() {
     TEST_START("Test Serialize Deque of Person with Different Ages");
     
-    Deque<Person> people;
+    StdDeque<Person> people;
     
     Person p1;
     p1.id = optional<int>(5001);
@@ -1524,11 +1524,11 @@ bool TestSerializeDequePersonDifferentAges() {
     return true;
 }
 
-// Test 49: Serialize UnorderedStdMap<int, Person>
+// Test 49: Serialize StdUnorderedMap<int, Person>
 bool TestSerializeUnorderedMapIntPerson() {
     TEST_START("Test Serialize Unordered Map Int to Person");
     
-    UnorderedStdMap<int, Person> personMap;
+    StdUnorderedMap<int, Person> personMap;
     
     Person p1;
     p1.id = optional<int>(6001);
@@ -1707,12 +1707,12 @@ bool TestDeserializeListString() {
     return true;
 }
 
-// Test: Deserialize Deque<double>
+// Test: Deserialize StdDeque<double>
 bool TestDeserializeDequeDouble() {
     TEST_START("Test Deserialize Deque of Double");
     
     StdString jsonString = "[3.14,2.71,1.41,0.57]";
-    Deque<double> deserialized = SerializationUtility::Deserialize<Deque<double>>(jsonString);
+    StdDeque<double> deserialized = SerializationUtility::Deserialize<StdDeque<double>>(jsonString);
     
     ASSERT(deserialized.size() == 4, "Deserialized deque should have 4 elements");
     ASSERT(std::abs(deserialized[0] - 3.14) < 0.01, "First element should be 3.14");
@@ -1724,12 +1724,12 @@ bool TestDeserializeDequeDouble() {
     return true;
 }
 
-// Test: Deserialize Set<int>
+// Test: Deserialize StdSet<int>
 bool TestDeserializeSetInt() {
     TEST_START("Test Deserialize Set of Int");
     
     StdString jsonString = "[5,3,8,1,9]";
-    Set<int> deserialized = SerializationUtility::Deserialize<Set<int>>(jsonString);
+    StdSet<int> deserialized = SerializationUtility::Deserialize<StdSet<int>>(jsonString);
     
     ASSERT(deserialized.size() == 5, "Deserialized set should have 5 elements");
     ASSERT(deserialized.find(5) != deserialized.end(), "Set should contain 5");
@@ -1742,12 +1742,12 @@ bool TestDeserializeSetInt() {
     return true;
 }
 
-// Test: Deserialize UnorderedSet<string>
+// Test: Deserialize StdUnorderedSet<string>
 bool TestDeserializeUnorderedSetString() {
     TEST_START("Test Deserialize UnorderedSet of String");
     
     StdString jsonString = "[\"red\",\"green\",\"blue\"]";
-    UnorderedSet<StdString> deserialized = SerializationUtility::Deserialize<UnorderedSet<StdString>>(jsonString);
+    StdUnorderedSet<StdString> deserialized = SerializationUtility::Deserialize<StdUnorderedSet<StdString>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized unordered_set should have 3 elements");
     ASSERT(deserialized.find("red") != deserialized.end(), "Set should contain red");
@@ -1758,12 +1758,12 @@ bool TestDeserializeUnorderedSetString() {
     return true;
 }
 
-// Test: Deserialize Array<int, 4>
+// Test: Deserialize StdArray<int, 4>
 bool TestDeserializeArrayInt() {
     TEST_START("Test Deserialize Array of Int");
     
     StdString jsonString = "[1,2,3,4]";
-    Array<int, 4> deserialized = SerializationUtility::Deserialize<Array<int, 4>>(jsonString);
+    StdArray<int, 4> deserialized = SerializationUtility::Deserialize<StdArray<int, 4>>(jsonString);
     
     ASSERT(deserialized.size() == 4, "Deserialized array should have 4 elements");
     ASSERT(deserialized[0] == 1, "First element should be 1");
@@ -1833,7 +1833,7 @@ bool TestDeserializeListPerson() {
     return true;
 }
 
-// Test: Deserialize Deque<Address>
+// Test: Deserialize StdDeque<Address>
 bool TestDeserializeDequeAddress() {
     TEST_START("Test Deserialize Deque of Address");
     
@@ -1842,7 +1842,7 @@ bool TestDeserializeDequeAddress() {
         "{\"street\":\"456 Oak Ave\",\"city\":\"Los Angeles\",\"state\":\"CA\",\"zipCode\":\"90001\",\"isPrimary\":false}"
     "]";
     
-    Deque<Address> deserialized = SerializationUtility::Deserialize<Deque<Address>>(jsonString);
+    StdDeque<Address> deserialized = SerializationUtility::Deserialize<StdDeque<Address>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized deque should have 2 addresses");
     ASSERT(deserialized[0].street.has_value() && deserialized[0].street.value() == "123 Main St", "First address should have correct street");
@@ -1854,7 +1854,7 @@ bool TestDeserializeDequeAddress() {
     return true;
 }
 
-// Test: Deserialize Array<Address, 3>
+// Test: Deserialize StdArray<Address, 3>
 bool TestDeserializeArrayAddress() {
     TEST_START("Test Deserialize Array of Address");
     
@@ -1864,7 +1864,7 @@ bool TestDeserializeArrayAddress() {
         "{\"street\":\"300 Third St\",\"city\":\"Houston\",\"state\":\"TX\",\"zipCode\":\"77001\",\"isPrimary\":false}"
     "]";
     
-    Array<Address, 3> deserialized = SerializationUtility::Deserialize<Array<Address, 3>>(jsonString);
+    StdArray<Address, 3> deserialized = SerializationUtility::Deserialize<StdArray<Address, 3>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized array should have 3 addresses");
     ASSERT(deserialized[0].city.has_value() && deserialized[0].city.value() == "Boston", "First address should be Boston");
@@ -1945,12 +1945,12 @@ bool TestDeserializeMapStringPerson() {
     return true;
 }
 
-// Test: Deserialize UnorderedStdMap<string, string>
+// Test: Deserialize StdUnorderedMap<string, string>
 bool TestDeserializeUnorderedMapStringString() {
     TEST_START("Test Deserialize UnorderedMap String to String");
     
     StdString jsonString = "{\"key1\":\"value1\",\"key2\":\"value2\",\"key3\":\"value3\"}";
-    UnorderedStdMap<StdString, StdString> deserialized = SerializationUtility::Deserialize<UnorderedStdMap<StdString, StdString>>(jsonString);
+    StdUnorderedMap<StdString, StdString> deserialized = SerializationUtility::Deserialize<StdUnorderedMap<StdString, StdString>>(jsonString);
     
     ASSERT(deserialized.size() == 3, "Deserialized unordered_map should have 3 entries");
     ASSERT(deserialized["key1"] == "value1", "key1 should map to value1");
@@ -1961,7 +1961,7 @@ bool TestDeserializeUnorderedMapStringString() {
     return true;
 }
 
-// Test: Deserialize UnorderedStdMap<string, ProductX>
+// Test: Deserialize StdUnorderedMap<string, ProductX>
 bool TestDeserializeUnorderedMapStringProductX() {
     TEST_START("Test Deserialize UnorderedMap String to ProductX");
     
@@ -1970,7 +1970,7 @@ bool TestDeserializeUnorderedMapStringProductX() {
         "\"prod2\":{\"productId\":502,\"productName\":\"Watch\",\"price\":199.99,\"quantity\":25,\"inStock\":true}"
     "}";
     
-    UnorderedStdMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<UnorderedStdMap<StdString, ProductX>>(jsonString);
+    StdUnorderedMap<StdString, ProductX> deserialized = SerializationUtility::Deserialize<StdUnorderedMap<StdString, ProductX>>(jsonString);
     
     ASSERT(deserialized.size() == 2, "Deserialized unordered_map should have 2 entries");
     ASSERT(deserialized.find("prod1") != deserialized.end(), "Map should contain key prod1");
